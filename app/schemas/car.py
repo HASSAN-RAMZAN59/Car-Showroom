@@ -43,12 +43,19 @@ class CarUpdate(BaseModel):
     seller_id: Optional[uuid.UUID] = None
 
 
+class CarStatusUpdate(BaseModel):
+    status: CarStatus
+    asking_price: Optional[float] = Field(None, gt=0, description="Updated asking price when vehicle becomes available")
+
+
 class CarResponse(CarBase):
     id: uuid.UUID
     created_by_id: uuid.UUID
     purchase_date: datetime
     car_photos_urls: List[str] = []
     registration_docs_urls: List[str] = []
+    total_repair_cost: float = 0.0
+    total_cost_basis: float = 0.0
     created_at: datetime
     updated_at: datetime
 
@@ -58,5 +65,23 @@ class CarResponse(CarBase):
 class CarDetailResponse(CarResponse):
     seller: Optional[SellerResponse] = None
     created_by: Optional[UserResponse] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CarAutoCompleteResponse(BaseModel):
+    id: uuid.UUID
+    car_number: str
+    make: str
+    model: str
+    year: int
+    engine_number: str
+    chassis_number: str
+    status: CarStatus
+    purchase_price: float
+    asking_price: Optional[float] = None
+    total_repair_cost: float = 0.0
+    total_cost_basis: float = 0.0
+    seller: Optional[SellerResponse] = None
 
     model_config = ConfigDict(from_attributes=True)

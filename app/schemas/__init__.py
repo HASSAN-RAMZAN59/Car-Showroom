@@ -1,9 +1,17 @@
 from app.schemas.car import (
+    CarAutoCompleteResponse,
     CarBase,
     CarDetailResponse,
     CarPurchaseCreate,
     CarResponse,
+    CarStatusUpdate,
     CarUpdate,
+)
+from app.schemas.repair import (
+    CarRepairsListResponse,
+    RepairBase,
+    RepairCreate,
+    RepairResponse,
 )
 from app.schemas.seller import (
     SellerBase,
@@ -38,6 +46,12 @@ __all__ = [
     "CarBase",
     "CarPurchaseCreate",
     "CarUpdate",
+    "CarStatusUpdate",
     "CarResponse",
     "CarDetailResponse",
+    "CarAutoCompleteResponse",
+    "RepairBase",
+    "RepairCreate",
+    "RepairResponse",
+    "CarRepairsListResponse",
 ]

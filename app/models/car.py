@@ -18,6 +18,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
+    from app.models.repair import Repair
     from app.models.seller import Seller
     from app.models.user import User
 
@@ -106,3 +107,21 @@ class Car(Base):
     # Relationships
     seller: Mapped["Seller"] = relationship("Seller", back_populates="cars")
     created_by: Mapped["User"] = relationship("User")
+    repairs: Mapped[List["Repair"]] = relationship(
+        "Repair",
+        back_populates="car",
+        cascade="all, delete-orphan",
+    )
+
+    @property
+    def total_repair_cost(self) -> float:
+        """Calculate total refurbishment & repair cost for this vehicle."""
+        if not self.repairs:
+            return 0.0
+        return sum(repair.cost for repair in self.repairs if repair and repair.cost)
+
+    @property
+    def total_cost_basis(self) -> float:
+        """Calculate total financial cost basis (Purchase Price + Total Repair Costs)."""
+        base_price = self.purchase_price if self.purchase_price else 0.0
+        return base_price + self.total_repair_cost
