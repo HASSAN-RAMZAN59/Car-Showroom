@@ -11,6 +11,7 @@ from sqlalchemy import (
     Integer,
     JSON,
     String,
+    inspect,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -115,7 +116,10 @@ class Car(Base):
 
     @property
     def total_repair_cost(self) -> float:
-        """Calculate total refurbishment & repair cost for this vehicle."""
+        """Calculate total refurbishment & repair cost for this vehicle safely in async ORM."""
+        state = inspect(self)
+        if "repairs" in state.unloaded:
+            return 0.0
         if not self.repairs:
             return 0.0
         return sum(repair.cost for repair in self.repairs if repair and repair.cost)

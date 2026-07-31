@@ -14,7 +14,7 @@ from fastapi import (
 from sqlalchemy import or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.api.deps import get_current_user, require_roles
 from app.core.cloudinary import upload_file_to_cloudinary
@@ -118,7 +118,12 @@ async def purchase_car(
     db.add(car)
     await db.commit()
     await db.refresh(car)
-    return car
+
+    # Eagerly load repairs for serialization
+    stmt = select(Car).options(selectinload(Car.repairs)).where(Car.id == car.id)
+    res = await db.execute(stmt)
+    car_with_repairs = res.scalars().first()
+    return car_with_repairs
 
 
 @router.get(
@@ -137,7 +142,7 @@ async def list_cars(
     current_user: User = Depends(get_current_user),
 ) -> Any:
     """List vehicle inventory with optional filtering by status, make, model, and year."""
-    stmt = select(Car)
+    stmt = select(Car).options(selectinload(Car.repairs))
     if status_filter:
         stmt = stmt.where(Car.status == status_filter)
     if make:
@@ -163,12 +168,13 @@ async def get_car(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Get detailed vehicle information including seller profile and creation user."""
+    """Get detailed vehicle information including seller profile, repairs, and creation user."""
     stmt = (
         select(Car)
         .options(
             joinedload(Car.seller),
             joinedload(Car.created_by),
+            selectinload(Car.repairs),
         )
         .where(Car.id == car_id)
     )
