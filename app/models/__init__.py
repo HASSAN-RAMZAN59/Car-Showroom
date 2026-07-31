@@ -1,3 +1,9 @@
+from app.models.bank import (
+    BankAccount,
+    PaymentMethod,
+    PaymentTransaction,
+    TransactionType,
+)
 from app.models.car import Car, CarStatus
 from app.models.customer import Customer
 from app.models.installment import (
@@ -28,4 +34,8 @@ __all__ = [
     "InstallmentPayment",
     "InstallmentPlanStatus",
     "PaymentStatus",
+    "BankAccount",
+    "PaymentTransaction",
+    "TransactionType",
+    "PaymentMethod",
 ]

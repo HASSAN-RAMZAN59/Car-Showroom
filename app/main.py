@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.auth import router as auth_router
+from app.api.v1.bank import router as bank_router
 from app.api.v1.cars import router as cars_router
 from app.api.v1.customers import router as customers_router
 from app.api.v1.installments import router as installments_router
@@ -90,6 +91,11 @@ app.include_router(
     installments_router,
     prefix=f"{settings.API_V1_STR}/installments",
     tags=["Flexible Installments & EMI"],
+)
+app.include_router(
+    bank_router,
+    prefix=f"{settings.API_V1_STR}/bank",
+    tags=["Multi-Bank Accounts & Split Payments"],
 )
 
 

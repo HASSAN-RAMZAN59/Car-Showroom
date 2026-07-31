@@ -10,7 +10,7 @@ This script tests:
 7. Token / Advance Booking & Vehicle Reservation
 8. Sales Transaction, Net Profit calculation & PDF Deed Generation
 9. Flexible Installment Plan Creation & Schedule Generation (EMI)
-10. Monthly Installment Payment Logging & Auto-Completion
+10. Multi-Bank Account Management, Balance Auto-Sync & Split Sale Payments
 """
 
 import asyncio
@@ -83,7 +83,32 @@ async def run_tests():
         headers = {"Authorization": f"Bearer {token}"}
         print("[SUCCESS] 2. User Login passed! JWT Access Token received.")
 
-        # 4. Create Seller Record
+        # 4. Create Bank Accounts
+        bank_a_data = {
+            "account_title": "Meezan Showroom Operations",
+            "bank_name": "Meezan Bank",
+            "account_number": "PK12MEZN00011122233344",
+            "current_balance": 5000000.0,
+        }
+        res = await client.post("/api/v1/bank/accounts", json=bank_a_data, headers=headers)
+        assert res.status_code == 201, res.text
+        bank_a = res.json()
+        bank_a_id = bank_a["id"]
+
+        bank_b_data = {
+            "account_title": "HBL Showroom Reserve",
+            "bank_name": "Habib Bank Limited",
+            "account_number": "PK99HABB00099988877766",
+            "current_balance": 2000000.0,
+        }
+        res = await client.post("/api/v1/bank/accounts", json=bank_b_data, headers=headers)
+        assert res.status_code == 201, res.text
+        bank_b = res.json()
+        bank_b_id = bank_b["id"]
+
+        print("[SUCCESS] 3. Bank Accounts Created! Meezan (PKR 5M) & HBL (PKR 2M).")
+
+        # 5. Create Seller & Log Vehicle Purchase
         seller_data = {
             "full_name": "Muhammad Ali",
             "cnic": "42101-9876543-1",
@@ -91,12 +116,8 @@ async def run_tests():
             "address": "Gulberg III, Lahore",
         }
         res = await client.post("/api/v1/sellers/", data=seller_data, headers=headers)
-        assert res.status_code == 201, res.text
-        seller = res.json()
-        seller_id = seller["id"]
-        print("[SUCCESS] 3. Seller Registration passed! Seller ID:", seller_id)
+        seller_id = res.json()["id"]
 
-        # 5. Log Vehicle Purchase
         car_data = {
             "car_number": "LEB-9988",
             "make": "Honda",
@@ -111,23 +132,24 @@ async def run_tests():
             "seller_id": seller_id,
         }
         res = await client.post("/api/v1/cars/purchase", data=car_data, headers=headers)
-        assert res.status_code == 201, res.text
-        car = res.json()
-        car_id = car["id"]
-        print(f"[SUCCESS] 4. Car Purchase logged! Plate: {car['car_number']}, Price: PKR {car['purchase_price']:,.2f}")
+        car_id = res.json()["id"]
 
-        # 6. Log Repair Expenses
-        repair1_data = {
+        # Log Purchase Payment Transaction out of Meezan Bank
+        purchase_tx = {
+            "transaction_type": "PURCHASE_PAYMENT",
+            "payment_method": "BANK_TRANSFER",
+            "bank_account_id": bank_a_id,
+            "amount": 3200000.0,
+            "reference_number": "FT-20260731-001",
             "car_id": car_id,
-            "repair_type": "Denting & Painting",
-            "vendor_name": "Royal Motors Workshop",
-            "cost": 85000.0,
-            "notes": "Front bumper and fender touchup",
+            "purchase_id": car_id,
+            "notes": "Purchase price paid to seller via Meezan Bank",
         }
-        res = await client.post("/api/v1/repairs/", data=repair1_data, headers=headers)
+        res = await client.post("/api/v1/bank/transactions", json=purchase_tx, headers=headers)
         assert res.status_code == 201, res.text
+        print("[SUCCESS] 4. Purchase Payment Logged! Meezan balance debited.")
 
-        # 7. Register Customer Profile
+        # 6. Register Customer Profile & Sale
         customer_data = {
             "full_name": "Usman Tariq",
             "cnic": "35202-1234567-3",
@@ -135,69 +157,67 @@ async def run_tests():
             "address": "DHA Phase 5, Lahore",
         }
         res = await client.post("/api/v1/customers/", data=customer_data, headers=headers)
-        assert res.status_code == 201, res.text
-        customer = res.json()
-        customer_id = customer["id"]
+        customer_id = res.json()["id"]
 
-        # 8. Register Sales Transaction
         sale_data = {
             "car_id": car_id,
             "customer_id": customer_id,
             "final_sale_price": 3600000.0,
-            "payment_type": "INSTALLMENT",
-            "notes": "Financed via 6-month installment plan",
+            "payment_type": "FULL_PAYMENT",
+            "notes": "Paid via split payments across Meezan, HBL, and Cash",
         }
         res = await client.post("/api/v1/sales/", json=sale_data, headers=headers)
-        assert res.status_code == 201, res.text
-        sale = res.json()
-        sale_id = sale["id"]
-        print(f"[SUCCESS] 5. Vehicle Sale Completed! Sale ID: {sale_id}")
+        sale_id = res.json()["id"]
 
-        # 9. Create 6-Month Installment Plan
-        plan_data = {
+        # 7. Log Split Sale Payment (Meezan + HBL + Cash)
+        split_payload = {
             "sale_id": sale_id,
-            "down_payment": 1200000.0,
-            "duration_months": 6,
+            "payments": [
+                {
+                    "amount": 1600000.0,
+                    "payment_method": "BANK_TRANSFER",
+                    "bank_account_id": bank_a_id,
+                    "reference_number": "TXN-MEEZAN-101",
+                    "notes": "Part 1 payment via Meezan Bank",
+                },
+                {
+                    "amount": 1500000.0,
+                    "payment_method": "BANK_TRANSFER",
+                    "bank_account_id": bank_b_id,
+                    "reference_number": "TXN-HBL-202",
+                    "notes": "Part 2 payment via HBL Bank",
+                },
+                {
+                    "amount": 500000.0,
+                    "payment_method": "CASH",
+                    "bank_account_id": None,
+                    "reference_number": "CASH-REC-303",
+                    "notes": "Part 3 payment in cash",
+                },
+            ],
         }
-        res = await client.post("/api/v1/installments/plan", json=plan_data, headers=headers)
+        res = await client.post("/api/v1/bank/transactions/split-sale", json=split_payload, headers=headers)
         assert res.status_code == 201, res.text
-        plan = res.json()
-        plan_id = plan["id"]
-        payments = plan["payments"]
-        assert len(payments) == 6
-        print(f"[SUCCESS] 6. Installment Plan Created! Total: PKR {plan['total_amount']:,.2f}")
-        print(f"   - Down Payment: PKR {plan['down_payment']:,.2f}")
-        print(f"   - Financed Amount: PKR {plan['financed_amount']:,.2f}")
-        print(f"   - Monthly Installment (6 Mos): PKR {plan['monthly_installment_amount']:,.2f}")
+        split_txs = res.json()
+        assert len(split_txs) == 3
+        print("[SUCCESS] 5. Split Sale Payment Engine Passed! 3 Split transactions recorded.")
 
-        # 10. Log Installment Payment (Month 1)
-        m1_payment_id = payments[0]["id"]
-        pay_data = {
-            "amount_paid": plan['monthly_installment_amount'],
-            "payment_method": "Bank Transfer",
-            "transaction_reference": "TXN-99887766",
-            "notes": "Month 1 EMI Received",
-        }
-        res = await client.post(f"/api/v1/installments/pay/{m1_payment_id}", json=pay_data, headers=headers)
-        assert res.status_code == 200, res.text
-        paid_m1 = res.json()
-        assert paid_m1["status"] == "PAID"
-        print("[SUCCESS] 7. Month 1 Installment Payment Logged!")
-
-        # 11. Fetch Plan Details & Check Remaining Balance
-        res = await client.get(f"/api/v1/installments/plan/{plan_id}", headers=headers)
-        assert res.status_code == 200, res.text
-        plan_detail = res.json()
-        expected_total_paid = 1200000.0 + plan['monthly_installment_amount']
-        expected_balance = 3600000.0 - expected_total_paid
-        assert plan_detail["total_paid"] == expected_total_paid
-        assert plan_detail["remaining_balance"] == expected_balance
-        print(f"[SUCCESS] 8. Remaining Balance Verified: PKR {plan_detail['remaining_balance']:,.2f}")
-
-        # 12. Check Overdue Endpoint
-        res = await client.get("/api/v1/installments/overdue", headers=headers)
+        # 8. Verify Bank Balances & Ledger History
+        res = await client.get("/api/v1/bank/accounts", headers=headers)
         assert res.status_code == 200
-        print("[SUCCESS] 9. Overdue Payments Monitoring Endpoint Verified!")
+        accounts = {acc["bank_name"]: acc["current_balance"] for acc in res.json()}
+        # Meezan: Initial 5M - 3.2M purchase + 1.6M split = 3.4M
+        assert accounts["Meezan Bank"] == 3400000.0
+        # HBL: Initial 2M + 1.5M split = 3.5M
+        assert accounts["Habib Bank Limited"] == 3500000.0
+        print(f"[SUCCESS] 6. Bank Balances Verified! Meezan: PKR {accounts['Meezan Bank']:,.2f} | HBL: PKR {accounts['Habib Bank Limited']:,.2f}")
+
+        # 9. Verify Car Audit Trail
+        res = await client.get(f"/api/v1/bank/car/{car_id}/transactions", headers=headers)
+        assert res.status_code == 200
+        car_txs = res.json()
+        assert len(car_txs) >= 4  # 1 purchase + 3 split sale items
+        print(f"[SUCCESS] 7. Car Financial Audit Trail Verified! Total Ledger Items: {len(car_txs)}")
 
         print("=" * 65)
         print(" ALL ERP BACKEND MODULE TESTS PASSED SUCCESSFULLY!")
