@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.auth import router as auth_router
 from app.api.v1.cars import router as cars_router
 from app.api.v1.customers import router as customers_router
+from app.api.v1.installments import router as installments_router
 from app.api.v1.repairs import router as repairs_router
 from app.api.v1.sales import router as sales_router
 from app.api.v1.search import router as search_router
@@ -84,6 +85,11 @@ app.include_router(
     sales_router,
     prefix=f"{settings.API_V1_STR}/sales",
     tags=["Sales & Invoices"],
+)
+app.include_router(
+    installments_router,
+    prefix=f"{settings.API_V1_STR}/installments",
+    tags=["Flexible Installments & EMI"],
 )
 
 

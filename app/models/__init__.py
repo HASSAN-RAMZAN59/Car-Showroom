@@ -1,5 +1,11 @@
 from app.models.car import Car, CarStatus
 from app.models.customer import Customer
+from app.models.installment import (
+    InstallmentPayment,
+    InstallmentPlan,
+    InstallmentPlanStatus,
+    PaymentStatus,
+)
 from app.models.repair import Repair
 from app.models.sale import PaymentType, Sale
 from app.models.seller import Seller
@@ -18,4 +24,8 @@ __all__ = [
     "TokenStatus",
     "Sale",
     "PaymentType",
+    "InstallmentPlan",
+    "InstallmentPayment",
+    "InstallmentPlanStatus",
+    "PaymentStatus",
 ]

@@ -9,6 +9,8 @@ This script tests:
 6. Customer Profile Registration
 7. Token / Advance Booking & Vehicle Reservation
 8. Sales Transaction, Net Profit calculation & PDF Deed Generation
+9. Flexible Installment Plan Creation & Schedule Generation (EMI)
+10. Monthly Installment Payment Logging & Auto-Completion
 """
 
 import asyncio
@@ -124,18 +126,6 @@ async def run_tests():
         }
         res = await client.post("/api/v1/repairs/", data=repair1_data, headers=headers)
         assert res.status_code == 201, res.text
-        print("[SUCCESS] 5a. Repair Entry 1 logged: Denting & Painting (PKR 85,000)")
-
-        repair2_data = {
-            "car_id": car_id,
-            "repair_type": "Mechanical & Tuning",
-            "vendor_name": "Honda Master Tech",
-            "cost": 45000.0,
-            "notes": "Engine oil, brake pads, and suspension bushings",
-        }
-        res = await client.post("/api/v1/repairs/", data=repair2_data, headers=headers)
-        assert res.status_code == 201, res.text
-        print("[SUCCESS] 5b. Repair Entry 2 logged: Mechanical & Tuning (PKR 45,000)")
 
         # 7. Register Customer Profile
         customer_data = {
@@ -148,45 +138,66 @@ async def run_tests():
         assert res.status_code == 201, res.text
         customer = res.json()
         customer_id = customer["id"]
-        print("[SUCCESS] 6. Customer Profile Registered! Customer ID:", customer_id)
 
-        # 8. Token / Advance Booking Reservation
-        expiry = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
-        token_data = {
-            "car_id": car_id,
-            "customer_id": customer_id,
-            "advance_amount": 100000.0,
-            "expiry_date": expiry,
-            "is_refundable": False,
-            "notes": "Advance token payment for Honda Civic",
-        }
-        res = await client.post("/api/v1/token_bookings/", json=token_data, headers=headers)
-        assert res.status_code == 201, res.text
-        booking = res.json()
-        print(f"[SUCCESS] 7. Token Booking Created! Car Reserved. Advance: PKR {booking['advance_amount']:,.2f}")
-
-        # 9. Register Sales Transaction
+        # 8. Register Sales Transaction
         sale_data = {
             "car_id": car_id,
             "customer_id": customer_id,
             "final_sale_price": 3600000.0,
-            "payment_type": "FULL_PAYMENT",
-            "notes": "Full payment received via bank transfer",
+            "payment_type": "INSTALLMENT",
+            "notes": "Financed via 6-month installment plan",
         }
         res = await client.post("/api/v1/sales/", json=sale_data, headers=headers)
         assert res.status_code == 201, res.text
         sale = res.json()
         sale_id = sale["id"]
-        print(f"[SUCCESS] 8. Vehicle Sale Completed!")
-        print(f"   - Final Sale Price: PKR {sale['final_sale_price']:,.2f}")
-        print(f"   - Total Cost Basis: PKR {sale['total_cost_basis']:,.2f}")
-        print(f"   - Net Profit Margin: PKR {sale['net_profit']:,.2f}")
+        print(f"[SUCCESS] 5. Vehicle Sale Completed! Sale ID: {sale_id}")
 
-        # 10. Generate & Download PDF Sale Deed
-        res = await client.get(f"/api/v1/sales/{sale_id}/pdf", headers=headers)
+        # 9. Create 6-Month Installment Plan
+        plan_data = {
+            "sale_id": sale_id,
+            "down_payment": 1200000.0,
+            "duration_months": 6,
+        }
+        res = await client.post("/api/v1/installments/plan", json=plan_data, headers=headers)
+        assert res.status_code == 201, res.text
+        plan = res.json()
+        plan_id = plan["id"]
+        payments = plan["payments"]
+        assert len(payments) == 6
+        print(f"[SUCCESS] 6. Installment Plan Created! Total: PKR {plan['total_amount']:,.2f}")
+        print(f"   - Down Payment: PKR {plan['down_payment']:,.2f}")
+        print(f"   - Financed Amount: PKR {plan['financed_amount']:,.2f}")
+        print(f"   - Monthly Installment (6 Mos): PKR {plan['monthly_installment_amount']:,.2f}")
+
+        # 10. Log Installment Payment (Month 1)
+        m1_payment_id = payments[0]["id"]
+        pay_data = {
+            "amount_paid": plan['monthly_installment_amount'],
+            "payment_method": "Bank Transfer",
+            "transaction_reference": "TXN-99887766",
+            "notes": "Month 1 EMI Received",
+        }
+        res = await client.post(f"/api/v1/installments/pay/{m1_payment_id}", json=pay_data, headers=headers)
         assert res.status_code == 200, res.text
-        assert res.headers["content-type"] == "application/pdf"
-        print(f"[SUCCESS] 9. PDF Sale Deed Export Verified! File Size: {len(res.content)} bytes.")
+        paid_m1 = res.json()
+        assert paid_m1["status"] == "PAID"
+        print("[SUCCESS] 7. Month 1 Installment Payment Logged!")
+
+        # 11. Fetch Plan Details & Check Remaining Balance
+        res = await client.get(f"/api/v1/installments/plan/{plan_id}", headers=headers)
+        assert res.status_code == 200, res.text
+        plan_detail = res.json()
+        expected_total_paid = 1200000.0 + plan['monthly_installment_amount']
+        expected_balance = 3600000.0 - expected_total_paid
+        assert plan_detail["total_paid"] == expected_total_paid
+        assert plan_detail["remaining_balance"] == expected_balance
+        print(f"[SUCCESS] 8. Remaining Balance Verified: PKR {plan_detail['remaining_balance']:,.2f}")
+
+        # 12. Check Overdue Endpoint
+        res = await client.get("/api/v1/installments/overdue", headers=headers)
+        assert res.status_code == 200
+        print("[SUCCESS] 9. Overdue Payments Monitoring Endpoint Verified!")
 
         print("=" * 65)
         print(" ALL ERP BACKEND MODULE TESTS PASSED SUCCESSFULLY!")

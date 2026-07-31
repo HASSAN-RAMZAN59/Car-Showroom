@@ -14,6 +14,13 @@ from app.schemas.customer import (
     CustomerResponse,
     CustomerUpdate,
 )
+from app.schemas.installment import (
+    InstallmentPaymentLog,
+    InstallmentPaymentResponse,
+    InstallmentPlanCreate,
+    InstallmentPlanDetailResponse,
+    InstallmentPlanResponse,
+)
 from app.schemas.repair import (
     CarRepairsListResponse,
     RepairBase,
@@ -84,4 +91,9 @@ __all__ = [
     "SaleCreate",
     "SaleResponse",
     "SaleDetailResponse",
+    "InstallmentPlanCreate",
+    "InstallmentPaymentLog",
+    "InstallmentPaymentResponse",
+    "InstallmentPlanResponse",
+    "InstallmentPlanDetailResponse",
 ]
