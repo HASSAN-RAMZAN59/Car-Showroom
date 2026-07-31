@@ -1,0 +1,218 @@
+import uuid
+from datetime import datetime
+from typing import Any, List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import StreamingResponse
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
+
+from app.api.deps import get_current_user, require_roles
+from app.core.database import get_db
+from app.core.pdf_generator import generate_sale_deed_pdf
+from app.models.car import Car, CarStatus
+from app.models.customer import Customer
+from app.models.sale import Sale
+from app.models.seller import Seller
+from app.models.token_booking import TokenBooking, TokenStatus
+from app.models.user import User, UserRole
+from app.schemas.sale import SaleCreate, SaleDetailResponse, SaleResponse
+
+router = APIRouter()
+
+
+@router.post(
+    "/",
+    response_model=SaleResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE]))],
+)
+async def create_sale(
+    sale_in: SaleCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Register a car sale, calculate net profit, set vehicle status to SOLD, and complete active token bookings."""
+    # 1. Verify target vehicle exists and is available
+    stmt_car = (
+        select(Car)
+        .options(selectinload(Car.repairs))
+        .where(Car.id == sale_in.car_id)
+    )
+    res_car = await db.execute(stmt_car)
+    car = res_car.scalars().first()
+    if not car:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Vehicle with ID '{sale_in.car_id}' not found.",
+        )
+    if car.status == CarStatus.SOLD:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Vehicle has already been sold.",
+        )
+
+    # 2. Verify customer exists
+    res_cust = await db.execute(select(Customer).where(Customer.id == sale_in.customer_id))
+    customer = res_cust.scalars().first()
+    if not customer:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Customer with ID '{sale_in.customer_id}' not found.",
+        )
+
+    # 3. Snapshot total cost basis and compute net profit
+    total_cost_basis = car.total_cost_basis
+    net_profit = sale_in.final_sale_price - total_cost_basis
+
+    # 4. Check for active token booking and mark COMPLETED
+    stmt_token = select(TokenBooking).where(
+        TokenBooking.car_id == car.id, TokenBooking.status == TokenStatus.ACTIVE
+    )
+    res_token = await db.execute(stmt_token)
+    active_token = res_token.scalars().first()
+    if active_token:
+        active_token.status = TokenStatus.COMPLETED
+
+    # 5. Update car status to SOLD
+    car.status = CarStatus.SOLD
+
+    # 6. Create Sale transaction record
+    sale = Sale(
+        car_id=sale_in.car_id,
+        customer_id=sale_in.customer_id,
+        sold_by_employee_id=current_user.id,
+        final_sale_price=sale_in.final_sale_price,
+        total_cost_basis=total_cost_basis,
+        net_profit=net_profit,
+        payment_type=sale_in.payment_type,
+        notes=sale_in.notes,
+    )
+    db.add(sale)
+    await db.commit()
+    await db.refresh(sale)
+    return sale
+
+
+@router.get(
+    "/",
+    response_model=List[SaleResponse],
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE]))],
+)
+async def list_sales(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=500),
+    start_date: Optional[datetime] = Query(None, description="Filter sales on or after this date"),
+    end_date: Optional[datetime] = Query(None, description="Filter sales on or before this date"),
+    employee_id: Optional[uuid.UUID] = Query(None, description="Filter sales by selling employee"),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """List sales transactions with optional date range and employee filters."""
+    stmt = select(Sale)
+    if start_date:
+        stmt = stmt.where(Sale.sale_date >= start_date)
+    if end_date:
+        stmt = stmt.where(Sale.sale_date <= end_date)
+    if employee_id:
+        stmt = stmt.where(Sale.sold_by_employee_id == employee_id)
+
+    stmt = stmt.offset(skip).limit(limit).order_by(Sale.sale_date.desc())
+    result = await db.execute(stmt)
+    sales = result.scalars().all()
+    return sales
+
+
+@router.get(
+    "/{sale_id}",
+    response_model=SaleDetailResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE]))],
+)
+async def get_sale(
+    sale_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Get detailed sale record with embedded car, customer, and employee info."""
+    stmt = (
+        select(Sale)
+        .options(
+            joinedload(Sale.car).options(joinedload(Car.seller), selectinload(Car.repairs)),
+            joinedload(Sale.customer),
+            joinedload(Sale.sold_by),
+        )
+        .where(Sale.id == sale_id)
+    )
+    result = await db.execute(stmt)
+    sale = result.scalars().first()
+    if not sale:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sale record not found",
+        )
+    return sale
+
+
+@router.get(
+    "/{sale_id}/pdf",
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE]))],
+)
+async def export_sale_deed_pdf(
+    sale_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Generate and stream an official PDF Sale Deed / Agreement document."""
+    stmt = (
+        select(Sale)
+        .options(
+            joinedload(Sale.car).options(joinedload(Car.seller), selectinload(Car.repairs)),
+            joinedload(Sale.customer),
+            joinedload(Sale.sold_by),
+        )
+        .where(Sale.id == sale_id)
+    )
+    result = await db.execute(stmt)
+    sale = result.scalars().first()
+    if not sale:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sale record not found",
+        )
+
+    # Construct sale_data dictionary for PDF generator
+    sale_data = {
+        "sale_id": str(sale.id)[:8].upper(),
+        "sale_date": sale.sale_date.strftime("%Y-%m-%d %H:%M UTC"),
+        "car_number": sale.car.car_number if sale.car else "N/A",
+        "make": sale.car.make if sale.car else "",
+        "model": sale.car.model if sale.car else "",
+        "year": sale.car.year if sale.car else 0,
+        "color": sale.car.color or "N/A" if sale.car else "N/A",
+        "engine_number": sale.car.engine_number if sale.car else "N/A",
+        "chassis_number": sale.car.chassis_number if sale.car else "N/A",
+        "seller_name": sale.car.seller.full_name if (sale.car and sale.car.seller) else "Car Showroom ERP",
+        "seller_cnic": sale.car.seller.cnic if (sale.car and sale.car.seller) else "N/A",
+        "seller_phone": sale.car.seller.phone if (sale.car and sale.car.seller) else "N/A",
+        "buyer_name": sale.customer.full_name if sale.customer else "N/A",
+        "buyer_cnic": sale.customer.cnic if sale.customer else "N/A",
+        "buyer_phone": sale.customer.phone if sale.customer else "N/A",
+        "buyer_address": sale.customer.address or "N/A" if sale.customer else "N/A",
+        "purchase_price": sale.car.purchase_price if sale.car else 0.0,
+        "total_repair_cost": sale.car.total_repair_cost if sale.car else 0.0,
+        "total_cost_basis": sale.total_cost_basis,
+        "final_sale_price": sale.final_sale_price,
+        "net_profit": sale.net_profit,
+        "payment_type": sale.payment_type.value,
+        "employee_name": sale.sold_by.full_name if sale.sold_by else "Authorized Officer",
+    }
+
+    pdf_buffer = generate_sale_deed_pdf(sale_data)
+    filename = f"Sale_Deed_{sale.car.car_number if sale.car else 'Vehicle'}.pdf"
+
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename={filename}"},
+    )

@@ -7,11 +7,24 @@ from app.schemas.car import (
     CarStatusUpdate,
     CarUpdate,
 )
+from app.schemas.customer import (
+    CustomerBase,
+    CustomerCreate,
+    CustomerDetailResponse,
+    CustomerResponse,
+    CustomerUpdate,
+)
 from app.schemas.repair import (
     CarRepairsListResponse,
     RepairBase,
     RepairCreate,
     RepairResponse,
+)
+from app.schemas.sale import (
+    SaleBase,
+    SaleCreate,
+    SaleDetailResponse,
+    SaleResponse,
 )
 from app.schemas.seller import (
     SellerBase,
@@ -19,6 +32,11 @@ from app.schemas.seller import (
     SellerDetailResponse,
     SellerResponse,
     SellerUpdate,
+)
+from app.schemas.token_booking import (
+    TokenBookingBase,
+    TokenBookingCreate,
+    TokenBookingResponse,
 )
 from app.schemas.user import (
     Token,
@@ -54,4 +72,16 @@ __all__ = [
     "RepairCreate",
     "RepairResponse",
     "CarRepairsListResponse",
+    "CustomerBase",
+    "CustomerCreate",
+    "CustomerUpdate",
+    "CustomerResponse",
+    "CustomerDetailResponse",
+    "TokenBookingBase",
+    "TokenBookingCreate",
+    "TokenBookingResponse",
+    "SaleBase",
+    "SaleCreate",
+    "SaleResponse",
+    "SaleDetailResponse",
 ]

@@ -5,9 +5,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.auth import router as auth_router
 from app.api.v1.cars import router as cars_router
+from app.api.v1.customers import router as customers_router
 from app.api.v1.repairs import router as repairs_router
+from app.api.v1.sales import router as sales_router
 from app.api.v1.search import router as search_router
 from app.api.v1.sellers import router as sellers_router
+from app.api.v1.token_bookings import router as token_bookings_router
 from app.core.config import settings
 from app.core.database import Base, engine
 
@@ -66,6 +69,21 @@ app.include_router(
     search_router,
     prefix=f"{settings.API_V1_STR}/search",
     tags=["Auto-Complete Search"],
+)
+app.include_router(
+    customers_router,
+    prefix=f"{settings.API_V1_STR}/customers",
+    tags=["Customers"],
+)
+app.include_router(
+    token_bookings_router,
+    prefix=f"{settings.API_V1_STR}/token_bookings",
+    tags=["Token Bookings"],
+)
+app.include_router(
+    sales_router,
+    prefix=f"{settings.API_V1_STR}/sales",
+    tags=["Sales & Invoices"],
 )
 
 

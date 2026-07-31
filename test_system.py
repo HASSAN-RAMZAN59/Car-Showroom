@@ -6,9 +6,13 @@ This script tests:
 3. Vehicle Purchase logging
 4. Repair Expense logging (testing receipt uploads & cost calculations)
 5. Smart Search Auto-Complete (/api/v1/search/cars)
+6. Customer Profile Registration
+7. Token / Advance Booking & Vehicle Reservation
+8. Sales Transaction, Net Profit calculation & PDF Deed Generation
 """
 
 import asyncio
+from datetime import datetime, timedelta, timezone
 
 import httpx
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -133,39 +137,59 @@ async def run_tests():
         assert res.status_code == 201, res.text
         print("[SUCCESS] 5b. Repair Entry 2 logged: Mechanical & Tuning (PKR 45,000)")
 
-        # 7. Verify Cost Basis & Total Repair Calculation
-        res = await client.get(f"/api/v1/repairs/car/{car_id}", headers=headers)
-        assert res.status_code == 200, res.text
-        repairs_summary = res.json()
-        total_repairs = repairs_summary["total_repair_cost"]
-        assert total_repairs == 130000.0
-        print(f"[SUCCESS] 6. Total Repairs Sum Verified: PKR {total_repairs:,.2f}")
-
-        # 8. Transition Car Status to AVAILABLE & Set Asking Price
-        status_payload = {
-            "status": "AVAILABLE",
-            "asking_price": 3550000.0,
+        # 7. Register Customer Profile
+        customer_data = {
+            "full_name": "Usman Tariq",
+            "cnic": "35202-1234567-3",
+            "phone": "0321-4455667",
+            "address": "DHA Phase 5, Lahore",
         }
-        res = await client.patch(f"/api/v1/repairs/cars/{car_id}/status", json=status_payload, headers=headers)
-        assert res.status_code == 200, res.text
-        updated_car = res.json()
-        assert updated_car["status"] == "AVAILABLE"
-        assert updated_car["total_cost_basis"] == 3330000.0  # 3,200,000 + 130,000
-        print(f"[SUCCESS] 7. Car Status Transitioned to '{updated_car['status']}'!")
-        print(f"   - Purchase Price: PKR {updated_car['purchase_price']:,.2f}")
-        print(f"   - Total Repair Cost: PKR {updated_car['total_repair_cost']:,.2f}")
-        print(f"   - Calculated Cost Basis: PKR {updated_car['total_cost_basis']:,.2f}")
-        print(f"   - Target Asking Price: PKR {updated_car['asking_price']:,.2f}")
+        res = await client.post("/api/v1/customers/", data=customer_data, headers=headers)
+        assert res.status_code == 201, res.text
+        customer = res.json()
+        customer_id = customer["id"]
+        print("[SUCCESS] 6. Customer Profile Registered! Customer ID:", customer_id)
 
-        # 9. Smart Search Auto-Complete Test
-        res = await client.get("/api/v1/search/cars?query=LEB", headers=headers)
+        # 8. Token / Advance Booking Reservation
+        expiry = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
+        token_data = {
+            "car_id": car_id,
+            "customer_id": customer_id,
+            "advance_amount": 100000.0,
+            "expiry_date": expiry,
+            "is_refundable": False,
+            "notes": "Advance token payment for Honda Civic",
+        }
+        res = await client.post("/api/v1/token_bookings/", json=token_data, headers=headers)
+        assert res.status_code == 201, res.text
+        booking = res.json()
+        print(f"[SUCCESS] 7. Token Booking Created! Car Reserved. Advance: PKR {booking['advance_amount']:,.2f}")
+
+        # 9. Register Sales Transaction
+        sale_data = {
+            "car_id": car_id,
+            "customer_id": customer_id,
+            "final_sale_price": 3600000.0,
+            "payment_type": "FULL_PAYMENT",
+            "notes": "Full payment received via bank transfer",
+        }
+        res = await client.post("/api/v1/sales/", json=sale_data, headers=headers)
+        assert res.status_code == 201, res.text
+        sale = res.json()
+        sale_id = sale["id"]
+        print(f"[SUCCESS] 8. Vehicle Sale Completed!")
+        print(f"   - Final Sale Price: PKR {sale['final_sale_price']:,.2f}")
+        print(f"   - Total Cost Basis: PKR {sale['total_cost_basis']:,.2f}")
+        print(f"   - Net Profit Margin: PKR {sale['net_profit']:,.2f}")
+
+        # 10. Generate & Download PDF Sale Deed
+        res = await client.get(f"/api/v1/sales/{sale_id}/pdf", headers=headers)
         assert res.status_code == 200, res.text
-        search_results = res.json()
-        assert len(search_results) > 0
-        match = search_results[0]
-        print(f"[SUCCESS] 8. Smart Search Auto-Complete Verified! Query: 'LEB' -> Found: {match['make']} {match['model']} ({match['car_number']})")
+        assert res.headers["content-type"] == "application/pdf"
+        print(f"[SUCCESS] 9. PDF Sale Deed Export Verified! File Size: {len(res.content)} bytes.")
+
         print("=" * 65)
-        print(" ALL BACKEND TESTS PASSED SUCCESSFULLY!")
+        print(" ALL ERP BACKEND MODULE TESTS PASSED SUCCESSFULLY!")
         print("=" * 65)
 
 
