@@ -13,6 +13,7 @@ from app.core.database import get_db
 from app.core.pdf_generator import generate_sale_deed_pdf
 from app.models.car import Car, CarStatus
 from app.models.customer import Customer
+from app.models.investor import CarInvestment, InvestmentStatus, PayoutStatus
 from app.models.sale import Sale
 from app.models.seller import Seller
 from app.models.token_booking import TokenBooking, TokenStatus
@@ -20,6 +21,28 @@ from app.models.user import User, UserRole
 from app.schemas.sale import SaleCreate, SaleDetailResponse, SaleResponse
 
 router = APIRouter()
+
+
+async def settle_car_investments(
+    db: AsyncSession,
+    car_id: uuid.UUID,
+    final_sale_price: float,
+    total_cost_basis: float,
+) -> None:
+    """Calculate vehicle net profit and automatically settle profit shares for all backing investors."""
+    net_profit = max(0.0, final_sale_price - total_cost_basis)
+    stmt = select(CarInvestment).where(
+        CarInvestment.car_id == car_id,
+        CarInvestment.status == InvestmentStatus.ACTIVE,
+    )
+    res = await db.execute(stmt)
+    active_investments = res.scalars().all()
+
+    for inv in active_investments:
+        investor_profit = round(net_profit * (inv.agreed_profit_percentage / 100.0), 2)
+        inv.profit_earned = investor_profit
+        inv.status = InvestmentStatus.SETTLED
+        inv.payout_status = PayoutStatus.PENDING
 
 
 @router.post(
@@ -33,7 +56,7 @@ async def create_sale(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Register a car sale, calculate net profit, set vehicle status to SOLD, and complete active token bookings."""
+    """Register a car sale, calculate net profit, settle investor profit shares, set vehicle status to SOLD, and complete active token bookings."""
     # 1. Verify target vehicle exists and is available
     stmt_car = (
         select(Car)
@@ -75,10 +98,18 @@ async def create_sale(
     if active_token:
         active_token.status = TokenStatus.COMPLETED
 
-    # 5. Update car status to SOLD
+    # 5. Settle profit for any active capital investors backing this vehicle
+    await settle_car_investments(
+        db,
+        car_id=car.id,
+        final_sale_price=sale_in.final_sale_price,
+        total_cost_basis=total_cost_basis,
+    )
+
+    # 6. Update car status to SOLD
     car.status = CarStatus.SOLD
 
-    # 6. Create Sale transaction record
+    # 7. Create Sale transaction record
     sale = Sale(
         car_id=sale_in.car_id,
         customer_id=sale_in.customer_id,

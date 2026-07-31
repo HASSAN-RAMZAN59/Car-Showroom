@@ -1,3 +1,9 @@
+from app.schemas.analytics import (
+    FinancialSummaryResponse,
+    InventoryAgingCarItem,
+    InventoryAgingResponse,
+)
+from app.schemas.audit import AuditLogResponse
 from app.schemas.bank import (
     BankAccountBase,
     BankAccountCreate,
@@ -24,12 +30,45 @@ from app.schemas.customer import (
     CustomerResponse,
     CustomerUpdate,
 )
+from app.schemas.expense import (
+    ExpenseBase,
+    ExpenseCreate,
+    ExpenseListResponse,
+    ExpenseResponse,
+)
 from app.schemas.installment import (
     InstallmentPaymentLog,
     InstallmentPaymentResponse,
     InstallmentPlanCreate,
     InstallmentPlanDetailResponse,
     InstallmentPlanResponse,
+)
+from app.schemas.investor import (
+    CarInvestmentCreate,
+    CarInvestmentResponse,
+    InvestorBase,
+    InvestorCreate,
+    InvestorDetailResponse,
+    InvestorPayoutCreate,
+    InvestorResponse,
+)
+from app.schemas.lead import (
+    LeadBase,
+    LeadCreate,
+    LeadDetailResponse,
+    LeadFollowupCreate,
+    LeadFollowupResponse,
+    LeadResponse,
+    LeadStatusUpdate,
+)
+from app.schemas.payroll import (
+    EmployeeBase,
+    EmployeeCreate,
+    EmployeeDetailResponse,
+    EmployeeResponse,
+    PayrollGenerateCreate,
+    PayrollPaymentExecute,
+    PayrollResponse,
 )
 from app.schemas.repair import (
     CarRepairsListResponse,
@@ -114,4 +153,33 @@ __all__ = [
     "PaymentTransactionResponse",
     "SplitPaymentItem",
     "SplitSalePaymentCreate",
+    "ExpenseBase",
+    "ExpenseCreate",
+    "ExpenseResponse",
+    "ExpenseListResponse",
+    "InvestorBase",
+    "InvestorCreate",
+    "InvestorResponse",
+    "InvestorDetailResponse",
+    "CarInvestmentCreate",
+    "CarInvestmentResponse",
+    "InvestorPayoutCreate",
+    "EmployeeBase",
+    "EmployeeCreate",
+    "EmployeeResponse",
+    "EmployeeDetailResponse",
+    "PayrollGenerateCreate",
+    "PayrollPaymentExecute",
+    "PayrollResponse",
+    "LeadBase",
+    "LeadCreate",
+    "LeadResponse",
+    "LeadDetailResponse",
+    "LeadStatusUpdate",
+    "LeadFollowupCreate",
+    "LeadFollowupResponse",
+    "AuditLogResponse",
+    "FinancialSummaryResponse",
+    "InventoryAgingCarItem",
+    "InventoryAgingResponse",
 ]

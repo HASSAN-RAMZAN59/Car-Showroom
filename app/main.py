@@ -3,11 +3,18 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.analytics import router as analytics_router
+from app.api.v1.audit import router as audit_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.bank import router as bank_router
+from app.api.v1.backup import router as backup_router
 from app.api.v1.cars import router as cars_router
 from app.api.v1.customers import router as customers_router
+from app.api.v1.expenses import router as expenses_router
 from app.api.v1.installments import router as installments_router
+from app.api.v1.investors import router as investors_router
+from app.api.v1.leads import router as leads_router
+from app.api.v1.payroll import router as payroll_router
 from app.api.v1.repairs import router as repairs_router
 from app.api.v1.sales import router as sales_router
 from app.api.v1.search import router as search_router
@@ -96,6 +103,41 @@ app.include_router(
     bank_router,
     prefix=f"{settings.API_V1_STR}/bank",
     tags=["Multi-Bank Accounts & Split Payments"],
+)
+app.include_router(
+    expenses_router,
+    prefix=f"{settings.API_V1_STR}/expenses",
+    tags=["Daily Showroom Expenses"],
+)
+app.include_router(
+    investors_router,
+    prefix=f"{settings.API_V1_STR}/investors",
+    tags=["Investors & Profit Settlement"],
+)
+app.include_router(
+    payroll_router,
+    prefix=f"{settings.API_V1_STR}/payroll",
+    tags=["Employees & Payroll Processing"],
+)
+app.include_router(
+    leads_router,
+    prefix=f"{settings.API_V1_STR}/leads",
+    tags=["Customer CRM & Leads Management"],
+)
+app.include_router(
+    audit_router,
+    prefix=f"{settings.API_V1_STR}/audit",
+    tags=["System Audit Logs"],
+)
+app.include_router(
+    analytics_router,
+    prefix=f"{settings.API_V1_STR}/analytics",
+    tags=["Executive Financial Analytics"],
+)
+app.include_router(
+    backup_router,
+    prefix=f"{settings.API_V1_STR}/backup",
+    tags=["Database Export & Backup"],
 )
 
 

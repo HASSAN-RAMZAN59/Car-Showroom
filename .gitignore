@@ -2,9 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
 
 # Environment variables
 .env
+.env.local
+.env.*.local
 
 # Virtual environments
 venv/
@@ -15,6 +18,19 @@ env/
 .vscode/
 .idea/
 
-# Database files
+# Database & SQLite files
 *.db
+*.sqlite
 *.sqlite3
+
+# Node / React Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+.npm/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

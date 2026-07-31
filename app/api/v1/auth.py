@@ -1,16 +1,16 @@
 from datetime import timedelta
-from typing import Any
+from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, require_roles
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import create_access_token, get_password_hash, verify_password
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.schemas.user import Token, UserCreate, UserLogin, UserResponse
 
 router = APIRouter()
@@ -114,3 +114,18 @@ async def read_user_me(
 ) -> Any:
     """Get profile information for the currently authenticated user."""
     return current_user
+
+
+@router.get(
+    "/users",
+    response_model=List[UserResponse],
+    dependencies=[Depends(require_roles([UserRole.ADMIN]))],
+)
+async def list_users(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """List all registered system users (ADMIN restricted)."""
+    stmt = select(User).order_by(User.created_at.desc())
+    result = await db.execute(stmt)
+    return result.scalars().all()

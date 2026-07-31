@@ -1,3 +1,4 @@
+from app.models.audit import AuditLog, log_action
 from app.models.bank import (
     BankAccount,
     PaymentMethod,
@@ -6,12 +7,21 @@ from app.models.bank import (
 )
 from app.models.car import Car, CarStatus
 from app.models.customer import Customer
+from app.models.expense import Expense
 from app.models.installment import (
     InstallmentPayment,
     InstallmentPlan,
     InstallmentPlanStatus,
     PaymentStatus,
 )
+from app.models.investor import (
+    CarInvestment,
+    InvestmentStatus,
+    Investor,
+    PayoutStatus,
+)
+from app.models.lead import Lead, LeadFollowup, LeadStatus
+from app.models.payroll import Employee, Payroll, PayrollPaymentStatus
 from app.models.repair import Repair
 from app.models.sale import PaymentType, Sale
 from app.models.seller import Seller
@@ -38,4 +48,17 @@ __all__ = [
     "PaymentTransaction",
     "TransactionType",
     "PaymentMethod",
+    "Expense",
+    "Investor",
+    "CarInvestment",
+    "InvestmentStatus",
+    "PayoutStatus",
+    "Employee",
+    "Payroll",
+    "PayrollPaymentStatus",
+    "Lead",
+    "LeadFollowup",
+    "LeadStatus",
+    "AuditLog",
+    "log_action",
 ]

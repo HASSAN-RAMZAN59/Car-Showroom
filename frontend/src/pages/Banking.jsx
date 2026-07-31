@@ -1,0 +1,298 @@
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../api/axiosInstance';
+import CreateBankAccountModal from '../components/financial/CreateBankAccountModal';
+import SplitPaymentModal from '../components/financial/SplitPaymentModal';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import SmartSearchInput from '../components/vehicles/SmartSearchInput';
+import { Building2, Plus, DollarSign, ArrowUpRight, ArrowDownLeft, Car, Search } from 'lucide-react';
+
+const Banking = () => {
+  const [bankAccounts, setBankAccounts] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState('');
+  const [transactions, setTransactions] = useState([]);
+  const [carTransactions, setCarTransactions] = useState([]);
+  const [selectedCarForAudit, setSelectedCarForAudit] = useState(null);
+  const [activeTab, setActiveTab] = useState('accounts'); // 'accounts', 'carAudit'
+  const [loading, setLoading] = useState(true);
+
+  const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
+  const [isSplitPaymentOpen, setIsSplitPaymentOpen] = useState(false);
+
+  useEffect(() => {
+    fetchBankAccounts();
+  }, []);
+
+  useEffect(() => {
+    if (selectedAccount) {
+      fetchAccountTransactions(selectedAccount);
+    }
+  }, [selectedAccount]);
+
+  const fetchBankAccounts = async () => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get('/bank/accounts');
+      setBankAccounts(res.data || []);
+      if (res.data && res.data.length > 0) {
+        setSelectedAccount(res.data[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to fetch bank accounts:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAccountTransactions = async (accId) => {
+    try {
+      const res = await axiosInstance.get(`/bank/accounts/${accId}/transactions`);
+      setTransactions(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch account transactions:', err);
+    }
+  };
+
+  const handleSelectCarAudit = async (car) => {
+    setSelectedCarForAudit(car);
+    if (car) {
+      try {
+        const res = await axiosInstance.get(`/bank/car/${car.id}/transactions`);
+        setCarTransactions(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch car financial audit trail:', err);
+      }
+    } else {
+      setCarTransactions([]);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Multi-Bank Ledger & Split Payments</h1>
+          <p className="text-xs text-slate-400 mt-1">Corporate bank accounts, real-time balance tracking, and vehicle transaction audit trail</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsSplitPaymentOpen(true)}
+            className="px-4 py-2.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 font-bold text-xs rounded-xl transition-all flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>+ Record Split Payment</span>
+          </button>
+
+          <button
+            onClick={() => setIsAddAccountOpen(true)}
+            className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/25 flex items-center gap-2 transition-all"
+          >
+            <Building2 className="w-4 h-4" />
+            <span>+ Add Bank Account</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Live Bank Accounts Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {bankAccounts.map((acc) => (
+          <div
+            key={acc.id}
+            onClick={() => setSelectedAccount(acc.id)}
+            className={`bg-slate-900 border rounded-3xl p-6 shadow-xl cursor-pointer transition-all duration-200 ${
+              selectedAccount === acc.id
+                ? 'border-indigo-500 ring-1 ring-indigo-500/50 bg-indigo-950/20'
+                : 'border-slate-800 hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-extrabold uppercase tracking-wider text-indigo-400">{acc.bank_name}</p>
+                <h3 className="text-base font-bold text-white mt-1">{acc.account_title}</h3>
+                <p className="text-[11px] font-mono text-slate-400 mt-1">{acc.account_number}</p>
+              </div>
+
+              <div className="p-3 bg-indigo-500/10 text-indigo-400 rounded-2xl">
+                <Building2 className="w-6 h-6" />
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+              <span className="text-xs text-slate-400 font-medium">Live Current Balance:</span>
+              <span className="text-lg font-extrabold text-emerald-400">
+                PKR {acc.current_balance ? acc.current_balance.toLocaleString() : '0'}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tabs Section */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="flex border-b border-slate-800 bg-slate-950 px-6 pt-3 gap-6 text-xs font-semibold">
+          <button
+            onClick={() => setActiveTab('accounts')}
+            className={`pb-3 transition-colors border-b-2 flex items-center gap-2 ${
+              activeTab === 'accounts' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            <span>Account Audit Ledger</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('carAudit')}
+            className={`pb-3 transition-colors border-b-2 flex items-center gap-2 ${
+              activeTab === 'carAudit' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Car className="w-4 h-4" />
+            <span>Vehicle Financial Audit Trail</span>
+          </button>
+        </div>
+
+        {/* TAB 1: Account Audit Ledger */}
+        {activeTab === 'accounts' && (
+          <div className="p-6 space-y-4">
+            <h3 className="text-sm font-bold text-white">Bank Transaction History</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+                  <tr>
+                    <th className="py-3.5 px-6">Transaction Type</th>
+                    <th className="py-3.5 px-6">Amount</th>
+                    <th className="py-3.5 px-6">Reference ID</th>
+                    <th className="py-3.5 px-6">Notes</th>
+                    <th className="py-3.5 px-6">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                  {transactions.length > 0 ? (
+                    transactions.map((tx) => (
+                      <tr key={tx.id} className="hover:bg-slate-800/40 transition-colors">
+                        <td className="py-4 px-6 font-bold flex items-center gap-2">
+                          {tx.transaction_type === 'CREDIT' ? (
+                            <ArrowDownLeft className="w-4 h-4 text-emerald-400" />
+                          ) : (
+                            <ArrowUpRight className="w-4 h-4 text-rose-400" />
+                          )}
+                          <span className={tx.transaction_type === 'CREDIT' ? 'text-emerald-400' : 'text-rose-400'}>
+                            {tx.transaction_type}
+                          </span>
+                        </td>
+
+                        <td className="py-4 px-6 font-extrabold text-white">
+                          PKR {tx.amount ? tx.amount.toLocaleString() : '0'}
+                        </td>
+
+                        <td className="py-4 px-6 font-mono text-slate-400">
+                          {tx.reference_number || 'N/A'}
+                        </td>
+
+                        <td className="py-4 px-6 text-slate-300">
+                          {tx.notes || 'N/A'}
+                        </td>
+
+                        <td className="py-4 px-6 font-mono text-slate-400">
+                          {tx.created_at ? new Date(tx.created_at).toLocaleDateString() : 'N/A'}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-slate-500">
+                        No transaction ledger entries recorded for this bank account.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: Car Audit Trail */}
+        {activeTab === 'carAudit' && (
+          <div className="p-6 space-y-4">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                Select Vehicle for Financial Audit Trail
+              </label>
+              <div className="max-w-md">
+                <SmartSearchInput onSelectCar={handleSelectCarAudit} placeholder="Search plate or vehicle model..." />
+              </div>
+            </div>
+
+            {selectedCarForAudit && (
+              <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-between text-xs">
+                <span className="font-bold text-white">
+                  Audit Trail: {selectedCarForAudit.make} {selectedCarForAudit.model} ({selectedCarForAudit.car_number})
+                </span>
+                <span className="text-emerald-400 font-bold">
+                  Cost Basis: PKR {selectedCarForAudit.total_cost_basis?.toLocaleString() || '0'}
+                </span>
+              </div>
+            )}
+
+            <div className="overflow-x-auto pt-2">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+                  <tr>
+                    <th className="py-3.5 px-6">Payment Method</th>
+                    <th className="py-3.5 px-6">Amount</th>
+                    <th className="py-3.5 px-6">Bank Account</th>
+                    <th className="py-3.5 px-6">Reference No</th>
+                    <th className="py-3.5 px-6">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                  {carTransactions.length > 0 ? (
+                    carTransactions.map((tx) => (
+                      <tr key={tx.id} className="hover:bg-slate-800/40 transition-colors">
+                        <td className="py-4 px-6 font-bold text-indigo-400">{tx.payment_method}</td>
+                        <td className="py-4 px-6 font-extrabold text-emerald-400">
+                          PKR {tx.amount ? tx.amount.toLocaleString() : '0'}
+                        </td>
+                        <td className="py-4 px-6 text-slate-300">
+                          {tx.bank_account ? `${tx.bank_account.bank_name} (${tx.bank_account.account_title})` : 'CASH'}
+                        </td>
+                        <td className="py-4 px-6 font-mono text-slate-400">{tx.reference_number || 'N/A'}</td>
+                        <td className="py-4 px-6 font-mono text-slate-400">
+                          {tx.created_at ? new Date(tx.created_at).toLocaleDateString() : 'N/A'}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-slate-500">
+                        {selectedCarForAudit
+                          ? 'No linked split payment transactions recorded for this vehicle.'
+                          : 'Select a vehicle using search input to inspect financial transactions.'}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Modals */}
+      <CreateBankAccountModal
+        isOpen={isAddAccountOpen}
+        onClose={() => setIsAddAccountOpen(false)}
+        onSuccess={fetchBankAccounts}
+      />
+
+      <SplitPaymentModal
+        isOpen={isSplitPaymentOpen}
+        onClose={() => setIsSplitPaymentOpen(false)}
+        onSuccess={fetchBankAccounts}
+      />
+    </div>
+  );
+};
+
+export default Banking;
