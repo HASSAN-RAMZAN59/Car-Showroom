@@ -1,18 +1,24 @@
 # Python cache
 __pycache__/
+**/__pycache__/
+backend/__pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
 
 # Environment variables
 .env
-.env.local
-.env.*.local
+.env.*
+*.env
+backend/.env
+backend/.env.*
 
 # Virtual environments
 venv/
 .venv/
 env/
+backend/venv/
+backend/.venv/
 
 # IDE / Editor folders
 .vscode/
@@ -22,6 +28,7 @@ env/
 *.db
 *.sqlite
 *.sqlite3
+backend/*.db
 
 # Node / React Frontend
 node_modules/
@@ -34,3 +41,4 @@ frontend/build/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
