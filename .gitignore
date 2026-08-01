@@ -20,6 +20,11 @@ env/
 backend/venv/
 backend/.venv/
 
+# QA Automation & E2E Verification Test Scripts
+e2e_verification.py
+backend/e2e_verification.py
+**/e2e_verification.py
+
 # IDE / Editor folders
 .vscode/
 .idea/
@@ -41,4 +46,3 @@ frontend/build/
 Thumbs.db
 Desktop.ini
 .DS_Store
-
