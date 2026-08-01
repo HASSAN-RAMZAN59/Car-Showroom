@@ -11,6 +11,8 @@ const Expenses = () => {
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
 
+  const [totalExpenseSum, setTotalExpenseSum] = useState(0);
+
   useEffect(() => {
     fetchExpenses();
   }, [categoryFilter]);
@@ -23,9 +25,20 @@ const Expenses = () => {
         url = `/expenses/?category=${categoryFilter}`;
       }
       const res = await axiosInstance.get(url);
-      setExpenses(res.data || []);
+      if (Array.isArray(res.data)) {
+        setExpenses(res.data);
+        setTotalExpenseSum(res.data.reduce((sum, item) => sum + (item.amount || 0), 0));
+      } else if (res.data && Array.isArray(res.data.expenses)) {
+        setExpenses(res.data.expenses);
+        setTotalExpenseSum(res.data.total_expense_amount ?? res.data.expenses.reduce((sum, item) => sum + (item.amount || 0), 0));
+      } else {
+        setExpenses([]);
+        setTotalExpenseSum(0);
+      }
     } catch (err) {
       console.error('Failed to fetch daily expenses:', err);
+      setExpenses([]);
+      setTotalExpenseSum(0);
     } finally {
       setLoading(false);
     }
@@ -42,8 +55,6 @@ const Expenses = () => {
       console.error('Failed to delete expense record:', err);
     }
   };
-
-  const totalExpenseSum = expenses.reduce((sum, item) => sum + (item.amount || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -132,6 +143,7 @@ const Expenses = () => {
                   <th className="py-3.5 px-6">Category</th>
                   <th className="py-3.5 px-6">Amount</th>
                   <th className="py-3.5 px-6">Payment Method</th>
+                  <th className="py-3.5 px-6">Receipt / Bill</th>
                   <th className="py-3.5 px-6">Date Logged</th>
                   <th className="py-3.5 px-6">Actions</th>
                 </tr>
@@ -159,6 +171,21 @@ const Expenses = () => {
                         {exp.payment_method}
                       </td>
 
+                      <td className="py-4 px-6">
+                        {exp.receipt_url ? (
+                          <a
+                            href={exp.receipt_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-bold rounded-lg transition-all inline-flex items-center gap-1"
+                          >
+                            <span>📄 View Receipt</span>
+                          </a>
+                        ) : (
+                          <span className="text-[11px] text-slate-500 italic">No receipt attached</span>
+                        )}
+                      </td>
+
                       <td className="py-4 px-6 text-slate-400 font-mono">
                         {exp.date ? new Date(exp.date).toLocaleDateString() : 'N/A'}
                       </td>
@@ -167,6 +194,7 @@ const Expenses = () => {
                         <button
                           onClick={() => handleDeleteExpense(exp.id)}
                           className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-all"
+                          title="Delete Expense Record"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -175,7 +203,7 @@ const Expenses = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-slate-500">
+                    <td colSpan={7} className="py-12 text-center text-slate-500">
                       No daily expenses logged for the selected category.
                     </td>
                   </tr>

@@ -53,13 +53,13 @@ async def create_seller(
 
     # Upload CNIC images to Cloudinary if provided
     cnic_front_url = None
-    if cnic_front:
+    if cnic_front and cnic_front.filename:
         cnic_front_url = await upload_file_to_cloudinary(
             cnic_front, folder="sellers/cnic"
         )
 
     cnic_back_url = None
-    if cnic_back:
+    if cnic_back and cnic_back.filename:
         cnic_back_url = await upload_file_to_cloudinary(
             cnic_back, folder="sellers/cnic"
         )

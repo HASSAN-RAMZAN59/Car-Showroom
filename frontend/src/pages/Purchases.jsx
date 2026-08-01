@@ -57,6 +57,7 @@ const Purchases = () => {
                 <tr>
                   <th className="py-3.5 px-6">Registration</th>
                   <th className="py-3.5 px-6">Vehicle Make & Model</th>
+                  <th className="py-3.5 px-6">Seller & Documents</th>
                   <th className="py-3.5 px-6">Year & Mileage</th>
                   <th className="py-3.5 px-6">Purchase Cost</th>
                   <th className="py-3.5 px-6">Refurbishment Cost</th>
@@ -75,6 +76,30 @@ const Purchases = () => {
 
                       <td className="py-4 px-6 font-semibold text-slate-200">
                         {item.make} {item.model}
+                      </td>
+
+                      <td className="py-4 px-6">
+                        {item.seller ? (
+                          <div>
+                            <div className="font-bold text-white flex items-center gap-1.5">
+                              <User className="w-3.5 h-3.5 text-indigo-400" />
+                              <span>{item.seller.full_name}</span>
+                            </div>
+                            <div className="text-[11px] font-mono text-slate-400 mt-0.5">
+                              CNIC: {item.seller.cnic}
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                              <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-extrabold rounded-md">
+                                📎 CNIC Scanned
+                              </span>
+                              <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-extrabold rounded-md">
+                                📄 Docs Uploaded
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-slate-500 italic">Direct Acquisition</span>
+                        )}
                       </td>
 
                       <td className="py-4 px-6 text-slate-400">
@@ -103,7 +128,7 @@ const Purchases = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-500">
+                    <td colSpan={8} className="py-12 text-center text-slate-500">
                       No vehicle purchase acquisitions logged yet.
                     </td>
                   </tr>

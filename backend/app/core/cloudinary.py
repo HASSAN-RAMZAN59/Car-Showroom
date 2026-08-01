@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import uuid
 from typing import BinaryIO, Union
@@ -36,14 +37,20 @@ async def upload_file_to_cloudinary(
     filename = getattr(file, "filename", f"file_{uuid.uuid4().hex}")
     
     # Read file content if it is a FastAPI UploadFile
-    if isinstance(file, UploadFile):
-        file_bytes = await file.read()
-        # Reset cursor position for safety
-        await file.seek(0)
+    if hasattr(file, "read"):
+        res = file.read()
+        if asyncio.iscoroutine(res) or hasattr(res, "__await__"):
+            file_bytes = await res
+        else:
+            file_bytes = res
+        if hasattr(file, "seek"):
+            seek_res = file.seek(0)
+            if asyncio.iscoroutine(seek_res) or hasattr(seek_res, "__await__"):
+                await seek_res
     elif isinstance(file, bytes):
         file_bytes = file
     else:
-        file_bytes = file.read()
+        file_bytes = bytes(file)
 
     # Check if Cloudinary is configured
     if (
