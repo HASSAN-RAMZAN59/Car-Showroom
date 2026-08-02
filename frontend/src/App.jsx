@@ -16,7 +16,8 @@ import Banking from './pages/Banking';
 import Investors from './pages/Investors';
 import Payroll from './pages/Payroll';
 import Leads from './pages/Leads';
-import Analytics from './pages/Analytics';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import DatabaseBackup from './pages/DatabaseBackup';
 
 function App() {
   return (
@@ -46,7 +47,7 @@ function App() {
               <Route path="/bank" element={<Banking />} />
               <Route path="/investors" element={<Investors />} />
               <Route path="/payroll" element={<Payroll />} />
-              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/analytics" element={<AnalyticsDashboard />} />
             </Route>
           </Route>
 
@@ -54,7 +55,7 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
             <Route element={<Layout />}>
               <Route path="/users" element={<UserManagement />} />
-              <Route path="/backup" element={<Analytics />} />
+              <Route path="/backup" element={<DatabaseBackup />} />
             </Route>
           </Route>
 
