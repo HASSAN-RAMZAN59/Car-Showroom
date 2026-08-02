@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import CreateUserModal from '../components/users/CreateUserModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { Users, UserPlus, Search, ShieldCheck, Mail, Phone, Calendar } from 'lucide-react';
+import { Users, UserPlus, Search, ShieldCheck, Mail, Phone, Calendar, Lock } from 'lucide-react';
 
 const UserManagement = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ADMIN';
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -38,20 +42,23 @@ const UserManagement = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Banner & Modal Action */}
+      {/* Header Banner & Modal Action (Admin Only) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Team & User Management</h1>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Team &amp; User Management</h1>
           <p className="text-xs text-slate-400 mt-1">Manage showroom employees, managers, and system administrator access</p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 transition-all"
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>+ Add Team Member</span>
-        </button>
+        {/* ➕ Add New User button rendered STRICTLY for ADMIN users */}
+        {isAdmin && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 transition-all"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>➕ Add New User / Staff Member</span>
+          </button>
+        )}
       </div>
 
       {/* Filters & Search */}
@@ -86,7 +93,7 @@ const UserManagement = () => {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
-            <LoadingSpinner size="lg" label="Loading system user list..." />
+            <LoadingSpinner size="lg" label="Loading system user list from database..." />
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -168,12 +175,14 @@ const UserManagement = () => {
         )}
       </div>
 
-      {/* Modal component */}
-      <CreateUserModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={fetchUsers}
-      />
+      {/* Modal Component (Admin Only) */}
+      {isAdmin && (
+        <CreateUserModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={fetchUsers}
+        />
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
-import { X, UserPlus, Mail, Lock, Phone, UserCheck, AlertCircle, RefreshCw, Copy, CheckCircle2 } from 'lucide-react';
+import { X, UserPlus, Mail, Lock, Phone, UserCheck, AlertCircle, RefreshCw, Copy, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
@@ -12,6 +12,8 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
     role: 'EMPLOYEE',
     is_active: true,
   });
+
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [createdCredentials, setCreatedCredentials] = useState(null);
@@ -36,6 +38,21 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Frontend Validations
+    if (!formData.full_name.trim()) {
+      setError('Please enter user Full Name.');
+      return;
+    }
+    if (!formData.email.trim()) {
+      setError('Please enter a valid Email address.');
+      return;
+    }
+    if (!formData.password || formData.password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -56,7 +73,7 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
       });
       onSuccess();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to register staff account. Please try again.');
+      setError(err.response?.data?.detail || 'Failed to create user account. Email may already be registered.');
     } finally {
       setLoading(false);
     }
@@ -64,7 +81,7 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleCopyCredentials = () => {
     if (!createdCredentials) return;
-    const textToCopy = `Showroom ERP Credentials:\nRole: ${createdCredentials.role}\nEmail: ${createdCredentials.email}\nPassword: ${createdCredentials.password}`;
+    const textToCopy = `Showroom ERP Staff Credentials:\nName: ${createdCredentials.full_name}\nRole: ${createdCredentials.role}\nEmail: ${createdCredentials.email}\nPassword: ${createdCredentials.password}`;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -86,12 +103,12 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
             <div>
               <h3 className="text-base font-bold text-white">
-                {createdCredentials ? 'Account Created Successfully' : 'Add New Staff Member / Dealer'}
+                {createdCredentials ? 'User Account Created' : 'Add New User / Staff Member'}
               </h3>
               <p className="text-xs text-slate-400">
                 {createdCredentials
-                  ? 'Copy credentials below to hand to the team member'
-                  : 'Register staff account with individual password and role'}
+                  ? 'Copy generated login credentials for the staff member'
+                  : 'Create staff account with hashed password and RBAC permissions'}
               </p>
             </div>
           </div>
@@ -109,7 +126,7 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
           <div className="p-6 space-y-5">
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-              <span>Account for {createdCredentials.full_name} has been created in the live database!</span>
+              <span>User account for {createdCredentials.full_name} created successfully!</span>
             </div>
 
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3 font-mono text-xs">
@@ -156,7 +173,7 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
           </div>
         ) : (
-          /* Modal Body / Form */
+          /* Modal Form */
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             {error && (
               <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium flex items-center gap-2">
@@ -204,14 +221,13 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                  Phone Number *
+                  Phone / CNIC (Optional)
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
                   <input
                     type="text"
                     name="phone"
-                    required
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="0300-1234567"
@@ -225,7 +241,7 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                    Initial Password *
+                    Password * (Min 6 chars)
                   </label>
                   <button
                     type="button"
@@ -239,20 +255,28 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
                   <input
-                    type="text"
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     required
+                    minLength={6}
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter or generate password"
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-indigo-500 transition-all"
+                    placeholder="Enter initial password"
+                    className="w-full pl-10 pr-10 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-indigo-500 transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-slate-400 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                  Assign System Role *
+                  System Role *
                 </label>
                 <select
                   name="role"
@@ -260,9 +284,9 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
                   onChange={handleChange}
                   className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500 transition-all"
                 >
-                  <option value="EMPLOYEE">EMPLOYEE (Sales / Staff Dealer)</option>
+                  <option value="EMPLOYEE">EMPLOYEE (Salesman / Accountant / Staff)</option>
                   <option value="MANAGER">MANAGER (Operations Manager)</option>
-                  <option value="ADMIN">ADMIN (Full Access Administrator)</option>
+                  <option value="ADMIN">ADMIN (System Administrator)</option>
                 </select>
               </div>
             </div>
