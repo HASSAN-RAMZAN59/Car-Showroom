@@ -10,8 +10,8 @@ const DEMO_CREDENTIALS = [
     badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
     hoverBorder: 'hover:border-indigo-500/50',
     title: 'System Administrator',
-    email: 'admin@carshowroom.com',
-    password: 'SecurePassword123!',
+    email: 'admin@showroom.com',
+    password: 'AdminPassword123!',
     desc: 'Full access to analytics, audit logs, backup & settings.'
   },
   {
@@ -19,8 +19,8 @@ const DEMO_CREDENTIALS = [
     badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
     hoverBorder: 'hover:border-cyan-500/50',
     title: 'Showroom Manager',
-    email: 'manager@carshowroom.com',
-    password: 'SecurePassword123!',
+    email: 'manager@showroom.com',
+    password: 'ManagerPassword123!',
     desc: 'Access to sales, inventory, expenses & payroll management.'
   },
   {
@@ -28,8 +28,8 @@ const DEMO_CREDENTIALS = [
     badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
     hoverBorder: 'hover:border-emerald-500/50',
     title: 'Showroom Staff',
-    email: 'employee@carshowroom.com',
-    password: 'SecurePassword123!',
+    email: 'staff@showroom.com',
+    password: 'StaffPassword123!',
     desc: 'Access to vehicle search, leads CRM & daily tasks.'
   }
 ];
@@ -107,7 +107,7 @@ const Login = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@carshowroom.com"
+                    placeholder="admin@showroom.com"
                     className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                   />
                 </div>
