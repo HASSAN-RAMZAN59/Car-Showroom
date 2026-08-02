@@ -9,6 +9,12 @@ from sqlalchemy.orm import joinedload, selectinload
 
 from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
+from app.models.bank import (
+    BankAccount,
+    PaymentMethod as BankPaymentMethod,
+    PaymentTransaction,
+    TransactionType,
+)
 from app.models.car import Car
 from app.models.customer import Customer
 from app.models.installment import (
@@ -28,6 +34,32 @@ from app.schemas.installment import (
 )
 
 router = APIRouter()
+
+
+@router.get(
+    "/",
+    response_model=List[InstallmentPlanDetailResponse],
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE]))],
+)
+async def list_all_installment_plans(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """List all financing installment plans along with customer, vehicle, and monthly payment schedules."""
+    stmt = (
+        select(InstallmentPlan)
+        .options(
+            selectinload(InstallmentPlan.payments),
+            joinedload(InstallmentPlan.sale).options(
+                joinedload(Sale.car).options(joinedload(Car.seller), selectinload(Car.repairs)),
+                joinedload(Sale.customer),
+                joinedload(Sale.sold_by),
+            ),
+        )
+        .order_by(InstallmentPlan.created_at.desc())
+    )
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
 
 @router.post(
@@ -223,6 +255,30 @@ async def log_installment_payment(
     payment.payment_method = pay_in.payment_method
     payment.transaction_reference = pay_in.transaction_reference
     payment.notes = pay_in.notes
+
+    # Credit bank account balance and log financial transaction if bank_account_id is provided
+    if pay_in.bank_account_id:
+        bank_res = await db.execute(select(BankAccount).where(BankAccount.id == pay_in.bank_account_id))
+        bank_acc = bank_res.scalars().first()
+        if bank_acc:
+            bank_acc.current_balance += pay_in.amount_paid
+            pm_enum = (
+                BankPaymentMethod.BANK_TRANSFER
+                if (pay_in.payment_method and "BANK" in pay_in.payment_method.upper())
+                else BankPaymentMethod.CASH
+            )
+            tx = PaymentTransaction(
+                transaction_type=TransactionType.INSTALLMENT_PAYMENT,
+                payment_method=pm_enum,
+                bank_account_id=bank_acc.id,
+                amount=pay_in.amount_paid,
+                reference_number=pay_in.transaction_reference,
+                installment_payment_id=payment.id,
+                sale_id=payment.plan.sale_id if payment.plan else None,
+                notes=f"EMI Payment #{payment.installment_number} collection for plan",
+                created_by_id=current_user.id,
+            )
+            db.add(tx)
 
     await db.flush()
 

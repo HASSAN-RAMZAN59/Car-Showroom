@@ -19,7 +19,8 @@ class SaleBase(BaseModel):
 
 
 class SaleCreate(SaleBase):
-    pass
+    down_payment: Optional[float] = Field(None, ge=0, description="Down payment amount if payment_type is INSTALLMENT")
+    duration_months: Optional[int] = Field(None, ge=1, le=60, description="Financing duration in months if payment_type is INSTALLMENT")
 
 
 class SaleResponse(SaleBase):

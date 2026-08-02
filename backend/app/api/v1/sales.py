@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from typing import Any, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -13,8 +13,14 @@ from app.core.database import get_db
 from app.core.pdf_generator import generate_sale_deed_pdf
 from app.models.car import Car, CarStatus
 from app.models.customer import Customer
+from app.models.installment import (
+    InstallmentPayment,
+    InstallmentPlan,
+    InstallmentPlanStatus,
+    PaymentStatus,
+)
 from app.models.investor import CarInvestment, InvestmentStatus, PayoutStatus
-from app.models.sale import Sale
+from app.models.sale import PaymentType, Sale
 from app.models.seller import Seller
 from app.models.token_booking import TokenBooking, TokenStatus
 from app.models.user import User, UserRole
@@ -121,6 +127,51 @@ async def create_sale(
         notes=sale_in.notes,
     )
     db.add(sale)
+    await db.flush()
+
+    # 8. If INSTALLMENT payment type, automatically generate InstallmentPlan and schedule entries
+    if sale_in.payment_type == PaymentType.INSTALLMENT:
+        down_payment = (
+            sale_in.down_payment
+            if sale_in.down_payment is not None
+            else round(sale_in.final_sale_price * 0.2, 2)
+        )
+        duration_months = (
+            sale_in.duration_months
+            if (sale_in.duration_months and sale_in.duration_months > 0)
+            else 12
+        )
+        financed_amount = max(0.0, sale_in.final_sale_price - down_payment)
+        monthly_amount = (
+            round(financed_amount / duration_months, 2) if duration_months > 0 else 0.0
+        )
+
+        plan = InstallmentPlan(
+            sale_id=sale.id,
+            total_amount=sale_in.final_sale_price,
+            down_payment=down_payment,
+            financed_amount=financed_amount,
+            duration_months=duration_months,
+            monthly_installment_amount=monthly_amount,
+            status=InstallmentPlanStatus.ACTIVE,
+            created_by_id=current_user.id,
+        )
+        db.add(plan)
+        await db.flush()
+
+        base_date = sale.sale_date.date() if sale.sale_date else date.today()
+        for month_idx in range(1, duration_months + 1):
+            due_date = base_date + timedelta(days=30 * month_idx)
+            payment_entry = InstallmentPayment(
+                plan_id=plan.id,
+                installment_number=month_idx,
+                due_date=due_date,
+                amount_due=monthly_amount,
+                amount_paid=0.0,
+                status=PaymentStatus.PENDING,
+            )
+            db.add(payment_entry)
+
     await db.commit()
     await db.refresh(sale)
     return sale

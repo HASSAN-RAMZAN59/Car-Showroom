@@ -13,6 +13,8 @@ const NewSaleModal = ({ isOpen, onClose, onSuccess }) => {
     customer_address: '',
     final_sale_price: '',
     payment_type: 'FULL_PAYMENT',
+    down_payment: '',
+    duration_months: '12',
     notes: '',
   });
 
@@ -33,7 +35,7 @@ const NewSaleModal = ({ isOpen, onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedCar) {
-      setError('Please select a vehicle to sell using the auto-complete search.');
+      setError('Please search and select a vehicle to sell.');
       return;
     }
     setError('');
@@ -73,6 +75,8 @@ const NewSaleModal = ({ isOpen, onClose, onSuccess }) => {
         customer_id: customerId,
         final_sale_price: sellingPrice,
         payment_type: formData.payment_type,
+        down_payment: formData.payment_type === 'INSTALLMENT' ? (parseFloat(formData.down_payment) || (sellingPrice * 0.2)) : undefined,
+        duration_months: formData.payment_type === 'INSTALLMENT' ? (parseInt(formData.duration_months, 10) || 12) : undefined,
         notes: formData.notes,
       };
 
@@ -229,6 +233,43 @@ const NewSaleModal = ({ isOpen, onClose, onSuccess }) => {
                 </select>
               </div>
             </div>
+
+            {formData.payment_type === 'INSTALLMENT' && (
+              <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-indigo-400 uppercase tracking-wider">
+                  <span>Financing &amp; Installment Terms</span>
+                  <span>Auto-Calculated Schedule</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">Down Payment (PKR)</label>
+                    <input
+                      type="number"
+                      name="down_payment"
+                      value={formData.down_payment}
+                      onChange={handleChange}
+                      placeholder={sellingPrice > 0 ? `e.g. ${(sellingPrice * 0.2).toFixed(0)}` : 'e.g. 500000'}
+                      className="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">Tenure Duration (Months)</label>
+                    <select
+                      name="duration_months"
+                      value={formData.duration_months}
+                      onChange={handleChange}
+                      className="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                    >
+                      <option value="6">6 Months</option>
+                      <option value="12">12 Months (1 Year)</option>
+                      <option value="18">18 Months</option>
+                      <option value="24">24 Months (2 Years)</option>
+                      <option value="36">36 Months (3 Years)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Live Net Profit Indicator */}
             {selectedCar && sellingPrice > 0 && (

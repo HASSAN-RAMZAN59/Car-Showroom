@@ -3,12 +3,13 @@ import axiosInstance from '../api/axiosInstance';
 import StatCard from '../components/common/StatCard';
 import StatusBadge from '../components/common/StatusBadge';
 import LogInstallmentPaymentModal from '../components/sales/LogInstallmentPaymentModal';
-import CreateInstallmentModal from '../components/sales/CreateInstallmentModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { CalendarCheck, DollarSign, Clock, AlertTriangle, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { CalendarCheck, DollarSign, AlertTriangle, Car, User, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
 
 const Installments = () => {
+  const [plans, setPlans] = useState([]);
   const [overdueList, setOverdueList] = useState([]);
+  const [expandedPlanId, setExpandedPlanId] = useState(null);
   const [selectedPaymentForLog, setSelectedPaymentForLog] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,8 +20,13 @@ const Installments = () => {
   const fetchInstallmentData = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get('/installments/overdue');
-      setOverdueList(res.data || []);
+      // Fetch all active financing plans
+      const plansRes = await axiosInstance.get('/installments/');
+      setPlans(plansRes.data || []);
+
+      // Fetch overdue monitoring items
+      const overdueRes = await axiosInstance.get('/installments/overdue');
+      setOverdueList(overdueRes.data || []);
     } catch (err) {
       console.error('Failed to fetch installment monitoring data:', err);
     } finally {
@@ -28,12 +34,34 @@ const Installments = () => {
     }
   };
 
+  const toggleExpandPlan = (planId) => {
+    setExpandedPlanId((prev) => (prev === planId ? null : planId));
+  };
+
+  // KPI aggregates
+  const totalContracts = plans.length;
+  let totalFinancedCapital = 0;
+  let totalCollectedBalance = 0;
+
+  plans.forEach((p) => {
+    totalFinancedCapital += p.financed_amount || 0;
+    if (p.payments) {
+      p.payments.forEach((pay) => {
+        if (pay.status === 'PAID') {
+          totalCollectedBalance += pay.amount_paid || pay.amount_due || 0;
+        }
+      });
+    }
+  });
+
+  const totalRemainingBalance = Math.max(0, totalFinancedCapital - totalCollectedBalance);
+
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Flexible Financing & EMI Schedules</h1>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Flexible Financing &amp; EMI Schedules</h1>
           <p className="text-xs text-slate-400 mt-1">Track monthly customer installment plans, collection schedules, and overdue monitoring</p>
         </div>
       </div>
@@ -41,50 +69,200 @@ const Installments = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard
-          title="Active EMI Plans"
-          value="Automated Schedule"
+          title="Active Financing Contracts"
+          value={`${totalContracts} Active Contracts`}
           icon={CalendarCheck}
           color="indigo"
           trend="up"
-          trendText="1 to 10 Months Tenure"
+          trendText="Automated Schedules"
         />
 
         <StatCard
-          title="Monthly Collection Rate"
-          value="30 Days Interval"
+          title="Outstanding Financed Capital"
+          value={`PKR ${(totalRemainingBalance / 100000).toFixed(1)} Lakh`}
           icon={DollarSign}
           color="emerald"
           trend="up"
-          trendText="Receipt Receipts"
+          trendText={`Collected: PKR ${(totalCollectedBalance / 100000).toFixed(1)}L`}
         />
 
         <StatCard
-          title="Overdue Installments"
+          title="Overdue EMI Items"
           value={`${overdueList.length} Items`}
           icon={AlertTriangle}
           color="rose"
           trend="down"
-          trendText="Requires Follow-Up"
+          trendText="Requires Urgent Action"
         />
       </div>
 
-      {/* Overdue Items Monitoring Section */}
+      {/* Main Section: Active Installment Contracts */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-rose-400" />
-              <span>Overdue Installments Monitoring</span>
+              <CalendarCheck className="w-5 h-5 text-indigo-400" />
+              <span>Active Customer Installment Contracts</span>
             </h3>
-            <p className="text-xs text-slate-400">Installment payments past due date requiring immediate collection</p>
+            <p className="text-xs text-slate-400">All customer vehicle sales backed by monthly installment plans</p>
           </div>
         </div>
 
         {loading ? (
-          <div className="py-12 flex justify-center">
-            <LoadingSpinner size="md" label="Checking overdue EMI entries..." />
+          <div className="py-16 flex justify-center">
+            <LoadingSpinner size="lg" label="Loading customer financing plans..." />
+          </div>
+        ) : plans.length > 0 ? (
+          <div className="space-y-4">
+            {plans.map((plan) => {
+              const isExpanded = expandedPlanId === plan.id;
+              const car = plan.sale?.car;
+              const customer = plan.sale?.customer;
+
+              let planPaid = 0;
+              if (plan.payments) {
+                plan.payments.forEach((p) => {
+                  if (p.status === 'PAID') planPaid += p.amount_paid || p.amount_due || 0;
+                });
+              }
+              const planRemaining = Math.max(0, plan.financed_amount - planPaid);
+
+              return (
+                <div key={plan.id} className="border border-slate-800 bg-slate-950/60 rounded-2xl overflow-hidden">
+                  {/* Plan Summary Row */}
+                  <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded font-mono text-xs font-bold">
+                          {car?.car_number || 'VEHICLE'}
+                        </span>
+                        <h4 className="text-sm font-bold text-white">
+                          {car ? `${car.make} ${car.model} (${car.year})` : 'Financed Vehicle'}
+                        </h4>
+                        <StatusBadge status={plan.status} />
+                      </div>
+                      <p className="text-xs text-slate-400 flex items-center gap-2">
+                        <User className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Buyer: {customer?.full_name || 'Customer'} ({customer?.phone || 'N/A'})</span>
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-6 text-xs">
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-semibold">Total Price / Down</span>
+                        <span className="font-extrabold text-white">
+                          PKR {(plan.total_amount || 0).toLocaleString()} (Down: PKR {(plan.down_payment || 0).toLocaleString()})
+                        </span>
+                      </div>
+
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-semibold">Monthly EMI</span>
+                        <span className="font-extrabold text-emerald-400">
+                          PKR {(plan.monthly_installment_amount || 0).toLocaleString()} / mo ({plan.duration_months} Mos)
+                        </span>
+                      </div>
+
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-semibold">Balance Remaining</span>
+                        <span className="font-extrabold text-rose-400">
+                          PKR {planRemaining.toLocaleString()}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => toggleExpandPlan(plan.id)}
+                        className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold flex items-center gap-1 transition-all"
+                      >
+                        <span>{isExpanded ? 'Hide Schedule' : 'View Schedule & Collect'}</span>
+                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Expanded Monthly Schedule Table */}
+                  {isExpanded && (
+                    <div className="p-5 border-t border-slate-800 bg-slate-900/80">
+                      <h5 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">
+                        Monthly Payment Schedule ({plan.payments?.length || 0} Installments)
+                      </h5>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs">
+                          <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                              <th className="py-2.5 px-4">#</th>
+                              <th className="py-2.5 px-4">Due Date</th>
+                              <th className="py-2.5 px-4">Amount Due</th>
+                              <th className="py-2.5 px-4">Paid Date</th>
+                              <th className="py-2.5 px-4">Status</th>
+                              <th className="py-2.5 px-4">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                            {plan.payments && plan.payments.length > 0 ? (
+                              plan.payments.map((pay) => (
+                                <tr key={pay.id} className="hover:bg-slate-800/40">
+                                  <td className="py-3 px-4 font-bold text-white">
+                                    Installment #{pay.installment_number}
+                                  </td>
+                                  <td className="py-3 px-4 font-mono text-slate-300">
+                                    {pay.due_date}
+                                  </td>
+                                  <td className="py-3 px-4 font-extrabold text-emerald-400">
+                                    PKR {pay.amount_due ? pay.amount_due.toLocaleString() : '0'}
+                                  </td>
+                                  <td className="py-3 px-4 font-mono text-slate-400">
+                                    {pay.payment_date ? new Date(pay.payment_date).toLocaleDateString() : '-'}
+                                  </td>
+                                  <td className="py-3 px-4">
+                                    <StatusBadge status={pay.status} />
+                                  </td>
+                                  <td className="py-3 px-4">
+                                    {pay.status !== 'PAID' ? (
+                                      <button
+                                        onClick={() => setSelectedPaymentForLog(pay)}
+                                        className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-lg transition-all"
+                                      >
+                                        Collect EMI
+                                      </button>
+                                    ) : (
+                                      <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                                        <CheckCircle2 className="w-3.5 h-3.5" /> Paid
+                                      </span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={6} className="py-4 text-center text-slate-500">
+                                  No monthly entries found for this plan.
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ) : (
+          <div className="p-12 text-center text-slate-500 text-xs">
+            No active vehicle installment financing contracts found in the live database.
+          </div>
+        )}
+      </div>
+
+      {/* Overdue Monitoring Section */}
+      {overdueList.length > 0 && (
+        <div className="bg-slate-900 border border-rose-500/20 rounded-2xl shadow-xl p-6 space-y-4">
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-rose-400" />
+            <span>Overdue Installments Alert ({overdueList.length})</span>
+          </h3>
+
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
@@ -97,47 +275,39 @@ const Installments = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-slate-300">
-                {overdueList.length > 0 ? (
-                  overdueList.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-4 px-6 font-bold text-white">
-                        Installment #{item.installment_number}
-                      </td>
+                {overdueList.map((item) => (
+                  <tr key={item.id} className="hover:bg-slate-800/40 transition-colors">
+                    <td className="py-4 px-6 font-bold text-white">
+                      Installment #{item.installment_number}
+                    </td>
 
-                      <td className="py-4 px-6 font-mono text-rose-400 font-semibold">
-                        {item.due_date}
-                      </td>
+                    <td className="py-4 px-6 font-mono text-rose-400 font-semibold">
+                      {item.due_date}
+                    </td>
 
-                      <td className="py-4 px-6 font-extrabold text-white">
-                        PKR {item.amount_due ? item.amount_due.toLocaleString() : '0'}
-                      </td>
+                    <td className="py-4 px-6 font-extrabold text-white">
+                      PKR {item.amount_due ? item.amount_due.toLocaleString() : '0'}
+                    </td>
 
-                      <td className="py-4 px-6">
-                        <StatusBadge status={item.status} />
-                      </td>
+                    <td className="py-4 px-6">
+                      <StatusBadge status={item.status} />
+                    </td>
 
-                      <td className="py-4 px-6">
-                        <button
-                          onClick={() => setSelectedPaymentForLog(item)}
-                          className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-600/20"
-                        >
-                          Log Payment
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="py-12 text-center text-slate-500">
-                      No overdue installment payments detected! All collections up to date.
+                    <td className="py-4 px-6">
+                      <button
+                        onClick={() => setSelectedPaymentForLog(item)}
+                        className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-600/20"
+                      >
+                        Collect EMI
+                      </button>
                     </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {selectedPaymentForLog && (
         <LogInstallmentPaymentModal
