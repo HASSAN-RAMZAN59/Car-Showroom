@@ -16,12 +16,18 @@ from app.schemas.user import Token, UserCreate, UserLogin, UserResponse
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles([UserRole.ADMIN]))],
+)
 async def register_user(
     user_in: UserCreate,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Register a new user in the Used Car Showroom system."""
+    """Admin endpoint to create/register a new staff member account."""
     # Check if a user with the given email already exists
     result = await db.execute(select(User).where(User.email == user_in.email))
     existing_user = result.scalars().first()
@@ -129,3 +135,25 @@ async def list_users(
     stmt = select(User).order_by(User.created_at.desc())
     result = await db.execute(stmt)
     return result.scalars().all()
+
+
+@router.post(
+    "/change-password",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+)
+async def change_password(
+    password_in: UserPasswordChange,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Allow any authenticated staff user to update their own account password."""
+    if not verify_password(password_in.current_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password entered is incorrect.",
+        )
+
+    current_user.hashed_password = get_password_hash(password_in.new_password)
+    await db.commit()
+    return {"message": "Password updated successfully."}

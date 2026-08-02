@@ -40,6 +40,12 @@ class UserResponse(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+# Schema for Password Change Request
+class UserPasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+
 # Schema for JSON Login Request
 class UserLogin(BaseModel):
     email: EmailStr
