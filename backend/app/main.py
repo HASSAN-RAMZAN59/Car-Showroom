@@ -22,9 +22,8 @@ from app.api.v1.sellers import router as sellers_router
 from app.api.v1.token_bookings import router as token_bookings_router
 import app.models
 from app.core.config import settings
-from app.core.database import Base, engine
-
-
+from app.core.database import AsyncSessionLocal, Base, engine
+from app.core.seed import seed_default_users
 
 
 @asynccontextmanager
@@ -33,6 +32,11 @@ async def lifespan(app: FastAPI):
     # Startup: ensure database tables are created
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    # Automatically seed default users if missing
+    async with AsyncSessionLocal() as session:
+        await seed_default_users(session)
+
     yield
     # Shutdown: dispose database engine
     await engine.dispose()

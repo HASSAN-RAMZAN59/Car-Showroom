@@ -4,14 +4,15 @@
 ```powershell
 cd backend;
  .\venv\Scripts\activate
- python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+ python -m uvicorn app.main:app --reload --port 8000
 ```
 
 ---
 
 ### ⚛️ 2. Start Frontend App (`http://localhost:5173`)
 ```powershell
-cd frontend; npm run dev
+cd frontend;
+npm run dev
 ```
 
 ---
