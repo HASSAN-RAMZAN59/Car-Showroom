@@ -159,7 +159,7 @@ const Investors = () => {
                       </td>
 
                       <td className="py-4 px-6 font-extrabold text-cyan-400">
-                        PKR {inv.amount_invested ? inv.amount_invested.toLocaleString() : '0'}
+                        PKR {inv.investment_amount ? inv.investment_amount.toLocaleString() : (inv.amount_invested ? inv.amount_invested.toLocaleString() : '0')}
                       </td>
 
                       <td className="py-4 px-6 font-bold text-indigo-400">
@@ -167,7 +167,7 @@ const Investors = () => {
                       </td>
 
                       <td className="py-4 px-6 font-extrabold text-emerald-400">
-                        PKR {inv.settled_profit_share ? inv.settled_profit_share.toLocaleString() : '0'}
+                        PKR {inv.profit_earned ? inv.profit_earned.toLocaleString() : (inv.settled_profit_share ? inv.settled_profit_share.toLocaleString() : '0')}
                       </td>
 
                       <td className="py-4 px-6">

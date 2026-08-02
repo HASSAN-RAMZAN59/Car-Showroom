@@ -209,6 +209,29 @@ async def list_investments_for_car(
     return result.scalars().all()
 
 
+@router.get(
+    "/investments/all",
+    response_model=List[CarInvestmentResponse],
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def list_all_investments(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """List all car investments across all investors."""
+    stmt = (
+        select(CarInvestment)
+        .options(
+            joinedload(CarInvestment.car),
+            joinedload(CarInvestment.investor),
+            joinedload(CarInvestment.bank_account),
+        )
+        .order_by(CarInvestment.created_at.desc())
+    )
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
+
 @router.post(
     "/payout/{investment_id}",
     response_model=CarInvestmentResponse,

@@ -149,7 +149,7 @@ const Payroll = () => {
                 payrolls.map((pay) => (
                   <tr key={pay.id} className="hover:bg-slate-800/40 transition-colors">
                     <td className="py-4 px-6 font-mono font-bold text-indigo-400">
-                      Month {pay.month}/{pay.year}
+                      Month {pay.pay_period_month ?? pay.month}/{pay.pay_period_year ?? pay.year}
                     </td>
 
                     <td className="py-4 px-6 font-bold text-white">
@@ -173,11 +173,11 @@ const Payroll = () => {
                     </td>
 
                     <td className="py-4 px-6">
-                      <StatusBadge status={pay.status} />
+                      <StatusBadge status={pay.payment_status || pay.status} />
                     </td>
 
                     <td className="py-4 px-6">
-                      {pay.status === 'PENDING' ? (
+                      {(pay.payment_status || pay.status) === 'PENDING' ? (
                         <button
                           onClick={() => setActivePayoutPayroll(pay)}
                           className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-600/20"

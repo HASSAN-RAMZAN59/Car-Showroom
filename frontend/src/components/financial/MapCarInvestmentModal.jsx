@@ -50,7 +50,7 @@ const MapCarInvestmentModal = ({ isOpen, onClose, onSuccess }) => {
       const payload = {
         investor_id: formData.investor_id,
         car_id: selectedCar.id,
-        amount_invested: parseFloat(formData.amount_invested),
+        investment_amount: parseFloat(formData.amount_invested),
         agreed_profit_percentage: parseFloat(formData.agreed_profit_percentage),
       };
 

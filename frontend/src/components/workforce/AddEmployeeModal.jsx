@@ -10,6 +10,7 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess }) => {
     phone: '',
     designation: 'Sales Dealer',
     base_salary: '',
+    joining_date: new Date().toISOString().slice(0, 10),
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,7 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess }) => {
         phone: formData.phone,
         designation: formData.designation,
         base_salary: parseFloat(formData.base_salary) || 0.0,
+        joining_date: formData.joining_date || new Date().toISOString().slice(0, 10),
       };
 
       await axiosInstance.post('/payroll/employees', payload);

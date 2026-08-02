@@ -75,10 +75,10 @@ const PurchaseVehicleModal = ({ isOpen, onClose, onSuccess }) => {
       carFormData.append('seller_id', sellerId);
 
       if (photos.length > 0) {
-        Array.from(photos).forEach((file) => carFormData.append('photos', file));
+        Array.from(photos).forEach((file) => carFormData.append('car_photos', file));
       }
       if (documents.length > 0) {
-        Array.from(documents).forEach((file) => carFormData.append('documents', file));
+        Array.from(documents).forEach((file) => carFormData.append('registration_docs', file));
       }
 
       await axiosInstance.post('/cars/purchase', carFormData, {

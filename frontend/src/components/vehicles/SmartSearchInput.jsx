@@ -118,12 +118,15 @@ const SmartSearchInput = ({ onSelectCar, placeholder = "Search plate, make, engi
 
                   <div className="text-right">
                     <p className="text-xs font-extrabold text-emerald-400">
-                      PKR {car.purchase_price ? car.purchase_price.toLocaleString() : '0'}
+                      PKR {(car.total_cost_basis || car.purchase_price || 0).toLocaleString()}
                     </p>
-                    {car.seller_name && (
+                    <p className="text-[10px] text-cyan-400 font-medium">
+                      Repairs: PKR {(car.total_repair_cost || 0).toLocaleString()}
+                    </p>
+                    {(car.seller?.full_name || car.seller_name) && (
                       <p className="text-[10px] text-slate-400 flex items-center justify-end gap-1 mt-0.5">
                         <User className="w-3 h-3 text-slate-500" />
-                        <span>{car.seller_name}</span>
+                        <span>{car.seller?.full_name || car.seller_name}</span>
                       </p>
                     )}
                   </div>

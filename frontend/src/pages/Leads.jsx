@@ -38,7 +38,7 @@ const Leads = () => {
 
   const handleStatusChange = async (leadId, newStatus) => {
     try {
-      await axiosInstance.patch(`/leads/${leadId}`, { status: newStatus });
+      await axiosInstance.patch(`/leads/${leadId}/status`, { status: newStatus });
       fetchLeads();
     } catch (err) {
       console.error('Failed to update lead status:', err);

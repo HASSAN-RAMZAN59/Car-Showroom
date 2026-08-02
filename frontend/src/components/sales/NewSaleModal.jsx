@@ -40,14 +40,32 @@ const NewSaleModal = ({ isOpen, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      // 1. Create customer profile
-      const custRes = await axiosInstance.post('/customers/', {
-        full_name: formData.customer_full_name,
-        cnic: formData.customer_cnic,
-        phone: formData.customer_phone,
-        address: formData.customer_address,
-      });
-      const customerId = custRes.data.id;
+      // 1. Get or create customer profile
+      let customerId;
+      try {
+        const custSearch = await axiosInstance.get(`/customers/?query=${encodeURIComponent(formData.customer_cnic)}`);
+        if (custSearch.data && custSearch.data.length > 0) {
+          customerId = custSearch.data[0].id;
+        } else {
+          const custFormData = new FormData();
+          custFormData.append('full_name', formData.customer_full_name);
+          custFormData.append('cnic', formData.customer_cnic);
+          custFormData.append('phone', formData.customer_phone);
+          if (formData.customer_address) custFormData.append('address', formData.customer_address);
+
+          const custRes = await axiosInstance.post('/customers/', custFormData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+          customerId = custRes.data.id;
+        }
+      } catch (custErr) {
+        const custSearch = await axiosInstance.get(`/customers/?query=${encodeURIComponent(formData.customer_cnic)}`);
+        if (custSearch.data && custSearch.data.length > 0) {
+          customerId = custSearch.data[0].id;
+        } else {
+          throw custErr;
+        }
+      }
 
       // 2. Submit sale transaction
       const salePayload = {

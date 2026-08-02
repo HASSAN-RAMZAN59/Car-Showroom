@@ -38,6 +38,31 @@ const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
+      // 1. Get or create customer profile
+      let customerId;
+      try {
+        const custSearch = await axiosInstance.get(`/customers/?query=${encodeURIComponent(formData.customer_cnic)}`);
+        if (custSearch.data && custSearch.data.length > 0) {
+          customerId = custSearch.data[0].id;
+        } else {
+          const custFormData = new FormData();
+          custFormData.append('full_name', formData.customer_name);
+          custFormData.append('cnic', formData.customer_cnic);
+          custFormData.append('phone', formData.customer_phone);
+          const custRes = await axiosInstance.post('/customers/', custFormData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+          customerId = custRes.data.id;
+        }
+      } catch (custErr) {
+        const custSearch = await axiosInstance.get(`/customers/?query=${encodeURIComponent(formData.customer_cnic)}`);
+        if (custSearch.data && custSearch.data.length > 0) {
+          customerId = custSearch.data[0].id;
+        } else {
+          throw custErr;
+        }
+      }
+
       // Calculate expiry date
       const days = parseInt(formData.expiry_days, 10) || 7;
       const expiryDate = new Date();
@@ -45,10 +70,8 @@ const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
 
       const payload = {
         car_id: selectedCar.id,
-        customer_name: formData.customer_name,
-        customer_cnic: formData.customer_cnic,
-        customer_phone: formData.customer_phone,
-        token_amount: parseFloat(formData.token_amount),
+        customer_id: customerId,
+        advance_amount: parseFloat(formData.token_amount),
         expiry_date: expiryDate.toISOString(),
         is_refundable: formData.is_refundable,
         notes: formData.notes,

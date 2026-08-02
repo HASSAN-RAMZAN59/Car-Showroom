@@ -34,13 +34,13 @@ const ExecuteSalaryPayoutModal = ({ isOpen, payrollItem, onClose, onSuccess }) =
     setLoading(true);
 
     try {
-      await axiosInstance.post(`/payroll/pay/${payrollItem.id}`, null, {
-        params: {
-          payment_method: paymentMethod,
-          bank_account_id: paymentMethod === 'BANK_TRANSFER' ? bankAccountId || undefined : undefined,
-          notes: notes || undefined,
-        },
-      });
+      const payload = {
+        payment_method: paymentMethod,
+        bank_account_id: paymentMethod === 'BANK_TRANSFER' ? bankAccountId || null : null,
+        notes: notes || null,
+      };
+
+      await axiosInstance.post(`/payroll/pay/${payrollItem.id}`, payload);
 
       onSuccess();
       onClose();

@@ -142,7 +142,7 @@ async def list_cars(
     current_user: User = Depends(get_current_user),
 ) -> Any:
     """List vehicle inventory with optional filtering by status, make, model, and year."""
-    stmt = select(Car).options(selectinload(Car.repairs))
+    stmt = select(Car).options(selectinload(Car.repairs), joinedload(Car.seller))
     if status_filter:
         stmt = stmt.where(Car.status == status_filter)
     if make:

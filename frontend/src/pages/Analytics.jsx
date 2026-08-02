@@ -24,7 +24,7 @@ const Analytics = () => {
       setFinancialData(finRes.data);
 
       const agingRes = await axiosInstance.get('/analytics/inventory-aging');
-      setAgingCars(agingRes.data || []);
+      setAgingCars(agingRes.data?.vehicles || []);
     } catch (err) {
       console.error('Failed to fetch financial analytics & aging data:', err);
     } finally {
@@ -114,7 +114,7 @@ const Analytics = () => {
             <tbody className="divide-y divide-slate-800/60 text-slate-300">
               {agingCars.length > 0 ? (
                 agingCars.map((item) => {
-                  const days = item.days_in_showroom || 0;
+                  const days = item.days_in_stock ?? item.days_in_showroom ?? 0;
                   const isHighRisk = days > 60;
                   return (
                     <tr key={item.id} className="hover:bg-slate-800/40 transition-colors">

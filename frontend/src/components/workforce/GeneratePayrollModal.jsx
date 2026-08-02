@@ -40,8 +40,8 @@ const GeneratePayrollModal = ({ isOpen, employees, onClose, onSuccess }) => {
     try {
       const payload = {
         employee_id: formData.employee_id,
-        month: parseInt(formData.month, 10),
-        year: parseInt(formData.year, 10),
+        pay_period_month: parseInt(formData.month, 10),
+        pay_period_year: parseInt(formData.year, 10),
         allowances,
         deductions,
         notes: formData.notes,

@@ -33,12 +33,13 @@ const ProcessPayoutModal = ({ isOpen, investmentId, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      await axiosInstance.post(`/investors/payout/${investmentId}`, null, {
-        params: {
-          bank_account_id: bankAccountId || undefined,
-          notes: notes || undefined,
-        },
-      });
+      const payload = {
+        bank_account_id: bankAccountId || null,
+        transaction_reference: null,
+        notes: notes || null,
+      };
+
+      await axiosInstance.post(`/investors/payout/${investmentId}`, payload);
 
       onSuccess();
       onClose();

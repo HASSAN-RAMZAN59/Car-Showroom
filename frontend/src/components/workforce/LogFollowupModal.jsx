@@ -22,7 +22,7 @@ const LogFollowupModal = ({ isOpen, lead, onClose, onSuccess }) => {
 
     try {
       const payload = {
-        notes,
+        note: notes,
         next_followup_date: nextFollowupDate ? new Date(nextFollowupDate).toISOString() : null,
       };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import StatCard from '../components/common/StatCard';
@@ -17,8 +18,10 @@ import {
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [financialData, setFinancialData] = useState(null);
   const [recentCars, setRecentCars] = useState([]);
+  const [activeLeadsCount, setActiveLeadsCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +34,10 @@ const Dashboard = () => {
       // Fetch recent cars
       const carsRes = await axiosInstance.get('/cars/?limit=5');
       setRecentCars(carsRes.data || []);
+
+      // Fetch active leads
+      const leadsRes = await axiosInstance.get('/leads/');
+      setActiveLeadsCount(leadsRes.data?.length || 0);
 
       // Fetch financial summary if user is ADMIN or MANAGER
       if (user?.role === 'ADMIN' || user?.role === 'MANAGER') {
@@ -100,7 +107,7 @@ const Dashboard = () => {
 
         <StatCard
           title="Active Customer Leads"
-          value="Hot & Warm"
+          value={`${activeLeadsCount} Leads`}
           icon={UserCheck}
           color="amber"
           trend="up"
@@ -112,22 +119,34 @@ const Dashboard = () => {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Quick Operations</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <button className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all">
+          <button
+            onClick={() => navigate('/purchases')}
+            className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all"
+          >
             <ShoppingBag className="w-4 h-4 text-indigo-400" />
             <span>Purchase Vehicle</span>
           </button>
 
-          <button className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all">
+          <button
+            onClick={() => navigate('/sales')}
+            className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all"
+          >
             <Receipt className="w-4 h-4 text-emerald-400" />
             <span>Log New Sale</span>
           </button>
 
-          <button className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all">
+          <button
+            onClick={() => navigate('/leads')}
+            className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all"
+          >
             <UserCheck className="w-4 h-4 text-amber-400" />
             <span>Add Customer Lead</span>
           </button>
 
-          <button className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all">
+          <button
+            onClick={() => navigate('/expenses')}
+            className="flex items-center justify-center gap-2 p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition-all"
+          >
             <PlusCircle className="w-4 h-4 text-cyan-400" />
             <span>Record Expense</span>
           </button>
@@ -141,7 +160,10 @@ const Dashboard = () => {
             <h3 className="text-base font-bold text-white">Recent Vehicle Inventory</h3>
             <p className="text-xs text-slate-400">Latest cars logged into the showroom system</p>
           </div>
-          <button className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+          <button
+            onClick={() => navigate('/vehicles')}
+            className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+          >
             <span>View All Inventory</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </button>

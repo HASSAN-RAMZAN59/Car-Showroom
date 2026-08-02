@@ -45,7 +45,7 @@ const Banking = () => {
 
   const fetchAccountTransactions = async (accId) => {
     try {
-      const res = await axiosInstance.get(`/bank/accounts/${accId}/transactions`);
+      const res = await axiosInstance.get(`/bank/accounts/${accId}/ledger`);
       setTransactions(res.data || []);
     } catch (err) {
       console.error('Failed to fetch account transactions:', err);
