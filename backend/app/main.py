@@ -20,8 +20,11 @@ from app.api.v1.sales import router as sales_router
 from app.api.v1.search import router as search_router
 from app.api.v1.sellers import router as sellers_router
 from app.api.v1.token_bookings import router as token_bookings_router
+import app.models
 from app.core.config import settings
 from app.core.database import Base, engine
+
+
 
 
 @asynccontextmanager

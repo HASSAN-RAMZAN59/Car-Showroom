@@ -4,11 +4,24 @@ from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import settings
 
-# Create async engine for PostgreSQL connection
+# Engine configuration arguments based on database dialect
+engine_kwargs = {
+    "echo": False,
+    "future": True,
+}
+
+if settings.DATABASE_URL.startswith("postgresql"):
+    engine_kwargs["pool_pre_ping"] = True
+    engine_kwargs["pool_recycle"] = 300
+    if "sslmode=require" in settings.DATABASE_URL or "supabase" in settings.DATABASE_URL:
+        engine_kwargs["connect_args"] = {"ssl": "require"}
+elif settings.DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+# Create async engine
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=False,
-    future=True,
+    **engine_kwargs
 )
 
 # Async session factory
@@ -33,3 +46,4 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
             yield session
         finally:
             await session.close()
+
