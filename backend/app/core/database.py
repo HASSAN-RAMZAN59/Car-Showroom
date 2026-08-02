@@ -10,13 +10,13 @@ engine_kwargs = {
     "future": True,
 }
 
-if settings.DATABASE_URL.startswith("postgresql"):
-    engine_kwargs["pool_pre_ping"] = True
-    engine_kwargs["pool_recycle"] = 300
-    if "sslmode=require" in settings.DATABASE_URL or "supabase" in settings.DATABASE_URL:
-        engine_kwargs["connect_args"] = {"ssl": "require"}
-elif settings.DATABASE_URL.startswith("sqlite"):
-    engine_kwargs["connect_args"] = {"check_same_thread": False}
+if not settings.DATABASE_URL.startswith("postgresql"):
+    raise ValueError("Database configuration error: System requires live PostgreSQL connection. DATABASE_URL must start with postgresql:// or postgresql+asyncpg://")
+
+engine_kwargs["pool_pre_ping"] = True
+engine_kwargs["pool_recycle"] = 300
+if "sslmode=require" in settings.DATABASE_URL or "supabase" in settings.DATABASE_URL:
+    engine_kwargs["connect_args"] = {"ssl": "require"}
 
 # Create async engine
 engine = create_async_engine(

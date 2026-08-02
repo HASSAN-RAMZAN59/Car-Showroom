@@ -2,7 +2,9 @@
 
 ### 🐍 1. Start Backend Server (`http://localhost:8000`)
 ```powershell
-cd backend; .\venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+cd backend;
+ .\venv\Scripts\activate
+ python -m uvicorn app.main:app --reload --port 8000
 ```
 
 ---
