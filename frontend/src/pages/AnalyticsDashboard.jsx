@@ -227,16 +227,16 @@ const AnalyticsDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             <StatCard
               title="Sales Revenue"
-              value={`PKR ${(revenue / 100000).toFixed(1)}L`}
+              value={`PKR ${revenue.toLocaleString()}`}
               icon={DollarSign}
               color="emerald"
               trend="up"
-              trendText="Total Invoices"
+              trendText="Live Database Sum"
             />
 
             <StatCard
               title="Cost Basis (COGS)"
-              value={`PKR ${(cost / 100000).toFixed(1)}L`}
+              value={`PKR ${cost.toLocaleString()}`}
               icon={Car}
               color="indigo"
               trend="up"
@@ -245,7 +245,7 @@ const AnalyticsDashboard = () => {
 
             <StatCard
               title="Gross Profit"
-              value={`PKR ${(grossProfit / 100000).toFixed(1)}L`}
+              value={`PKR ${grossProfit.toLocaleString()}`}
               icon={TrendingUp}
               color="cyan"
               trend="up"
@@ -254,7 +254,7 @@ const AnalyticsDashboard = () => {
 
             <StatCard
               title="Daily Expenses"
-              value={`PKR ${(expenses / 1000).toFixed(0)}k`}
+              value={`PKR ${expenses.toLocaleString()}`}
               icon={Receipt}
               color="amber"
               trend="down"
@@ -263,7 +263,7 @@ const AnalyticsDashboard = () => {
 
             <StatCard
               title="Payroll Paid"
-              value={`PKR ${(payroll / 1000).toFixed(0)}k`}
+              value={`PKR ${payroll.toLocaleString()}`}
               icon={Users}
               color="rose"
               trend="down"
@@ -272,7 +272,7 @@ const AnalyticsDashboard = () => {
 
             <StatCard
               title="Net Showroom Profit"
-              value={`PKR ${(netProfit / 100000).toFixed(1)}L`}
+              value={`PKR ${netProfit.toLocaleString()}`}
               icon={BarChart3}
               color="emerald"
               trend={netProfit >= 0 ? 'up' : 'down'}
