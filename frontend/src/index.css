@@ -8,136 +8,321 @@
   }
 }
 
-/* Theme Switching Root Definitions */
+/* ==========================================================================
+   PRODUCTION SAAS LIGHT MODE DESIGN SYSTEM (Stripe / Linear Level)
+   ========================================================================== */
+
+:root {
+  /* Backgrounds */
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F1F5F9;
+
+  /* Borders */
+  --border-color: #E2E8F0;
+
+  /* Text */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+
+  /* Accent (Primary Brand) */
+  --accent-primary: #6366F1;
+  --accent-hover: #4F46E5;
+  --accent-light: #EEF2FF;
+
+  /* Status */
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+
+  --warning: #F59E0B;
+  --danger: #EF4444;
+}
+
+/* --------------------------------------------------------------------------
+   ROOT & BODY LIGHT STYLING
+   -------------------------------------------------------------------------- */
+html.light {
+  color-scheme: light;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
 html.light body {
-  background-color: #f8fafc !important;
-  color: #000000 !important;
+  background-color: var(--bg-primary) !important;
+  color: var(--text-secondary) !important;
 }
 
-html.dark body {
-  background-color: #020617 !important;
-  color: #f8fafc !important;
-}
-
-/* Light Mode Comprehensive UI Overrides */
-html.light .bg-slate-950,
-html.light .bg-slate-950\/50 {
-  background-color: #f8fafc !important;
-}
-
-html.light .bg-slate-900,
-html.light .bg-slate-900\/80 {
-  background-color: #ffffff !important;
-}
-
-html.light .bg-slate-800,
-html.light .bg-slate-800\/50 {
-  background-color: #f1f5f9 !important;
-}
-
-html.light .border-slate-800,
-html.light .border-slate-700,
-html.light .border-slate-600 {
-  border-color: #cbd5e1 !important;
-}
-
-/* PURE FULL BLACK TEXT EVERYWHERE IN LIGHT MODE */
-html.light body,
-html.light p,
-html.light span,
+/* --------------------------------------------------------------------------
+   TEXT & FONT HIERARCHY
+   Headings -> bold + --text-primary (#0F172A)
+   Body -> --text-secondary (#475569)
+   Labels & Muted -> --text-muted (#94A3B8)
+   -------------------------------------------------------------------------- */
 html.light h1,
 html.light h2,
 html.light h3,
 html.light h4,
 html.light h5,
-html.light h6,
-html.light label,
-html.light input,
-html.light select,
-html.light textarea,
-html.light td,
-html.light th,
-html.light li,
-html.light a {
-  color: #000000;
+html.light h6 {
+  color: var(--text-primary) !important;
+  font-weight: 700;
 }
 
+html.light p,
+html.light span,
+html.light div,
+html.light td,
+html.light li {
+  color: var(--text-secondary);
+}
+
+html.light label,
+html.light .text-slate-400,
+html.light .text-slate-500,
+html.light .text-muted {
+  color: var(--text-muted) !important;
+}
+
+html.light .text-white,
 html.light .text-slate-100,
 html.light .text-slate-200,
 html.light .text-slate-300,
-html.light .text-slate-400,
-html.light .text-slate-500,
-html.light .text-slate-600,
-html.light .text-slate-700,
-html.light .text-slate-800,
-html.light .text-slate-900,
-html.light .text-white {
-  color: #000000 !important;
+html.light .text-slate-900 {
+  color: var(--text-primary) !important;
 }
 
-/* Light Mode Inputs & Selects */
+/* --------------------------------------------------------------------------
+   CARDS & CONTAINERS (Dashboard / Inventory / Management)
+   -------------------------------------------------------------------------- */
+html.light .bg-slate-900,
+html.light .bg-slate-950,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-950\/50,
+html.light .bg-slate-800\/50,
+html.light .bg-slate-800,
+html.light .glass-panel {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .border-slate-800,
+html.light .border-slate-700,
+html.light .border-slate-600,
+html.light .border-slate-800\/80 {
+  border-color: var(--border-color) !important;
+}
+
+/* Disable gradients & glassmorphism in light mode */
+html.light .bg-gradient-to-r,
+html.light .bg-gradient-to-tr,
+html.light .bg-gradient-to-br {
+  background-image: none !important;
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* --------------------------------------------------------------------------
+   SIDEBAR
+   -------------------------------------------------------------------------- */
+html.light aside {
+  background-color: var(--bg-secondary) !important;
+  border-right: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+html.light aside div,
+html.light aside nav {
+  border-color: var(--border-color) !important;
+}
+
+/* Active Nav Item */
+html.light aside a.active,
+html.light aside .bg-indigo-600\/15 {
+  background-color: var(--accent-light) !important;
+  color: var(--accent-primary) !important;
+  border-color: #C7D2FE !important;
+  box-shadow: none !important;
+}
+
+html.light aside a.active svg,
+html.light aside .bg-indigo-600\/15 svg {
+  color: var(--accent-primary) !important;
+}
+
+/* Inactive Nav Item */
+html.light aside a:not(.active) {
+  color: var(--text-secondary) !important;
+}
+
+html.light aside a:not(.active):hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* --------------------------------------------------------------------------
+   NAVBAR / HEADER
+   -------------------------------------------------------------------------- */
+html.light header {
+  background-color: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* --------------------------------------------------------------------------
+   TABLES
+   -------------------------------------------------------------------------- */
+html.light table {
+  border-color: var(--border-color) !important;
+}
+
+html.light table thead,
+html.light table th,
+html.light table thead tr {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  font-weight: 600;
+}
+
+html.light table tbody tr {
+  border-bottom: 1px solid var(--border-color) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+html.light table tbody tr:hover {
+  background-color: var(--bg-primary) !important;
+}
+
+html.light table td {
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.light table th {
+  color: var(--text-primary) !important;
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS
+   -------------------------------------------------------------------------- */
+/* Primary Buttons */
+html.light button.bg-indigo-600,
+html.light button.bg-blue-600,
+html.light .bg-indigo-600,
+html.light .bg-blue-600,
+html.light button[type="submit"]:not(.bg-secondary) {
+  background-color: var(--accent-primary) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light button.bg-indigo-600:hover,
+html.light button.bg-blue-600:hover,
+html.light .bg-indigo-600:hover,
+html.light .bg-blue-600:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+html.light button.bg-indigo-600 *,
+html.light button.bg-blue-600 * {
+  color: #FFFFFF !important;
+}
+
+/* Secondary Buttons */
+html.light button.bg-slate-800,
+html.light button.bg-slate-700,
+html.light .bg-slate-800,
+html.light .bg-slate-700 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light button.bg-slate-800:hover,
+html.light button.bg-slate-700:hover,
+html.light .bg-slate-800:hover,
+html.light .bg-slate-700:hover {
+  background-color: var(--border-color) !important;
+}
+
+/* --------------------------------------------------------------------------
+   INPUTS, SELECTS & TEXTAREAS
+   -------------------------------------------------------------------------- */
 html.light input,
 html.light select,
 html.light textarea {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  border-color: #cbd5e1 !important;
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 10px;
 }
 
-/* Light Mode Blue Accent Buttons & Active Navigation */
-html.light .bg-indigo-600,
-html.light .bg-blue-600,
-html.light .bg-blue-700 {
-  background-color: #2563eb !important; /* Rich vibrant blue */
-  color: #ffffff !important;
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: var(--accent-primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--accent-light) !important;
 }
 
-html.light .bg-indigo-600:hover,
-html.light .bg-blue-600:hover {
-  background-color: #1d4ed8 !important;
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: var(--text-muted) !important;
 }
 
-html.light .bg-indigo-600\/15 {
-  background-color: #dbeafe !important;
-  color: #1d4ed8 !important;
+/* --------------------------------------------------------------------------
+   STATUS BADGES
+   -------------------------------------------------------------------------- */
+/* Active / Available / Paid / Completed */
+html.light .badge-active,
+html.light .bg-emerald-500\/10 {
+  background-color: var(--success-bg) !important;
+  color: var(--success) !important;
+  border: 1px solid #A7F3D0 !important;
 }
 
-html.light .text-indigo-400 {
-  color: #2563eb !important;
+/* Sold / Neutral / Draft / Closed / Cold */
+html.light .badge-neutral,
+html.light .bg-slate-500\/10,
+html.light .bg-indigo-500\/10 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-color) !important;
 }
 
-html.light .border-indigo-500\/30 {
-  border-color: #93c5fd !important;
+/* Warning / Pending / Maintenance */
+html.light .bg-amber-500\/10 {
+  background-color: #FEF3C7 !important;
+  color: var(--warning) !important;
+  border: 1px solid #FDE68A !important;
 }
 
-/* Text on solid primary buttons must stay crisp white */
-html.light .bg-indigo-600 *,
-html.light .bg-blue-600 *,
-html.light .bg-emerald-600 *,
-html.light .bg-rose-600 *,
-html.light button.bg-indigo-600 *,
-html.light button.bg-blue-600 * {
-  color: #ffffff !important;
+/* Danger / Overdue / Hot */
+html.light .bg-rose-500\/10 {
+  background-color: #FEF2F2 !important;
+  color: var(--danger) !important;
+  border: 1px solid #FECACA !important;
 }
 
-/* Glassmorphism Panel in Light Mode */
-html.light .glass-panel {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.08);
+/* --------------------------------------------------------------------------
+   MODALS & OVERLAYS
+   -------------------------------------------------------------------------- */
+html.light .fixed.inset-0.bg-black\/70,
+html.light .fixed.inset-0.bg-black\/50,
+html.light .fixed.inset-0.bg-slate-950\/80 {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(4px) !important;
 }
 
-/* Custom Glassmorphism Utility (Dark Mode Default) */
-.glass-panel {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
-}
-
-/* Custom Scrollbar */
+/* --------------------------------------------------------------------------
+   CUSTOM SCROLLBAR (LIGHT MODE)
+   -------------------------------------------------------------------------- */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -146,20 +331,18 @@ html.light .glass-panel {
   background: #0f172a;
 }
 html.light ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 4px;
 }
 html.light ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
+  background: #CBD5E1;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
 html.light ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: var(--text-muted);
 }
-
-

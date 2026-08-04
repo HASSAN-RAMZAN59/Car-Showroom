@@ -116,17 +116,17 @@ const Sidebar = () => {
     <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-screen sticky top-0">
       {/* Brand Header */}
       <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-        <div className="p-2.5 bg-gradient-to-tr from-indigo-600 to-cyan-500 rounded-xl shadow-lg text-white">
-          <CarFront className="w-6 h-6" />
+        <div className="p-2 bg-indigo-600 rounded-xl text-white flex items-center justify-center">
+          <CarFront className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h1 className="text-base font-extrabold text-white tracking-wide">AUTO SHOWROOM</h1>
+          <h1 className="text-sm font-bold tracking-wide">AUTO SHOWROOM</h1>
           <p className="text-[10px] font-semibold uppercase tracking-wider text-indigo-400">ERP Suite v1.0</p>
         </div>
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 overflow-y-auto p-4 space-y-1.5">
+      <nav className="flex-1 overflow-y-auto p-4 space-y-1">
         {filteredItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -134,10 +134,10 @@ const Sidebar = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
                   isActive
-                    ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/30 shadow-inner'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                    ? 'active bg-indigo-600/15 text-indigo-400 border border-indigo-500/30'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent'
                 }`
               }
             >
