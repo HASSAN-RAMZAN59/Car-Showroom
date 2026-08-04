@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Database Configuration
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/car_showroom_db"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres.fbxsibzmldaneyyfslsb:FMviMAXiTvNJHH8o@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres"
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod

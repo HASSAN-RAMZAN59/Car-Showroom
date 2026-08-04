@@ -15,8 +15,13 @@ if not settings.DATABASE_URL.startswith("postgresql"):
 
 engine_kwargs["pool_pre_ping"] = True
 engine_kwargs["pool_recycle"] = 300
-if "sslmode=require" in settings.DATABASE_URL or "supabase" in settings.DATABASE_URL:
-    engine_kwargs["connect_args"] = {"ssl": "require"}
+
+# Configure SSL and statement cache size for asyncpg + Supabase / PgBouncer pooler
+if any(term in settings.DATABASE_URL for term in ["sslmode=require", "supabase", "pooler"]):
+    connect_args = {"ssl": "require"}
+    if "6543" in settings.DATABASE_URL or "pooler" in settings.DATABASE_URL:
+        connect_args["statement_cache_size"] = 0
+    engine_kwargs["connect_args"] = connect_args
 
 # Create async engine
 engine = create_async_engine(

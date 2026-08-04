@@ -4,11 +4,132 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 min-h-screen;
+    @apply bg-slate-950 text-slate-100 min-h-screen transition-colors duration-200;
   }
 }
 
-/* Custom Glassmorphism Utility */
+/* Theme Switching Root Definitions */
+html.light body {
+  background-color: #f8fafc !important;
+  color: #000000 !important;
+}
+
+html.dark body {
+  background-color: #020617 !important;
+  color: #f8fafc !important;
+}
+
+/* Light Mode Comprehensive UI Overrides */
+html.light .bg-slate-950,
+html.light .bg-slate-950\/50 {
+  background-color: #f8fafc !important;
+}
+
+html.light .bg-slate-900,
+html.light .bg-slate-900\/80 {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-slate-800,
+html.light .bg-slate-800\/50 {
+  background-color: #f1f5f9 !important;
+}
+
+html.light .border-slate-800,
+html.light .border-slate-700,
+html.light .border-slate-600 {
+  border-color: #cbd5e1 !important;
+}
+
+/* PURE FULL BLACK TEXT EVERYWHERE IN LIGHT MODE */
+html.light body,
+html.light p,
+html.light span,
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6,
+html.light label,
+html.light input,
+html.light select,
+html.light textarea,
+html.light td,
+html.light th,
+html.light li,
+html.light a {
+  color: #000000;
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-slate-400,
+html.light .text-slate-500,
+html.light .text-slate-600,
+html.light .text-slate-700,
+html.light .text-slate-800,
+html.light .text-slate-900,
+html.light .text-white {
+  color: #000000 !important;
+}
+
+/* Light Mode Inputs & Selects */
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Light Mode Blue Accent Buttons & Active Navigation */
+html.light .bg-indigo-600,
+html.light .bg-blue-600,
+html.light .bg-blue-700 {
+  background-color: #2563eb !important; /* Rich vibrant blue */
+  color: #ffffff !important;
+}
+
+html.light .bg-indigo-600:hover,
+html.light .bg-blue-600:hover {
+  background-color: #1d4ed8 !important;
+}
+
+html.light .bg-indigo-600\/15 {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+html.light .text-indigo-400 {
+  color: #2563eb !important;
+}
+
+html.light .border-indigo-500\/30 {
+  border-color: #93c5fd !important;
+}
+
+/* Text on solid primary buttons must stay crisp white */
+html.light .bg-indigo-600 *,
+html.light .bg-blue-600 *,
+html.light .bg-emerald-600 *,
+html.light .bg-rose-600 *,
+html.light button.bg-indigo-600 *,
+html.light button.bg-blue-600 * {
+  color: #ffffff !important;
+}
+
+/* Glassmorphism Panel in Light Mode */
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.08);
+}
+
+/* Custom Glassmorphism Utility (Dark Mode Default) */
 .glass-panel {
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(12px);
@@ -24,10 +145,21 @@
 ::-webkit-scrollbar-track {
   background: #0f172a;
 }
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
 ::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 4px;
 }
+html.light ::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+
