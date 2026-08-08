@@ -304,28 +304,11 @@ html.light table th {
   color: #0F172A !important;
 }
 
-/* Primary Buttons - 100% Pure White Text & White Icons Guaranteed Everywhere */
-button[type="submit"],
-button.bg-indigo-600,
+/* Primary Blue Buttons - Pure White Text & Icons ONLY on Button Elements */
+button[type="submit"]:not(.bg-slate-100):not(.bg-white),
 button.bg-blue-600,
-button.bg-blue-500,
 button.bg-blue-700,
-button.bg-emerald-600,
-.bg-indigo-600,
-.bg-blue-600,
-.bg-blue-500,
-.bg-blue-700,
-.bg-emerald-600,
-[class*="bg-blue-600"],
-[class*="bg-blue-500"],
-[class*="bg-blue-700"],
-[class*="bg-indigo-600"],
-[class*="bg-emerald-600"],
-html.light button[type="submit"],
-html.light button.bg-indigo-600,
-html.light button.bg-blue-600,
-html.light button.bg-blue-500,
-html.light button.bg-emerald-600 {
+button.bg-indigo-600 {
   background-color: #2563EB !important;
   color: #FFFFFF !important;
   border: none !important;
@@ -335,66 +318,25 @@ html.light button.bg-emerald-600 {
   transition: all 0.15s ease !important;
 }
 
-/* Force PURE WHITE text on ALL child tags (span, p, label, div, *) inside any blue/action button */
-button[type="submit"] *,
-button.bg-indigo-600 *,
+button[type="submit"]:not(.bg-slate-100):not(.bg-white) *,
 button.bg-blue-600 *,
-button.bg-blue-500 *,
 button.bg-blue-700 *,
-button.bg-emerald-600 *,
-.bg-indigo-600 *,
-.bg-blue-600 *,
-.bg-blue-500 *,
-.bg-blue-700 *,
-.bg-emerald-600 *,
-[class*="bg-blue-600"] *,
-[class*="bg-blue-500"] *,
-[class*="bg-blue-700"] *,
-[class*="bg-indigo-600"] *,
-[class*="bg-emerald-600"] *,
-html.light button[type="submit"] *,
-html.light button.bg-indigo-600 *,
-html.light button.bg-blue-600 *,
-html.light button.bg-blue-500 *,
-html.light button.bg-emerald-600 * {
+button.bg-indigo-600 * {
   color: #FFFFFF !important;
-  fill: #FFFFFF !important;
 }
 
-/* Force PURE WHITE icons inside any blue/action button */
-button[type="submit"] svg,
-button.bg-indigo-600 svg,
+button[type="submit"]:not(.bg-slate-100):not(.bg-white) svg,
 button.bg-blue-600 svg,
-button.bg-blue-500 svg,
 button.bg-blue-700 svg,
-button.bg-emerald-600 svg,
-.bg-indigo-600 svg,
-.bg-blue-600 svg,
-.bg-blue-500 svg,
-.bg-emerald-600 svg,
-[class*="bg-blue-600"] svg,
-[class*="bg-blue-500"] svg,
-[class*="bg-indigo-600"] svg,
-[class*="bg-emerald-600"] svg,
-html.light button[type="submit"] svg,
-html.light button.bg-indigo-600 svg,
-html.light button.bg-blue-600 svg,
-html.light button.bg-blue-500 svg,
-html.light button.bg-emerald-600 svg {
+button.bg-indigo-600 svg {
   color: #FFFFFF !important;
   stroke: #FFFFFF !important;
 }
 
-button[type="submit"]:hover,
-button.bg-indigo-600:hover,
 button.bg-blue-600:hover,
-button.bg-blue-500:hover,
 button.bg-blue-700:hover,
-.bg-indigo-600:hover,
-.bg-blue-600:hover,
-html.light button[type="submit"]:hover,
-html.light button.bg-indigo-600:hover,
-html.light button.bg-blue-600:hover {
+button.bg-indigo-600:hover,
+button[type="submit"]:hover {
   background-color: #1D4ED8 !important;
 }
 
