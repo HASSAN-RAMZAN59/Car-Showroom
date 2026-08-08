@@ -304,30 +304,47 @@ html.light table th {
   color: #0F172A !important;
 }
 
-/* Primary Buttons */
+/* Primary Buttons - Pure White Text & Icons Guaranteed Everywhere */
+button.bg-indigo-600,
+button.bg-blue-600,
+.bg-indigo-600,
+.bg-blue-600,
+button.bg-indigo-600 *,
+button.bg-blue-600 *,
+.bg-indigo-600 *,
+.bg-blue-600 *,
 html.light button.bg-indigo-600,
 html.light button.bg-blue-600,
-html.light .bg-indigo-600,
-html.light .bg-blue-600,
-html.light button[type="submit"]:not(.bg-secondary) {
+html.light button.bg-indigo-600 *,
+html.light button.bg-blue-600 *,
+html.light button[type="submit"] {
   background-color: #2563EB !important;
-  /* bg-blue-600 */
   color: #FFFFFF !important;
   border: none !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
   border-radius: 0.5rem !important;
-  /* rounded-lg */
   transition: all 0.15s ease !important;
 }
 
+button.bg-indigo-600 svg,
+button.bg-blue-600 svg,
+.bg-indigo-600 svg,
+.bg-blue-600 svg,
+html.light button.bg-indigo-600 svg,
+html.light button.bg-blue-600 svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+button.bg-indigo-600:hover,
+button.bg-blue-600:hover,
+.bg-indigo-600:hover,
+.bg-blue-600:hover,
 html.light button.bg-indigo-600:hover,
 html.light button.bg-blue-600:hover,
-html.light .bg-indigo-600:hover,
-html.light .bg-blue-600:hover,
-html.light button[type="submit"]:not(.bg-secondary):hover {
+html.light button[type="submit"]:hover {
   background-color: #1D4ED8 !important;
-  /* bg-blue-700 */
 }
 
 /* Secondary / Ghost Buttons */

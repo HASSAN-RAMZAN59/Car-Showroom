@@ -222,7 +222,7 @@ const Installments = () => {
                                         onClick={() => setSelectedPaymentForLog(pay)}
                                         className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-medium rounded-lg transition-all shadow-sm"
                                       >
-                                        Collect EMI
+                                        Receive Payment
                                       </button>
                                     ) : (
                                       <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">

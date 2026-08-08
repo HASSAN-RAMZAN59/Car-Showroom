@@ -147,7 +147,7 @@ const DatabaseBackup = () => {
             ) : (
               <>
                 <Download className="w-4 h-4" />
-                <span>Export Full Backup (.JSON)</span>
+                <span>Download Backup</span>
               </>
             )}
           </button>

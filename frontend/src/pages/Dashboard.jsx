@@ -155,7 +155,7 @@ const Dashboard = () => {
             className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
             <ShoppingBag className="w-4 h-4 text-blue-600" />
-            <span>Purchase Vehicle</span>
+            <span>Buy Car</span>
           </button>
 
           <button
@@ -163,7 +163,7 @@ const Dashboard = () => {
             className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
             <Receipt className="w-4 h-4 text-emerald-600" />
-            <span>Log New Sale</span>
+            <span>New Sale</span>
           </button>
 
           <button
@@ -171,7 +171,7 @@ const Dashboard = () => {
             className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
             <UserCheck className="w-4 h-4 text-amber-600" />
-            <span>Add Customer Lead</span>
+            <span>Add Customer</span>
           </button>
 
           <button
@@ -179,7 +179,7 @@ const Dashboard = () => {
             className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
             <PlusCircle className="w-4 h-4 text-cyan-600" />
-            <span>Record Expense</span>
+            <span>Add Expense</span>
           </button>
         </div>
       </div>

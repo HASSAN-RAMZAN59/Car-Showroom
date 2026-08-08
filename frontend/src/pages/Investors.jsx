@@ -53,7 +53,7 @@ const Investors = () => {
             className="px-4 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all flex items-center gap-2 shadow-sm"
           >
             <CarIcon className="w-4 h-4 text-blue-600" />
-            <span>Map Investment</span>
+            <span>Add Investment</span>
           </button>
 
           <button
