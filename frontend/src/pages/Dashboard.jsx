@@ -84,7 +84,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="relative z-10 max-w-2xl space-y-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-600 border border-blue-500/20 rounded-full text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 text-blue-600" />
@@ -147,7 +147,7 @@ const Dashboard = () => {
       </div>
 
       {/* Quick Action Operations */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-700">Quick Operations</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <button
@@ -187,7 +187,7 @@ const Dashboard = () => {
       {/* Grid of Tables: Recent Inventory & Recent Sales */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Table 1: Recent Vehicle Inventory */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-base font-semibold text-slate-800">Recent Vehicle Inventory</h3>
@@ -241,7 +241,7 @@ const Dashboard = () => {
         </div>
 
         {/* Table 2: Recent Sales Transactions */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-base font-semibold text-slate-800">Recent Sales Activity</h3>

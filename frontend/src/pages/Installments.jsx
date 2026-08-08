@@ -97,7 +97,7 @@ const Installments = () => {
       </div>
 
       {/* Main Section: Active Installment Contracts */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
@@ -257,15 +257,15 @@ const Installments = () => {
 
       {/* Overdue Monitoring Section */}
       {overdueList.length > 0 && (
-        <div className="bg-slate-900 border border-rose-500/20 rounded-2xl shadow-xl p-6 space-y-4">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-rose-400" />
+        <div className="bg-white border border-rose-200 rounded-xl shadow-sm p-6 space-y-4">
+          <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-rose-600" />
             <span>Overdue Installments Alert ({overdueList.length})</span>
           </h3>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+              <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="py-3.5 px-6">Installment #</th>
                   <th className="py-3.5 px-6">Due Date</th>

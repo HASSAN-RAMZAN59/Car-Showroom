@@ -64,7 +64,7 @@ const Leads = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-2 overflow-x-auto shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-2 overflow-x-auto shadow-sm">
         <Filter className="w-4 h-4 text-slate-400 flex-shrink-0" />
         {['ALL', 'HOT', 'WARM', 'COLD', 'CONVERTED', 'CLOSED'].map((tab) => (
           <button
@@ -82,7 +82,7 @@ const Leads = () => {
       </div>
 
       {/* Leads Table Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
             <LoadingSpinner size="lg" label="Loading customer leads CRM..." />

@@ -62,7 +62,7 @@ const UserManagement = () => {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
           <input
@@ -90,7 +90,7 @@ const UserManagement = () => {
       </div>
 
       {/* User Table Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
             <LoadingSpinner size="lg" label="Loading system user list from database..." />

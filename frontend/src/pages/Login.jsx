@@ -66,7 +66,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 md:p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center p-4 md:p-8 relative overflow-hidden">
       {/* Background Ambient Glows */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -75,7 +75,7 @@ const Login = () => {
       <div className="w-full max-w-4xl flex flex-col md:flex-row items-stretch gap-6 relative z-10">
         
         {/* Main Login Card */}
-        <div className="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-sm flex flex-col justify-between">
+        <div className="flex-1 bg-white border border-slate-200 rounded-xl p-8 shadow-sm flex flex-col justify-between">
           <div>
             {/* Brand Logo & Title */}
             <div className="text-center mb-8">
@@ -153,7 +153,7 @@ const Login = () => {
         </div>
 
         {/* Demo Credentials Side Panel */}
-        <div className="w-full md:w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+        <div className="w-full md:w-80 bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
               <div className="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">

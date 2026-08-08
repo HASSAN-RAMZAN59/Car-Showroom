@@ -64,7 +64,7 @@ const Payroll = () => {
       </div>
 
       {/* Staff Directory Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4">
         <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
           <Users className="w-5 h-5 text-blue-600" />
           <span>Staff Directory</span>
@@ -124,7 +124,7 @@ const Payroll = () => {
       </div>
 
       {/* Payroll History Ledger */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4">
         <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
           <DollarSign className="w-5 h-5 text-emerald-600" />
           <span>Payroll History & Salary Payouts</span>

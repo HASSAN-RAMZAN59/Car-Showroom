@@ -57,7 +57,7 @@ const Profile = () => {
       </div>
 
       {/* Main Profile Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-sm space-y-8">
+      <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm space-y-8">
         {/* Header Avatar & Identity */}
         <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-200">
           <div className="w-20 h-20 rounded-xl bg-blue-600 flex items-center justify-center text-white text-3xl font-bold shadow-sm">

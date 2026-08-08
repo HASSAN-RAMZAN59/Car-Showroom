@@ -72,7 +72,7 @@ const Inventory = () => {
       </div>
 
       {/* Filter Tabs & Auto-Complete Search */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
         {/* Status Filter Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
           {['ALL', 'AVAILABLE', 'IN_MAINTENANCE', 'RESERVED', 'SOLD'].map((tab) => (
@@ -113,7 +113,7 @@ const Inventory = () => {
           ))}
         </div>
       ) : (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center space-y-3 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center space-y-3 shadow-sm">
           <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center mx-auto">
             <Car className="w-8 h-8" />
           </div>

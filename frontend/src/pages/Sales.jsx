@@ -66,7 +66,7 @@ const Sales = () => {
       </div>
 
       {/* Sales Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
             <LoadingSpinner size="lg" label="Loading sales transaction ledger..." />

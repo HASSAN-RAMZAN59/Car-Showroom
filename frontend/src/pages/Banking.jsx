@@ -100,10 +100,10 @@ const Banking = () => {
           <div
             key={acc.id}
             onClick={() => setSelectedAccount(acc.id)}
-            className={`bg-slate-900 border rounded-xl p-6 shadow-sm cursor-pointer transition-all duration-200 ${
+            className={`bg-white border rounded-xl p-6 shadow-sm cursor-pointer transition-all duration-200 ${
               selectedAccount === acc.id
                 ? 'border-blue-600 ring-2 ring-blue-500/20 bg-blue-50/50'
-                : 'border-slate-800 hover:border-blue-300 hover:bg-blue-50/30'
+                : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50/30'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -129,7 +129,7 @@ const Banking = () => {
       </div>
 
       {/* Tabs Section */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         <div className="flex border-b border-slate-200 bg-slate-100/50 px-6 pt-3 gap-6 text-xs font-semibold">
           <button
             onClick={() => setActiveTab('accounts')}

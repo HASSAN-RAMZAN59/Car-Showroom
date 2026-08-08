@@ -8,7 +8,7 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="h-16 bg-slate-900 border-b border-slate-800 px-8 flex items-center justify-between sticky top-0 z-10 transition-colors">
+    <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10 transition-colors">
       <div>
         <h2 className="text-base font-semibold text-slate-800 tracking-tight">Executive Dashboard</h2>
         <p className="text-xs text-slate-400">Used Car Showroom Enterprise System</p>

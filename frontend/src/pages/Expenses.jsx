@@ -105,7 +105,7 @@ const Expenses = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
           <Filter className="w-4 h-4 text-slate-400 flex-shrink-0" />
           {['ALL', 'Utilities', 'Food/Tea', 'Maintenance', 'Fuel', 'Marketing', 'Misc'].map((cat) => (
@@ -129,7 +129,7 @@ const Expenses = () => {
       </div>
 
       {/* Expenses Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
             <LoadingSpinner size="lg" label="Loading daily expenses ledger..." />

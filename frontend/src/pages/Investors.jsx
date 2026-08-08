@@ -99,7 +99,7 @@ const Investors = () => {
       {/* Investor Profile Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {investors.map((inv) => (
-          <div key={inv.id} className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4 hover:border-blue-300 hover:shadow-md transition-all">
+          <div key={inv.id} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4 hover:border-blue-300 hover:shadow-md transition-all">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold text-base shadow-sm">
@@ -130,7 +130,7 @@ const Investors = () => {
       </div>
 
       {/* Vehicle Investments Table & Settlement Payout Actions */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4">
         <h3 className="text-base font-semibold text-slate-800">Car Investments & Profit Settlements</h3>
 
         {loading ? (

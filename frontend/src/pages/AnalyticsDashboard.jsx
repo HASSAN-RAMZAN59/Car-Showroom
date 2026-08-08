@@ -145,7 +145,7 @@ const AnalyticsDashboard = () => {
   return (
     <div className="space-y-8">
       {/* Header & Global Time Range Controls */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-blue-600" />
@@ -281,7 +281,7 @@ const AnalyticsDashboard = () => {
           </div>
 
           {/* Visual Profit & Loss Distribution Breakdown */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
@@ -343,7 +343,7 @@ const AnalyticsDashboard = () => {
       )}
 
       {/* Showroom Inventory Stock Aging & Risk Audit */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-6">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
             <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
@@ -492,7 +492,7 @@ const AnalyticsDashboard = () => {
       </div>
 
       {/* Real-Time Operational System Audit Logs */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
             <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">

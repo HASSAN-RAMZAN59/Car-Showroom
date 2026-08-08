@@ -306,23 +306,23 @@ body:not(.light) .badge-neutral {
    -------------------------------------------------------------------------- */
 html.light {
   /* Backgrounds */
-  --bg-primary: #F8FAFC;        /* bg-slate-50 */
+  --bg-primary: #FFFFFF;        /* pure white bg-white */
   --bg-secondary: #FFFFFF;      /* bg-white */
-  --bg-tertiary: #F1F5F9;       /* bg-slate-100 */
+  --bg-tertiary: #FFFFFF;       /* pure white bg-white */
 
   /* Borders */
   --border-color: #E2E8F0;      /* border-slate-200 */
 
   /* Text Colors */
   --text-primary: #0F172A;      /* text-slate-900 */
-  --text-secondary: #475569;    /* text-slate-600 */
-  --text-muted: #94A3B8;        /* text-slate-400 */
-  --text-label: #334155;        /* text-slate-700 */
+  --text-secondary: #1E293B;    /* text-slate-800 */
+  --text-muted: #64748B;        /* text-slate-500 */
+  --text-label: #1E293B;        /* text-slate-800 */
 
   /* Accent (Royal Blue) */
   --accent-primary: #2563EB;    /* bg-blue-600 */
   --accent-hover: #1D4ED8;      /* bg-blue-700 */
-  --accent-light: rgba(239, 246, 255, 0.8); /* bg-blue-50/80 */
+  --accent-light: #EFF6FF;      /* bg-blue-50 */
   --accent-border: #BFDBFE;     /* border-blue-200 */
   --accent-text: #1D4ED8;       /* text-blue-700 */
 
@@ -335,12 +335,13 @@ html.light {
   --danger-bg: #FEF2F2;
 
   color-scheme: light;
-  background-color: var(--bg-primary);
+  background-color: #FFFFFF !important;
   color: var(--text-secondary);
 }
 
-html.light body {
-  background-color: var(--bg-primary) !important;
+html.light body,
+html.light #root {
+  background-color: #FFFFFF !important;
   color: var(--text-secondary) !important;
   font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
@@ -369,11 +370,11 @@ html.light p,
 html.light span,
 html.light td,
 html.light li {
-  color: #475569;              /* text-slate-600 */
+  color: #1E293B;              /* text-slate-800 / text-slate-900 */
 }
 
 html.light label {
-  color: #334155 !important;   /* text-slate-700 */
+  color: #1E293B !important;   /* text-slate-800 */
   font-size: 0.75rem !important; /* text-xs */
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -385,7 +386,7 @@ html.light label {
 html.light .text-slate-400,
 html.light .text-slate-500,
 html.light .text-muted {
-  color: #94A3B8 !important;   /* text-slate-400 */
+  color: #64748B !important;   /* text-slate-500 */
 }
 
 html.light .text-white,
@@ -396,11 +397,24 @@ html.light .text-slate-900 {
   color: #0F172A !important;
 }
 
-/* Container, Card & Modal Surfaces */
+/* Container, Card & Modal Surfaces - Force Pure White (#FFFFFF) */
 html.light .bg-slate-900,
 html.light .bg-slate-950,
+html.light .bg-slate-50,
+html.light .bg-slate-100,
+html.light .bg-slate-100\/80,
+html.light .bg-slate-100\/60,
+html.light .bg-slate-100\/50,
+html.light .bg-slate-200,
+html.light .bg-gray-50,
+html.light .bg-gray-100,
 html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/60,
 html.light .bg-slate-950\/50,
+html.light .bg-slate-950\/40,
+html.light .bg-slate-800\/80,
 html.light .bg-slate-800\/50,
 html.light .bg-slate-800,
 html.light .glass-panel {
@@ -410,6 +424,7 @@ html.light .glass-panel {
 }
 
 html.light .border-slate-800,
+html.light .border-slate-800\/80,
 html.light .border-slate-700,
 html.light .border-slate-600 {
   border-color: #E2E8F0 !important;
@@ -428,8 +443,8 @@ html.light .bg-gradient-to-br {
 html.light .hover\:border-slate-700:hover,
 html.light .hover\:border-slate-600:hover,
 html.light .hover\:border-indigo-500:hover {
-  border-color: #93C5FD !important; /* border-blue-300 */
-  background-color: rgba(239, 246, 255, 0.4) !important; /* bg-blue-50/40 */
+  border-color: #BFDBFE !important; /* border-blue-200 */
+  background-color: #EFF6FF !important; /* bg-blue-50 */
 }
 
 /* Sidebar & Navigation */
@@ -441,19 +456,20 @@ html.light aside {
 
 html.light aside a.active,
 html.light aside .bg-indigo-600\/15 {
-  background-color: #2563EB !important;
-  color: #FFFFFF !important;
-  border-color: #2563EB !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  background-color: #DBEAFE !important; /* bg-blue-100 */
+  color: #1E40AF !important;            /* text-blue-800 */
+  border-left: 4px solid #2563EB !important; /* border-l-4 border-blue-600 */
+  font-weight: 600 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
 }
 
 html.light aside a.active svg,
 html.light aside .bg-indigo-600\/15 svg {
-  color: #FFFFFF !important;
+  color: #1E40AF !important;
 }
 
 html.light aside a:not(.active) {
-  color: #475569 !important;
+  color: #334155 !important;
 }
 
 html.light aside a:not(.active):hover {
@@ -477,9 +493,9 @@ html.light table {
 html.light table thead,
 html.light table th,
 html.light table thead tr {
-  background-color: rgba(241, 245, 249, 0.8) !important; /* bg-slate-100/80 */
-  color: #334155 !important;                              /* text-slate-700 */
-  border-bottom: 1px solid #E2E8F0 !important;
+  background-color: #FFFFFF !important;                 /* Pure White table headers */
+  color: #0F172A !important;                              /* text-slate-900 */
+  border-bottom: 2px solid #E2E8F0 !important;
   font-size: 0.75rem !important;                           /* text-xs */
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -494,17 +510,17 @@ html.light table tbody tr {
 }
 
 html.light table tbody tr:hover {
-  background-color: rgba(239, 246, 255, 0.4) !important;   /* bg-blue-50/40 */
+  background-color: #EFF6FF !important;                  /* bg-blue-50 */
 }
 
 html.light table td {
-  color: #475569 !important;                              /* text-slate-600 */
+  color: #1E293B !important;                              /* text-slate-800 */
   border-color: #F1F5F9 !important;
   font-size: 0.875rem !important;                          /* text-sm */
 }
 
 html.light table th {
-  color: #334155 !important;
+  color: #0F172A !important;
 }
 
 /* Primary Buttons */
@@ -533,11 +549,13 @@ html.light button[type="submit"]:not(.bg-secondary):hover {
 /* Secondary / Ghost Buttons */
 html.light button.bg-slate-800,
 html.light button.bg-slate-700,
+html.light button.bg-slate-100,
+html.light button.bg-slate-50,
 html.light .bg-slate-800,
 html.light .bg-slate-700 {
-  background-color: #F1F5F9 !important;                   /* bg-slate-100 */
-  color: #334155 !important;                              /* text-slate-700 */
-  border: 1px solid #E2E8F0 !important;                   /* border-slate-200 */
+  background-color: #FFFFFF !important;                   /* bg-white */
+  color: #1E293B !important;                              /* text-slate-800 */
+  border: 1px solid #CBD5E1 !important;                   /* border-slate-300 */
   font-weight: 500 !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
   border-radius: 0.5rem !important;                       /* rounded-lg */
@@ -545,9 +563,11 @@ html.light .bg-slate-700 {
 }
 
 html.light button.bg-slate-800:hover,
-html.light button.bg-slate-700:hover {
+html.light button.bg-slate-700:hover,
+html.light button.bg-slate-100:hover,
+html.light button.bg-slate-50:hover {
   background-color: #EFF6FF !important;                   /* hover:bg-blue-50 */
-  color: #2563EB !important;                              /* hover:text-blue-600 */
+  color: #1D4ED8 !important;                              /* hover:text-blue-700 */
   border-color: #BFDBFE !important;                       /* border-blue-200 */
 }
 
@@ -588,14 +608,16 @@ html.light .pill-active {
 
 html.light .tab-inactive,
 html.light .pill-inactive {
-  background-color: #F1F5F9 !important;                   /* bg-slate-100 */
+  background-color: #FFFFFF !important;                   /* bg-white */
   color: #475569 !important;                              /* text-slate-600 */
+  border: 1px solid #E2E8F0 !important;
 }
 
 html.light .tab-inactive:hover,
 html.light .pill-inactive:hover {
-  background-color: #E2E8F0 !important;                   /* hover:bg-slate-200 */
-  color: #0F172A !important;                              /* hover:text-slate-900 */
+  background-color: #EFF6FF !important;                   /* hover:bg-blue-50 */
+  color: #1D4ED8 !important;                              /* hover:text-blue-700 */
+  border-color: #BFDBFE !important;
 }
 
 /* Status Badges */

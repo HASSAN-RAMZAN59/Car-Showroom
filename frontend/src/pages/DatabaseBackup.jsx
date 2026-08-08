@@ -52,7 +52,7 @@ const DatabaseBackup = () => {
       {/* Status & Export Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Connection Status Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl">
               <Server className="w-6 h-6" />
@@ -83,7 +83,7 @@ const DatabaseBackup = () => {
         </div>
 
         {/* Snapshot Content Summary Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-blue-50 text-blue-600 border border-blue-200 rounded-xl">
               <HardDrive className="w-6 h-6" />
@@ -123,7 +123,7 @@ const DatabaseBackup = () => {
         </div>
 
         {/* Action Export Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4 flex flex-col justify-between">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4 flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <div className="p-3 bg-cyan-50 text-cyan-600 border border-cyan-200 rounded-xl">
@@ -170,7 +170,7 @@ const DatabaseBackup = () => {
       )}
 
       {/* Disaster Recovery Protocol Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
         <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
           <ShieldCheck className="w-5 h-5 text-blue-600" />
           <h3 className="text-base font-semibold text-slate-800">Disaster Recovery & Data Security Protocol</h3>
