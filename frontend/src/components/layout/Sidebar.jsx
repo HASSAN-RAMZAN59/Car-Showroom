@@ -116,12 +116,12 @@ const Sidebar = () => {
     <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-screen sticky top-0">
       {/* Brand Header */}
       <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-        <div className="p-2 bg-indigo-600 rounded-xl text-white flex items-center justify-center">
+        <div className="p-2 bg-blue-600 rounded-xl text-white flex items-center justify-center shadow-sm">
           <CarFront className="w-5 h-5 text-white" />
         </div>
         <div>
           <h1 className="text-sm font-bold tracking-wide">AUTO SHOWROOM</h1>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-indigo-400">ERP Suite v1.0</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-500">ERP Suite v1.0</p>
         </div>
       </div>
 
@@ -134,10 +134,10 @@ const Sidebar = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
                   isActive
-                    ? 'active bg-indigo-600/15 text-indigo-400 border border-indigo-500/30'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent'
+                    ? 'active bg-blue-600 text-white shadow-sm border border-blue-600'
+                    : 'text-slate-400 hover:bg-blue-50/80 hover:text-blue-700 border border-transparent'
                 }`
               }
             >
@@ -152,7 +152,7 @@ const Sidebar = () => {
       <div className="p-4 border-t border-slate-800 bg-slate-950/50">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-medium text-slate-400">Access Level:</span>
-          <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+          <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-blue-500/10 text-blue-500 border border-blue-500/20">
             {role}
           </span>
         </div>

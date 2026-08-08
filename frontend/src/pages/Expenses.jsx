@@ -61,16 +61,16 @@ const Expenses = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Daily Showroom Expenses</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Showroom Expenses</h1>
           <p className="text-xs text-slate-400 mt-1">Operational expense management, bank auto-deductions, and Cloudinary receipts</p>
         </div>
 
         <button
           onClick={() => setIsLogModalOpen(true)}
-          className="px-5 py-2.5 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-rose-600/25 flex items-center gap-2 transition-all"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm flex items-center gap-2 transition-all"
         >
           <Plus className="w-4 h-4" />
-          <span>+ Record Expense</span>
+          <span>Record Expense</span>
         </button>
       </div>
 
@@ -105,17 +105,17 @@ const Expenses = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
           <Filter className="w-4 h-4 text-slate-400 flex-shrink-0" />
           {['ALL', 'Utilities', 'Food/Tea', 'Maintenance', 'Fuel', 'Marketing', 'Misc'].map((cat) => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                 categoryFilter === cat
-                  ? 'bg-rose-600/20 text-rose-400 border border-rose-500/30'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
               }`}
             >
               {cat}
@@ -123,13 +123,13 @@ const Expenses = () => {
           ))}
         </div>
 
-        <div className="text-xs font-bold text-slate-300">
-          Total Sum: <span className="text-rose-400 font-extrabold text-sm">PKR {totalExpenseSum.toLocaleString()}</span>
+        <div className="text-xs font-semibold text-slate-700">
+          Total Sum: <span className="text-rose-600 font-bold text-sm">PKR {totalExpenseSum.toLocaleString()}</span>
         </div>
       </div>
 
       {/* Expenses Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
             <LoadingSpinner size="lg" label="Loading daily expenses ledger..." />
@@ -137,7 +137,7 @@ const Expenses = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+              <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="py-3.5 px-6">Expense Title</th>
                   <th className="py-3.5 px-6">Category</th>
@@ -148,26 +148,26 @@ const Expenses = () => {
                   <th className="py-3.5 px-6">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-slate-600">
                 {expenses.length > 0 ? (
                   expenses.map((exp) => (
-                    <tr key={exp.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-4 px-6 font-bold text-white">
+                    <tr key={exp.id} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="py-4 px-6 font-bold text-slate-900">
                         {exp.expense_name}
                         {exp.reason && <p className="text-[11px] font-normal text-slate-400">{exp.reason}</p>}
                       </td>
 
                       <td className="py-4 px-6">
-                        <span className="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                        <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                           {exp.category}
                         </span>
                       </td>
 
-                      <td className="py-4 px-6 font-extrabold text-rose-400">
+                      <td className="py-4 px-6 font-bold text-rose-600">
                         PKR {exp.amount ? exp.amount.toLocaleString() : '0'}
                       </td>
 
-                      <td className="py-4 px-6 font-semibold text-slate-300">
+                      <td className="py-4 px-6 font-semibold text-slate-700">
                         {exp.payment_method}
                       </td>
 
@@ -177,23 +177,23 @@ const Expenses = () => {
                             href={exp.receipt_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-bold rounded-lg transition-all inline-flex items-center gap-1"
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 text-[11px] font-medium rounded-lg transition-all inline-flex items-center gap-1 shadow-sm"
                           >
                             <span>📄 View Receipt</span>
                           </a>
                         ) : (
-                          <span className="text-[11px] text-slate-500 italic">No receipt attached</span>
+                          <span className="text-[11px] text-slate-400 italic">No receipt attached</span>
                         )}
                       </td>
 
-                      <td className="py-4 px-6 text-slate-400 font-mono">
+                      <td className="py-4 px-6 text-slate-500 font-mono">
                         {exp.date ? new Date(exp.date).toLocaleDateString() : 'N/A'}
                       </td>
 
                       <td className="py-4 px-6">
                         <button
                           onClick={() => handleDeleteExpense(exp.id)}
-                          className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-all"
+                          className="p-1.5 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
                           title="Delete Expense Record"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -203,7 +203,7 @@ const Expenses = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-500">
+                    <td colSpan={7} className="py-12 text-center text-slate-400">
                       No daily expenses logged for the selected category.
                     </td>
                   </tr>

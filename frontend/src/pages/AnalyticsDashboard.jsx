@@ -145,48 +145,48 @@ const AnalyticsDashboard = () => {
   return (
     <div className="space-y-8">
       {/* Header & Global Time Range Controls */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-indigo-400" />
-            <h1 className="text-xl font-extrabold text-white tracking-tight">Executive Financial &amp; Operational Analytics</h1>
+            <BarChart3 className="w-6 h-6 text-blue-600" />
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Executive Financial & Operational Analytics</h1>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Dynamic P&amp;L reporting, showroom stock turnover, and live security audit trails
+            Dynamic P&L reporting, showroom stock turnover, and live security audit trails
           </p>
         </div>
 
         {/* Dynamic Preset & Custom Date Selector */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex bg-slate-950 p-1 rounded-2xl border border-slate-800 text-xs font-semibold">
+          <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium">
             <button
               onClick={() => handlePresetChange('ALL')}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
-                preset === 'ALL' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-md transition-all ${
+                preset === 'ALL' ? 'bg-blue-600 text-white shadow-sm font-medium' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               All Time
             </button>
             <button
               onClick={() => handlePresetChange('THIS_MONTH')}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
-                preset === 'THIS_MONTH' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-md transition-all ${
+                preset === 'THIS_MONTH' ? 'bg-blue-600 text-white shadow-sm font-medium' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               This Month
             </button>
             <button
               onClick={() => handlePresetChange('LAST_30')}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
-                preset === 'LAST_30' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-md transition-all ${
+                preset === 'LAST_30' ? 'bg-blue-600 text-white shadow-sm font-medium' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Last 30 Days
             </button>
             <button
               onClick={() => handlePresetChange('THIS_YEAR')}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
-                preset === 'THIS_YEAR' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-md transition-all ${
+                preset === 'THIS_YEAR' ? 'bg-blue-600 text-white shadow-sm font-medium' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               This Year
@@ -198,18 +198,18 @@ const AnalyticsDashboard = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+              className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
             />
-            <span className="text-slate-500 text-xs">to</span>
+            <span className="text-slate-400 text-xs">to</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="px-3.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+              className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
             />
             <button
               type="submit"
-              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition-all border border-slate-700"
+              className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg transition-all shadow-sm"
             >
               Apply
             </button>
@@ -281,11 +281,11 @@ const AnalyticsDashboard = () => {
           </div>
 
           {/* Visual Profit & Loss Distribution Breakdown */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <PieChart className="w-5 h-5 text-indigo-400" />
+                <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
+                  <PieChart className="w-5 h-5 text-blue-600" />
                   <span>Showroom Financial Allocation Breakdown</span>
                 </h3>
                 <p className="text-xs text-slate-400">Proportional comparison of revenue, capital cost, operational expenses, and net profit</p>
@@ -295,14 +295,14 @@ const AnalyticsDashboard = () => {
             <div className="space-y-3 pt-2">
               <div>
                 <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span className="text-slate-300">Vehicle Cost Basis (COGS)</span>
-                  <span className="text-indigo-400 font-mono">
+                  <span className="text-slate-700">Vehicle Cost Basis (COGS)</span>
+                  <span className="text-blue-600 font-mono">
                     {revenue > 0 ? ((cost / revenue) * 100).toFixed(1) : '0'}% of Revenue
                   </span>
                 </div>
-                <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                    className="h-full bg-blue-600 rounded-full transition-all duration-500"
                     style={{ width: `${revenue > 0 ? Math.min(100, (cost / revenue) * 100) : 0}%` }}
                   />
                 </div>
@@ -310,12 +310,12 @@ const AnalyticsDashboard = () => {
 
               <div>
                 <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span className="text-slate-300">Operational Expenses &amp; Payroll</span>
-                  <span className="text-amber-400 font-mono">
+                  <span className="text-slate-700">Operational Expenses & Payroll</span>
+                  <span className="text-amber-600 font-mono">
                     {revenue > 0 ? (((expenses + payroll) / revenue) * 100).toFixed(1) : '0'}% of Revenue
                   </span>
                 </div>
-                <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div
                     className="h-full bg-amber-500 rounded-full transition-all duration-500"
                     style={{ width: `${revenue > 0 ? Math.min(100, ((expenses + payroll) / revenue) * 100) : 0}%` }}
@@ -325,12 +325,12 @@ const AnalyticsDashboard = () => {
 
               <div>
                 <div className="flex justify-between text-xs font-semibold mb-1">
-                  <span className="text-slate-300">Net Showroom Profit Margin</span>
-                  <span className="text-emerald-400 font-mono">
+                  <span className="text-slate-700">Net Showroom Profit Margin</span>
+                  <span className="text-emerald-600 font-mono">
                     {revenue > 0 ? ((netProfit / revenue) * 100).toFixed(1) : '0'}% Margin
                   </span>
                 </div>
-                <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div
                     className="h-full bg-emerald-500 rounded-full transition-all duration-500"
                     style={{ width: `${revenue > 0 ? Math.min(100, Math.max(0, (netProfit / revenue) * 100)) : 0}%` }}
@@ -343,11 +343,11 @@ const AnalyticsDashboard = () => {
       )}
 
       {/* Showroom Inventory Stock Aging & Risk Audit */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Clock className="w-5 h-5 text-amber-400" />
+            <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-amber-600" />
               <span>Inventory Stock Aging Audit</span>
             </h3>
             <p className="text-xs text-slate-400">Track parked stock duration to minimize capital lockup and identify slow-moving cars</p>
@@ -355,50 +355,50 @@ const AnalyticsDashboard = () => {
 
           {/* Quick Metrics */}
           <div className="flex flex-wrap items-center gap-4 text-xs font-semibold">
-            <div className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl">
-              <span className="text-slate-400 block text-[10px]">Unsold Vehicles</span>
-              <span className="text-white font-extrabold">{agingData?.total_unsold_vehicles || 0} Units</span>
+            <div className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg">
+              <span className="text-slate-500 block text-[10px]">Unsold Vehicles</span>
+              <span className="text-slate-900 font-bold">{agingData?.total_unsold_vehicles || 0} Units</span>
             </div>
-            <div className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl">
-              <span className="text-slate-400 block text-[10px]">Capital Locked</span>
-              <span className="text-emerald-400 font-extrabold">
+            <div className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg">
+              <span className="text-slate-500 block text-[10px]">Capital Locked</span>
+              <span className="text-emerald-600 font-bold">
                 PKR {((agingData?.total_capital_locked || 0) / 100000).toFixed(1)}L
               </span>
             </div>
-            <div className="px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-xl">
+            <div className="px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-700 rounded-lg">
               <span className="block text-[10px]">Slow (&gt;30 Days)</span>
-              <span className="font-extrabold">{agingData?.slow_moving_30_days_count || 0} Cars</span>
+              <span className="font-bold">{agingData?.slow_moving_30_days_count || 0} Cars</span>
             </div>
-            <div className="px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl">
+            <div className="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg">
               <span className="block text-[10px]">Critical (&gt;60 Days)</span>
-              <span className="font-extrabold">{agingData?.slow_moving_60_days_count || 0} Cars</span>
+              <span className="font-bold">{agingData?.slow_moving_60_days_count || 0} Cars</span>
             </div>
           </div>
         </div>
 
         {/* Controls & Search */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex bg-slate-950 p-1 rounded-2xl border border-slate-800 text-xs font-semibold w-full sm:w-auto">
+          <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium w-full sm:w-auto">
             <button
               onClick={() => setAgingFilter('ALL')}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
-                agingFilter === 'ALL' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-md transition-all ${
+                agingFilter === 'ALL' ? 'bg-blue-600 text-white shadow-sm font-medium' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               All Unsold Vehicles ({vehiclesList.length})
             </button>
             <button
               onClick={() => setAgingFilter('SLOW_30')}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
-                agingFilter === 'SLOW_30' ? 'bg-amber-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-md transition-all ${
+                agingFilter === 'SLOW_30' ? 'bg-amber-600 text-white shadow-sm font-medium' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               &gt; 30 Days ({agingData?.slow_moving_30_days_count || 0})
             </button>
             <button
               onClick={() => setAgingFilter('CRITICAL_60')}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
-                agingFilter === 'CRITICAL_60' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-md transition-all ${
+                agingFilter === 'CRITICAL_60' ? 'bg-rose-600 text-white shadow-sm font-medium' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               &gt; 60 Days ({agingData?.slow_moving_60_days_count || 0})
@@ -406,13 +406,13 @@ const AnalyticsDashboard = () => {
           </div>
 
           <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
               placeholder="Search vehicle stock..."
               value={inventorySearch}
               onChange={(e) => setInventorySearch(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
             />
           </div>
         </div>
@@ -420,17 +420,17 @@ const AnalyticsDashboard = () => {
         {/* Stock Aging Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+            <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
               <tr>
                 <th className="py-3.5 px-6">Registration</th>
-                <th className="py-3.5 px-6">Vehicle Make &amp; Model</th>
+                <th className="py-3.5 px-6">Vehicle Make & Model</th>
                 <th className="py-3.5 px-6">Purchase Price</th>
                 <th className="py-3.5 px-6">Acquired Date</th>
                 <th className="py-3.5 px-6">Days in Showroom</th>
                 <th className="py-3.5 px-6">Aging Risk Level</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-300">
+            <tbody className="divide-y divide-slate-100 text-slate-600">
               {filteredVehicles.length > 0 ? (
                 filteredVehicles.map((item) => {
                   const days = item.days_in_stock ?? 0;
@@ -438,14 +438,14 @@ const AnalyticsDashboard = () => {
                   const isModerateRisk = days >= 30;
 
                   return (
-                    <tr key={item.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-4 px-6 font-mono font-bold text-white">{item.car_number}</td>
+                    <tr key={item.id} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="py-4 px-6 font-mono font-bold text-slate-900">{item.car_number}</td>
 
-                      <td className="py-4 px-6 font-semibold text-slate-200">
+                      <td className="py-4 px-6 font-semibold text-slate-800">
                         {item.make} {item.model} ({item.year}) {item.color ? `• ${item.color}` : ''}
                       </td>
 
-                      <td className="py-4 px-6 font-extrabold text-emerald-400">
+                      <td className="py-4 px-6 font-bold text-emerald-600">
                         PKR {item.purchase_price ? item.purchase_price.toLocaleString() : '0'}
                       </td>
 
@@ -454,26 +454,26 @@ const AnalyticsDashboard = () => {
                       </td>
 
                       <td className="py-4 px-6 font-extrabold">
-                        <span className={isHighRisk ? 'text-rose-400' : isModerateRisk ? 'text-amber-400' : 'text-emerald-400'}>
+                        <span className={isHighRisk ? 'text-rose-600' : isModerateRisk ? 'text-amber-600' : 'text-emerald-600'}>
                           {days} Days
                         </span>
                       </td>
 
                       <td className="py-4 px-6">
                         <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-extrabold border ${
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${
                             isHighRisk
-                              ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                              ? 'bg-rose-50 text-rose-700 border-rose-200'
                               : isModerateRisk
-                              ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                              : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                              ? 'bg-amber-50 text-amber-700 border-amber-200'
+                              : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                           }`}
                         >
                           {isHighRisk
-                            ? 'CRITICAL (&gt;60 Days)'
+                            ? 'CRITICAL (>60 Days)'
                             : isModerateRisk
-                            ? 'SLOW MOVING (&gt;30 Days)'
-                            : 'FRESH STOCK (&lt;30 Days)'}
+                            ? 'SLOW MOVING (>30 Days)'
+                            : 'FRESH STOCK (<30 Days)'}
                         </span>
                       </td>
                     </tr>
@@ -481,7 +481,7 @@ const AnalyticsDashboard = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-500">
+                  <td colSpan={6} className="py-12 text-center text-slate-400">
                     No vehicles found matching current aging criteria.
                   </td>
                 </tr>
@@ -492,11 +492,11 @@ const AnalyticsDashboard = () => {
       </div>
 
       {/* Real-Time Operational System Audit Logs */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-indigo-400" />
+            <h3 className="text-base font-semibold text-slate-800 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-blue-600" />
               <span>Real-Time Operational Audit Logs</span>
             </h3>
             <p className="text-xs text-slate-400">Security event logging, staff transactions, and database state modifications</p>
@@ -505,19 +505,19 @@ const AnalyticsDashboard = () => {
           {/* Filter form */}
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
                 placeholder="Filter action (e.g. CREATE, SELL)..."
                 value={actionFilter}
                 onChange={(e) => setActionFilter(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500"
+                className="pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
               />
             </div>
 
             <button
               onClick={fetchAuditLogs}
-              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl flex items-center gap-1 transition-all shadow-md shadow-indigo-600/20"
+              className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg flex items-center gap-1 transition-all shadow-sm"
             >
               <Filter className="w-3.5 h-3.5" />
               <span>Filter Logs</span>
@@ -532,7 +532,7 @@ const AnalyticsDashboard = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+              <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="py-3.5 px-6">Timestamp</th>
                   <th className="py-3.5 px-6">User / Actor</th>
@@ -541,30 +541,30 @@ const AnalyticsDashboard = () => {
                   <th className="py-3.5 px-6">IP Address</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-slate-600">
                 {auditLogs.length > 0 ? (
                   auditLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-800/40 transition-colors">
+                    <tr key={log.id} className="hover:bg-blue-50/40 transition-colors">
                       <td className="py-4 px-6 font-mono text-slate-400">
                         {log.created_at ? new Date(log.created_at).toLocaleString() : 'N/A'}
                       </td>
-                      <td className="py-4 px-6 font-semibold text-white">
+                      <td className="py-4 px-6 font-bold text-slate-900">
                         {log.user ? `${log.user.full_name} (${log.user.email})` : 'System / Automated'}
                       </td>
-                      <td className="py-4 px-6 font-mono font-bold text-indigo-400">
+                      <td className="py-4 px-6 font-mono font-bold text-blue-600">
                         {log.action}
                       </td>
-                      <td className="py-4 px-6 font-mono text-slate-300">
+                      <td className="py-4 px-6 font-mono text-slate-600">
                         {log.entity_type ? `${log.entity_type} [${log.entity_id ? log.entity_id.slice(0, 8) : 'N/A'}]` : 'N/A'}
                       </td>
-                      <td className="py-4 px-6 font-mono text-slate-500">
+                      <td className="py-4 px-6 font-mono text-slate-400">
                         {log.ip_address || '127.0.0.1'}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-12 text-center text-slate-500">
+                    <td colSpan={5} className="py-12 text-center text-slate-400">
                       No system audit log entries found matching criteria.
                     </td>
                   </tr>

@@ -45,7 +45,7 @@ const UserManagement = () => {
       {/* Header Banner & Modal Action (Admin Only) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Team &amp; User Management</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Team & User Management</h1>
           <p className="text-xs text-slate-400 mt-1">Manage showroom employees, managers, and system administrator access</p>
         </div>
 
@@ -53,33 +53,33 @@ const UserManagement = () => {
         {isAdmin && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 transition-all"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all"
           >
             <UserPlus className="w-4 h-4" />
-            <span>➕ Add New User / Staff Member</span>
+            <span>Add New User / Staff</span>
           </button>
         )}
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, email, or phone..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all"
+            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
           />
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <label className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Role:</label>
+          <label className="text-xs text-slate-700 font-semibold uppercase tracking-wider">Role:</label>
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500 transition-all"
+            className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
           >
             <option value="">All Roles</option>
             <option value="ADMIN">ADMIN</option>
@@ -90,7 +90,7 @@ const UserManagement = () => {
       </div>
 
       {/* User Table Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
             <LoadingSpinner size="lg" label="Loading system user list from database..." />
@@ -98,7 +98,7 @@ const UserManagement = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+              <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="py-3.5 px-6">User Name</th>
                   <th className="py-3.5 px-6">Contact Email</th>
@@ -108,39 +108,39 @@ const UserManagement = () => {
                   <th className="py-3.5 px-6">Registered Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-slate-600">
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map((u) => (
-                    <tr key={u.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-4 px-6 font-bold text-white flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center font-bold">
+                    <tr key={u.id} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="py-4 px-6 font-bold text-slate-900 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold">
                           {u.full_name?.charAt(0).toUpperCase()}
                         </div>
                         <span>{u.full_name}</span>
                       </td>
 
-                      <td className="py-4 px-6 font-mono text-slate-300">
+                      <td className="py-4 px-6 font-mono text-slate-600">
                         <div className="flex items-center gap-2">
-                          <Mail className="w-3.5 h-3.5 text-slate-500" />
+                          <Mail className="w-3.5 h-3.5 text-slate-400" />
                           <span>{u.email}</span>
                         </div>
                       </td>
 
-                      <td className="py-4 px-6 text-slate-400">
+                      <td className="py-4 px-6 text-slate-600">
                         <div className="flex items-center gap-2">
-                          <Phone className="w-3.5 h-3.5 text-slate-500" />
+                          <Phone className="w-3.5 h-3.5 text-slate-400" />
                           <span>{u.phone || 'N/A'}</span>
                         </div>
                       </td>
 
                       <td className="py-4 px-6">
                         <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-extrabold border tracking-wider uppercase ${
+                          className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold border tracking-wider uppercase ${
                             u.role === 'ADMIN'
-                              ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                              ? 'bg-blue-50 text-blue-700 border-blue-200'
                               : u.role === 'MANAGER'
-                              ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
-                              : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                              ? 'bg-cyan-50 text-cyan-700 border-cyan-200'
+                              : 'bg-slate-100 text-slate-600 border-slate-200'
                           }`}
                         >
                           {u.role}
@@ -148,15 +148,15 @@ const UserManagement = () => {
                       </td>
 
                       <td className="py-4 px-6">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span>
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
                           Active
                         </span>
                       </td>
 
                       <td className="py-4 px-6 text-slate-400">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
                           <span>{u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</span>
                         </div>
                       </td>
@@ -164,7 +164,7 @@ const UserManagement = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-slate-500">
+                    <td colSpan={6} className="py-12 text-center text-slate-400">
                       No system users found matching filter criteria.
                     </td>
                   </tr>

@@ -42,31 +42,31 @@ const Sales = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Sales & Invoicing Ledger</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Sales & Invoicing Ledger</h1>
           <p className="text-xs text-slate-400 mt-1">Vehicle sales contracts, net profit accounting, and official PDF Sale Deeds</p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsTokenModalOpen(true)}
-            className="px-4 py-2.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 border border-amber-500/30 font-bold text-xs rounded-xl transition-all flex items-center gap-2"
+            className="px-4 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all flex items-center gap-2 shadow-sm"
           >
-            <CalendarCheck className="w-4 h-4" />
+            <CalendarCheck className="w-4 h-4 text-amber-600" />
             <span>Advance Token</span>
           </button>
 
           <button
             onClick={() => setIsSaleModalOpen(true)}
-            className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/25 flex items-center gap-2 transition-all"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm flex items-center gap-2 transition-all"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Log New Vehicle Sale</span>
+            <span>Log New Vehicle Sale</span>
           </button>
         </div>
       </div>
 
       {/* Sales Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 flex justify-center">
             <LoadingSpinner size="lg" label="Loading sales transaction ledger..." />
@@ -74,7 +74,7 @@ const Sales = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+              <thead className="bg-slate-100/80 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="py-3.5 px-6">Sale ID</th>
                   <th className="py-3.5 px-6">Final Selling Price</th>
@@ -85,23 +85,23 @@ const Sales = () => {
                   <th className="py-3.5 px-6">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-slate-600">
                 {sales.length > 0 ? (
                   sales.map((sale) => (
-                    <tr key={sale.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-4 px-6 font-mono font-bold text-white uppercase">
+                    <tr key={sale.id} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="py-4 px-6 font-mono font-bold text-slate-900 uppercase">
                         #{sale.id.slice(0, 8)}
                       </td>
 
-                      <td className="py-4 px-6 font-extrabold text-emerald-400">
+                      <td className="py-4 px-6 font-extrabold text-emerald-600">
                         PKR {sale.final_sale_price ? sale.final_sale_price.toLocaleString() : '0'}
                       </td>
 
-                      <td className="py-4 px-6 font-semibold text-slate-400">
+                      <td className="py-4 px-6 font-semibold text-slate-500">
                         PKR {sale.total_cost_basis ? sale.total_cost_basis.toLocaleString() : '0'}
                       </td>
 
-                      <td className="py-4 px-6 font-extrabold text-cyan-400">
+                      <td className="py-4 px-6 font-extrabold text-cyan-600">
                         PKR {sale.net_profit ? sale.net_profit.toLocaleString() : '0'}
                       </td>
 
@@ -109,9 +109,9 @@ const Sales = () => {
                         <StatusBadge status={sale.payment_type} />
                       </td>
 
-                      <td className="py-4 px-6 text-slate-400">
+                      <td className="py-4 px-6 text-slate-500">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
                           <span>{sale.sale_date ? new Date(sale.sale_date).toLocaleDateString() : 'N/A'}</span>
                         </div>
                       </td>
@@ -119,9 +119,9 @@ const Sales = () => {
                       <td className="py-4 px-6">
                         <button
                           onClick={() => setActivePdfSale(sale)}
-                          className="px-3 py-1.5 bg-indigo-600/15 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 font-bold rounded-lg transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium rounded-lg transition-all flex items-center gap-1.5 shadow-sm"
                         >
-                          <FileText className="w-3.5 h-3.5" />
+                          <FileText className="w-3.5 h-3.5 text-blue-600" />
                           <span>View Sale Deed</span>
                         </button>
                       </td>
@@ -129,7 +129,7 @@ const Sales = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-500">
+                    <td colSpan={7} className="py-12 text-center text-slate-400">
                       No sales transactions recorded yet.
                     </td>
                   </tr>

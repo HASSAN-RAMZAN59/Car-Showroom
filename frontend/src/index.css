@@ -4,45 +4,336 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 min-h-screen transition-colors duration-200;
+    @apply min-h-screen transition-colors duration-200;
   }
 }
 
 /* ==========================================================================
-   PRODUCTION SAAS LIGHT MODE DESIGN SYSTEM (Stripe / Linear Level)
+   ENTERPRISE ERP DASHBOARD DESIGN SYSTEM (Stripe / Linear / Vercel Level)
    ========================================================================== */
 
-:root {
-  /* Backgrounds */
-  --bg-primary: #F8FAFC;
-  --bg-secondary: #FFFFFF;
-  --bg-tertiary: #F1F5F9;
+/* --------------------------------------------------------------------------
+   1. REFINED DARK MODE SYSTEM (Default & html.dark)
+   -------------------------------------------------------------------------- */
+:root,
+html.dark {
+  /* Background Layers */
+  --bg-primary: #0B0F19;       /* Main background */
+  --bg-secondary: #111827;     /* Cards, panels, sidebar */
+  --bg-tertiary: #1F2937;      /* Headers, hover, inputs, secondary buttons */
 
   /* Borders */
-  --border-color: #E2E8F0;
+  --border-color: #1E293B;
 
   /* Text */
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #94A3B8;
+  --text-primary: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
 
-  /* Accent (Primary Brand) */
+  /* Accent (Controlled, not neon) */
   --accent-primary: #6366F1;
   --accent-hover: #4F46E5;
-  --accent-light: #EEF2FF;
+  --accent-soft: #312E81;
 
   /* Status */
   --success: #10B981;
-  --success-bg: #ECFDF5;
+  --success-bg: rgba(16, 185, 129, 0.12);
 
   --warning: #F59E0B;
   --danger: #EF4444;
+
+  color-scheme: dark;
+}
+
+html.dark body,
+body:not(.light) {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-secondary) !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Dark Mode Typography Hierarchy */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6,
+body:not(.light) h1,
+body:not(.light) h2,
+body:not(.light) h3,
+body:not(.light) h4,
+body:not(.light) h5,
+body:not(.light) h6 {
+  color: var(--text-primary) !important;
+  font-weight: 700;
+}
+
+html.dark p,
+html.dark span,
+html.dark div,
+html.dark td,
+html.dark li,
+body:not(.light) p,
+body:not(.light) span,
+body:not(.light) div,
+body:not(.light) td,
+body:not(.light) li {
+  color: var(--text-secondary);
+}
+
+html.dark label,
+html.dark .text-slate-400,
+html.dark .text-slate-500,
+html.dark .text-muted,
+body:not(.light) label,
+body:not(.light) .text-slate-400,
+body:not(.light) .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+html.dark .text-white,
+html.dark .text-slate-100,
+body:not(.light) .text-white,
+body:not(.light) .text-slate-100 {
+  color: var(--text-primary) !important;
+}
+
+/* Dark Mode Cards & Panels (Controlled, No Glow) */
+html.dark .bg-slate-900,
+html.dark .bg-slate-950,
+html.dark .bg-slate-900\/80,
+html.dark .bg-slate-950\/50,
+html.dark .bg-slate-800\/50,
+html.dark .bg-slate-800,
+html.dark .glass-panel,
+body:not(.light) .bg-slate-900,
+body:not(.light) .bg-slate-950,
+body:not(.light) .glass-panel {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: none !important;
+}
+
+html.dark .border-slate-800,
+html.dark .border-slate-700,
+html.dark .border-slate-600,
+body:not(.light) .border-slate-800,
+body:not(.light) .border-slate-700 {
+  border-color: var(--border-color) !important;
+}
+
+/* 70% Reduction of Gradients in Dark Mode */
+html.dark .bg-gradient-to-r,
+html.dark .bg-gradient-to-tr,
+html.dark .bg-gradient-to-br,
+body:not(.light) .bg-gradient-to-r,
+body:not(.light) .bg-gradient-to-tr,
+body:not(.light) .bg-gradient-to-br {
+  background-image: none !important;
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Dark Mode Sidebar */
+html.dark aside,
+body:not(.light) aside {
+  background-color: var(--bg-secondary) !important;
+  border-right: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+html.dark aside div,
+html.dark aside nav,
+body:not(.light) aside div,
+body:not(.light) aside nav {
+  border-color: var(--border-color) !important;
+}
+
+/* Active Nav Item (Dark) */
+html.dark aside a.active,
+html.dark aside .bg-indigo-600\/15,
+body:not(.light) aside a.active {
+  background-color: rgba(99, 102, 241, 0.12) !important;
+  color: var(--accent-primary) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  box-shadow: none !important;
+}
+
+html.dark aside a.active svg,
+body:not(.light) aside a.active svg {
+  color: var(--accent-primary) !important;
+}
+
+/* Inactive Nav Hover (Dark) */
+html.dark aside a:not(.active):hover,
+body:not(.light) aside a:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Dark Mode Header / Navbar */
+html.dark header,
+body:not(.light) header {
+  background-color: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Dark Mode Tables */
+html.dark table,
+body:not(.light) table {
+  border-color: var(--border-color) !important;
+}
+
+html.dark table thead,
+html.dark table th,
+html.dark table thead tr,
+body:not(.light) table thead,
+body:not(.light) table th {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  font-weight: 600;
+}
+
+html.dark table tbody tr,
+body:not(.light) table tbody tr {
+  border-bottom: 1px solid var(--border-color) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+html.dark table tbody tr:hover,
+body:not(.light) table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+html.dark table td,
+body:not(.light) table td {
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dark table th,
+body:not(.light) table th {
+  color: var(--text-primary) !important;
+}
+
+/* Dark Mode Buttons */
+html.dark button.bg-indigo-600,
+html.dark button.bg-blue-600,
+html.dark .bg-indigo-600,
+body:not(.light) button.bg-indigo-600 {
+  background-color: var(--accent-primary) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+html.dark button.bg-indigo-600:hover,
+html.dark button.bg-blue-600:hover,
+html.dark .bg-indigo-600:hover,
+body:not(.light) button.bg-indigo-600:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+html.dark button.bg-slate-800,
+html.dark button.bg-slate-700,
+html.dark .bg-slate-800,
+body:not(.light) button.bg-slate-800 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+html.dark button.bg-slate-800:hover,
+html.dark button.bg-slate-700:hover,
+body:not(.light) button.bg-slate-800:hover {
+  background-color: #374151 !important;
+}
+
+/* Dark Mode Input Fields & Search */
+html.dark input,
+html.dark select,
+html.dark textarea,
+body:not(.light) input,
+body:not(.light) select,
+body:not(.light) textarea {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 10px;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus,
+body:not(.light) input:focus,
+body:not(.light) select:focus,
+body:not(.light) textarea:focus {
+  border-color: var(--accent-primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder,
+body:not(.light) input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Dark Mode Status Badges */
+html.dark .badge-active,
+body:not(.light) .badge-active {
+  background-color: var(--success-bg) !important;
+  color: var(--success) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+}
+
+html.dark .badge-neutral,
+body:not(.light) .badge-neutral {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-color) !important;
 }
 
 /* --------------------------------------------------------------------------
-   ROOT & BODY LIGHT STYLING
+   2. REFINED LIGHT MODE SYSTEM (html.light) - ENTERPRISE AUTOMOTIVE ERP
    -------------------------------------------------------------------------- */
 html.light {
+  /* Backgrounds */
+  --bg-primary: #F8FAFC;        /* bg-slate-50 */
+  --bg-secondary: #FFFFFF;      /* bg-white */
+  --bg-tertiary: #F1F5F9;       /* bg-slate-100 */
+
+  /* Borders */
+  --border-color: #E2E8F0;      /* border-slate-200 */
+
+  /* Text Colors */
+  --text-primary: #0F172A;      /* text-slate-900 */
+  --text-secondary: #475569;    /* text-slate-600 */
+  --text-muted: #94A3B8;        /* text-slate-400 */
+  --text-label: #334155;        /* text-slate-700 */
+
+  /* Accent (Royal Blue) */
+  --accent-primary: #2563EB;    /* bg-blue-600 */
+  --accent-hover: #1D4ED8;      /* bg-blue-700 */
+  --accent-light: rgba(239, 246, 255, 0.8); /* bg-blue-50/80 */
+  --accent-border: #BFDBFE;     /* border-blue-200 */
+  --accent-text: #1D4ED8;       /* text-blue-700 */
+
+  /* Status Badges */
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+  --warning: #F59E0B;
+  --warning-bg: #FFFBEB;
+  --danger: #EF4444;
+  --danger-bg: #FEF2F2;
+
   color-scheme: light;
   background-color: var(--bg-primary);
   color: var(--text-secondary);
@@ -51,37 +342,50 @@ html.light {
 html.light body {
   background-color: var(--bg-primary) !important;
   color: var(--text-secondary) !important;
+  font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
-/* --------------------------------------------------------------------------
-   TEXT & FONT HIERARCHY
-   Headings -> bold + --text-primary (#0F172A)
-   Body -> --text-secondary (#475569)
-   Labels & Muted -> --text-muted (#94A3B8)
-   -------------------------------------------------------------------------- */
-html.light h1,
+/* Light Mode Strict Typography Hierarchy & Standard Scaling */
+html.light h1 {
+  color: #0F172A !important;   /* text-slate-900 */
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important; /* tracking-tight */
+}
+
 html.light h2,
-html.light h3,
+html.light h3 {
+  color: #1E293B !important;   /* text-slate-800 */
+  font-weight: 600 !important;
+}
+
 html.light h4,
 html.light h5,
 html.light h6 {
-  color: var(--text-primary) !important;
-  font-weight: 700;
+  color: #1E293B !important;
+  font-weight: 600 !important;
 }
 
 html.light p,
 html.light span,
-html.light div,
 html.light td,
 html.light li {
-  color: var(--text-secondary);
+  color: #475569;              /* text-slate-600 */
 }
 
-html.light label,
+html.light label {
+  color: #334155 !important;   /* text-slate-700 */
+  font-size: 0.75rem !important; /* text-xs */
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important; /* tracking-wider */
+  margin-bottom: 0.25rem !important;
+  display: block;
+}
+
 html.light .text-slate-400,
 html.light .text-slate-500,
 html.light .text-muted {
-  color: var(--text-muted) !important;
+  color: #94A3B8 !important;   /* text-slate-400 */
 }
 
 html.light .text-white,
@@ -89,12 +393,10 @@ html.light .text-slate-100,
 html.light .text-slate-200,
 html.light .text-slate-300,
 html.light .text-slate-900 {
-  color: var(--text-primary) !important;
+  color: #0F172A !important;
 }
 
-/* --------------------------------------------------------------------------
-   CARDS & CONTAINERS (Dashboard / Inventory / Management)
-   -------------------------------------------------------------------------- */
+/* Container, Card & Modal Surfaces */
 html.light .bg-slate-900,
 html.light .bg-slate-950,
 html.light .bg-slate-900\/80,
@@ -102,217 +404,214 @@ html.light .bg-slate-950\/50,
 html.light .bg-slate-800\/50,
 html.light .bg-slate-800,
 html.light .glass-panel {
-  background-color: var(--bg-secondary) !important;
-  border-color: var(--border-color) !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
 }
 
 html.light .border-slate-800,
 html.light .border-slate-700,
-html.light .border-slate-600,
-html.light .border-slate-800\/80 {
-  border-color: var(--border-color) !important;
+html.light .border-slate-600 {
+  border-color: #E2E8F0 !important;
 }
 
-/* Disable gradients & glassmorphism in light mode */
 html.light .bg-gradient-to-r,
 html.light .bg-gradient-to-tr,
 html.light .bg-gradient-to-br {
   background-image: none !important;
-  background-color: var(--bg-secondary) !important;
-  border: 1px solid var(--border-color) !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-/* --------------------------------------------------------------------------
-   SIDEBAR
-   -------------------------------------------------------------------------- */
+/* Hoverable Cards and Interactive Containers */
+html.light .hover\:border-slate-700:hover,
+html.light .hover\:border-slate-600:hover,
+html.light .hover\:border-indigo-500:hover {
+  border-color: #93C5FD !important; /* border-blue-300 */
+  background-color: rgba(239, 246, 255, 0.4) !important; /* bg-blue-50/40 */
+}
+
+/* Sidebar & Navigation */
 html.light aside {
-  background-color: var(--bg-secondary) !important;
-  border-right: 1px solid var(--border-color) !important;
+  background-color: #FFFFFF !important;
+  border-right: 1px solid #E2E8F0 !important;
   box-shadow: none !important;
 }
 
-html.light aside div,
-html.light aside nav {
-  border-color: var(--border-color) !important;
-}
-
-/* Active Nav Item */
 html.light aside a.active,
 html.light aside .bg-indigo-600\/15 {
-  background-color: var(--accent-light) !important;
-  color: var(--accent-primary) !important;
-  border-color: #C7D2FE !important;
-  box-shadow: none !important;
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  border-color: #2563EB !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 html.light aside a.active svg,
 html.light aside .bg-indigo-600\/15 svg {
-  color: var(--accent-primary) !important;
+  color: #FFFFFF !important;
 }
 
-/* Inactive Nav Item */
 html.light aside a:not(.active) {
-  color: var(--text-secondary) !important;
+  color: #475569 !important;
 }
 
 html.light aside a:not(.active):hover {
-  background-color: var(--bg-tertiary) !important;
-  color: var(--text-primary) !important;
+  background-color: #EFF6FF !important; /* bg-blue-50 */
+  color: #1D4ED8 !important;            /* text-blue-700 */
 }
 
-/* --------------------------------------------------------------------------
-   NAVBAR / HEADER
-   -------------------------------------------------------------------------- */
+/* Top Header */
 html.light header {
-  background-color: var(--bg-secondary) !important;
-  border-bottom: 1px solid var(--border-color) !important;
+  background-color: #FFFFFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
   backdrop-filter: none !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03) !important;
 }
 
-/* --------------------------------------------------------------------------
-   TABLES
-   -------------------------------------------------------------------------- */
+/* Data Tables */
 html.light table {
-  border-color: var(--border-color) !important;
+  border-color: #E2E8F0 !important;
 }
 
 html.light table thead,
 html.light table th,
 html.light table thead tr {
-  background-color: var(--bg-tertiary) !important;
-  color: var(--text-secondary) !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  font-weight: 600;
+  background-color: rgba(241, 245, 249, 0.8) !important; /* bg-slate-100/80 */
+  color: #334155 !important;                              /* text-slate-700 */
+  border-bottom: 1px solid #E2E8F0 !important;
+  font-size: 0.75rem !important;                           /* text-xs */
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;                      /* tracking-wider */
 }
 
 html.light table tbody tr {
-  border-bottom: 1px solid var(--border-color) !important;
-  background-color: var(--bg-secondary) !important;
+  border-bottom: 1px solid #F1F5F9 !important;           /* border-slate-100 */
+  background-color: #FFFFFF !important;
+  color: #334155 !important;                              /* text-slate-700 */
+  transition: background-color 0.15s ease;
 }
 
 html.light table tbody tr:hover {
-  background-color: var(--bg-primary) !important;
+  background-color: rgba(239, 246, 255, 0.4) !important;   /* bg-blue-50/40 */
 }
 
 html.light table td {
-  color: var(--text-secondary) !important;
-  border-color: var(--border-color) !important;
+  color: #475569 !important;                              /* text-slate-600 */
+  border-color: #F1F5F9 !important;
+  font-size: 0.875rem !important;                          /* text-sm */
 }
 
 html.light table th {
-  color: var(--text-primary) !important;
+  color: #334155 !important;
 }
 
-/* --------------------------------------------------------------------------
-   BUTTONS
-   -------------------------------------------------------------------------- */
 /* Primary Buttons */
 html.light button.bg-indigo-600,
 html.light button.bg-blue-600,
 html.light .bg-indigo-600,
 html.light .bg-blue-600,
 html.light button[type="submit"]:not(.bg-secondary) {
-  background-color: var(--accent-primary) !important;
+  background-color: #2563EB !important;                   /* bg-blue-600 */
   color: #FFFFFF !important;
   border: none !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  border-radius: 0.5rem !important;                       /* rounded-lg */
+  transition: all 0.15s ease !important;
 }
 
 html.light button.bg-indigo-600:hover,
 html.light button.bg-blue-600:hover,
 html.light .bg-indigo-600:hover,
-html.light .bg-blue-600:hover {
-  background-color: var(--accent-hover) !important;
+html.light .bg-blue-600:hover,
+html.light button[type="submit"]:not(.bg-secondary):hover {
+  background-color: #1D4ED8 !important;                   /* bg-blue-700 */
 }
 
-html.light button.bg-indigo-600 *,
-html.light button.bg-blue-600 * {
-  color: #FFFFFF !important;
-}
-
-/* Secondary Buttons */
+/* Secondary / Ghost Buttons */
 html.light button.bg-slate-800,
 html.light button.bg-slate-700,
 html.light .bg-slate-800,
 html.light .bg-slate-700 {
-  background-color: var(--bg-tertiary) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border-color) !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  background-color: #F1F5F9 !important;                   /* bg-slate-100 */
+  color: #334155 !important;                              /* text-slate-700 */
+  border: 1px solid #E2E8F0 !important;                   /* border-slate-200 */
+  font-weight: 500 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+  border-radius: 0.5rem !important;                       /* rounded-lg */
+  transition: all 0.15s ease !important;
 }
 
 html.light button.bg-slate-800:hover,
-html.light button.bg-slate-700:hover,
-html.light .bg-slate-800:hover,
-html.light .bg-slate-700:hover {
-  background-color: var(--border-color) !important;
+html.light button.bg-slate-700:hover {
+  background-color: #EFF6FF !important;                   /* hover:bg-blue-50 */
+  color: #2563EB !important;                              /* hover:text-blue-600 */
+  border-color: #BFDBFE !important;                       /* border-blue-200 */
 }
 
-/* --------------------------------------------------------------------------
-   INPUTS, SELECTS & TEXTAREAS
-   -------------------------------------------------------------------------- */
+/* Form Inputs, Select Dropdowns & Textareas */
 html.light input,
 html.light select,
 html.light textarea {
-  background-color: var(--bg-secondary) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: 10px;
+  background-color: #FFFFFF !important;                   /* bg-white */
+  color: #0F172A !important;                              /* text-slate-900 */
+  border: 1px solid #CBD5E1 !important;                   /* border-slate-300 */
+  border-radius: 0.5rem !important;                       /* rounded-lg */
+  font-size: 0.875rem !important;                          /* text-sm */
+  padding: 0.5rem 0.75rem !important;                     /* px-3 py-2 */
+  transition: all 0.15s ease !important;
 }
 
 html.light input:focus,
 html.light select:focus,
 html.light textarea:focus {
-  border-color: var(--accent-primary) !important;
+  border-color: #2563EB !important;                       /* focus:border-blue-600 */
   outline: none !important;
-  box-shadow: 0 0 0 2px var(--accent-light) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;  /* focus:ring-2 focus:ring-blue-500/20 */
 }
 
 html.light input::placeholder,
 html.light textarea::placeholder {
-  color: var(--text-muted) !important;
+  color: #94A3B8 !important;                              /* placeholder-slate-400 */
 }
 
-/* --------------------------------------------------------------------------
-   STATUS BADGES
-   -------------------------------------------------------------------------- */
-/* Active / Available / Paid / Completed */
-html.light .badge-active,
-html.light .bg-emerald-500\/10 {
-  background-color: var(--success-bg) !important;
-  color: var(--success) !important;
+/* Active Tab Indicators & Filter Pills */
+html.light .tab-active,
+html.light .pill-active {
+  background-color: #2563EB !important;                   /* bg-blue-600 */
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .tab-inactive,
+html.light .pill-inactive {
+  background-color: #F1F5F9 !important;                   /* bg-slate-100 */
+  color: #475569 !important;                              /* text-slate-600 */
+}
+
+html.light .tab-inactive:hover,
+html.light .pill-inactive:hover {
+  background-color: #E2E8F0 !important;                   /* hover:bg-slate-200 */
+  color: #0F172A !important;                              /* hover:text-slate-900 */
+}
+
+/* Status Badges */
+html.light .badge-active {
+  background-color: #ECFDF5 !important;
+  color: #059669 !important;
   border: 1px solid #A7F3D0 !important;
 }
 
-/* Sold / Neutral / Draft / Closed / Cold */
-html.light .badge-neutral,
-html.light .bg-slate-500\/10,
-html.light .bg-indigo-500\/10 {
-  background-color: var(--bg-tertiary) !important;
-  color: var(--text-secondary) !important;
-  border: 1px solid var(--border-color) !important;
+html.light .badge-neutral {
+  background-color: #F1F5F9 !important;
+  color: #475569 !important;
+  border: 1px solid #E2E8F0 !important;
 }
 
-/* Warning / Pending / Maintenance */
-html.light .bg-amber-500\/10 {
-  background-color: #FEF3C7 !important;
-  color: var(--warning) !important;
-  border: 1px solid #FDE68A !important;
-}
-
-/* Danger / Overdue / Hot */
-html.light .bg-rose-500\/10 {
-  background-color: #FEF2F2 !important;
-  color: var(--danger) !important;
-  border: 1px solid #FECACA !important;
-}
-
-/* --------------------------------------------------------------------------
-   MODALS & OVERLAYS
-   -------------------------------------------------------------------------- */
+/* Modals & Backdrop */
 html.light .fixed.inset-0.bg-black\/70,
 html.light .fixed.inset-0.bg-black\/50,
 html.light .fixed.inset-0.bg-slate-950\/80 {
@@ -320,29 +619,35 @@ html.light .fixed.inset-0.bg-slate-950\/80 {
   backdrop-filter: blur(4px) !important;
 }
 
-/* --------------------------------------------------------------------------
-   CUSTOM SCROLLBAR (LIGHT MODE)
-   -------------------------------------------------------------------------- */
+/* Scrollbars */
+html.dark .fixed.inset-0.bg-black\/70,
+html.dark .fixed.inset-0.bg-black\/50,
+body:not(.light) .fixed.inset-0.bg-black\/70 {
+  background-color: rgba(11, 15, 25, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #0B0F19;
 }
 html.light ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: #F8FAFC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #1F2937;
   border-radius: 4px;
 }
 html.light ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #374151;
 }
 html.light ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: #94A3B8;
 }
+

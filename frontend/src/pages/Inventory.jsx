@@ -58,31 +58,31 @@ const Inventory = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Showroom Vehicle Inventory</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Showroom Vehicle Inventory</h1>
           <p className="text-xs text-slate-400 mt-1">Manage live vehicle stock, refurbishment expenses, and status transitions</p>
         </div>
 
         <button
           onClick={() => setIsPurchaseModalOpen(true)}
-          className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 transition-all"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all"
         >
           <Plus className="w-4 h-4" />
-          <span>+ Log Vehicle Purchase</span>
+          <span>Log Vehicle Purchase</span>
         </button>
       </div>
 
       {/* Filter Tabs & Auto-Complete Search */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
         {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
           {['ALL', 'AVAILABLE', 'IN_MAINTENANCE', 'RESERVED', 'SOLD'].map((tab) => (
             <button
               key={tab}
               onClick={() => setStatusFilter(tab)}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                 statusFilter === tab
-                  ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
               }`}
             >
               {tab.replace('_', ' ')}
@@ -113,11 +113,11 @@ const Inventory = () => {
           ))}
         </div>
       ) : (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center space-y-3">
-          <div className="w-16 h-16 bg-slate-800 text-slate-500 rounded-2xl flex items-center justify-center mx-auto">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center space-y-3 shadow-sm">
+          <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center mx-auto">
             <Car className="w-8 h-8" />
           </div>
-          <h3 className="text-base font-bold text-white">No Vehicles Found</h3>
+          <h3 className="text-base font-semibold text-slate-800">No Vehicles Found</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
             There are currently no vehicles matching the selected status or search filter.
           </p>
