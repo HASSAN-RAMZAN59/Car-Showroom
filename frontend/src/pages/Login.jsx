@@ -73,7 +73,7 @@ const Login = () => {
 
       {/* Main Container - Responsive Layout */}
       <div className="w-full max-w-4xl flex flex-col md:flex-row items-stretch gap-6 relative z-10">
-        
+
         {/* Main Login Card */}
         <div className="flex-1 bg-white border border-slate-200 rounded-xl p-8 shadow-sm flex flex-col justify-between">
           <div>
@@ -83,7 +83,7 @@ const Login = () => {
                 <CarFront className="w-8 h-8" />
               </div>
               <h1 className="text-2xl font-black text-slate-900 tracking-wider">SK MOTORS</h1>
-              <p className="text-xs text-slate-400 mt-1">Enterprise Showroom Management System</p>
+
             </div>
 
             {/* Error Alert */}
@@ -173,11 +173,10 @@ const Login = () => {
                     key={demo.role}
                     type="button"
                     onClick={() => handleSelectDemo(demo)}
-                    className={`w-full text-left p-4 rounded-xl border transition-all duration-200 relative group ${
-                      isSelected
+                    className={`w-full text-left p-4 rounded-xl border transition-all duration-200 relative group ${isSelected
                         ? 'bg-blue-50/70 border-blue-300 ring-2 ring-blue-500/20 shadow-sm'
                         : 'bg-white border-slate-200 hover:border-blue-300 hover:bg-blue-50/30 shadow-sm'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full border bg-blue-50 text-blue-700 border-blue-200">

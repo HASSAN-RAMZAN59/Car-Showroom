@@ -200,23 +200,6 @@ const Profile = () => {
             </div>
           </form>
         </div>
-
-        {/* Security & JWT Session Details */}
-        <div className="bg-slate-100/60 border border-slate-200 rounded-xl p-6 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg">
-              <Key className="w-4 h-4" />
-            </div>
-            <div>
-              <h4 className="text-base font-semibold text-slate-800">JWT Access Session Token</h4>
-              <p className="text-xs text-slate-400">Cryptographically signed bearer authentication token</p>
-            </div>
-          </div>
-
-          <div className="p-3 bg-white border border-slate-200 rounded-lg font-mono text-[11px] text-slate-500 truncate shadow-sm">
-            {token ? `Bearer ${token}` : 'No active token found'}
-          </div>
-        </div>
       </div>
     </div>
   );

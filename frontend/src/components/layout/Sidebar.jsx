@@ -121,7 +121,7 @@ const Sidebar = () => {
         </div>
         <div>
           <h1 className="text-base font-black tracking-wider text-slate-900 leading-none">SK MOTORS</h1>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mt-1">Premium Showroom ERP</p>
+
         </div>
       </div>
 
@@ -134,10 +134,9 @@ const Sidebar = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs transition-all duration-150 ${
-                  isActive
-                    ? 'active bg-blue-100 text-blue-800 font-semibold border-l-4 border-blue-600 shadow-sm'
-                    : 'text-slate-700 hover:bg-blue-50 hover:text-blue-700 border-l-4 border-transparent'
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs transition-all duration-150 ${isActive
+                  ? 'active bg-blue-100 text-blue-800 font-semibold border-l-4 border-blue-600 shadow-sm'
+                  : 'text-slate-700 hover:bg-blue-50 hover:text-blue-700 border-l-4 border-transparent'
                 }`
               }
             >
