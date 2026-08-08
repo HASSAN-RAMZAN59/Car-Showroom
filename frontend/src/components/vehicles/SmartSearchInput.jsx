@@ -72,7 +72,7 @@ const SmartSearchInput = ({ onSelectCar, placeholder = "Search plate, make, engi
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.trim().length >= 2 && setIsOpen(true)}
           placeholder={placeholder}
-          className="w-full pl-9 pr-9 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
+          className="w-full pl-10 pr-9 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-sm"
         />
         {loading ? (
           <Loader2 className="w-4 h-4 text-blue-600 animate-spin absolute right-3 top-2.5" />

@@ -49,17 +49,15 @@ const Sales = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsTokenModalOpen(true)}
-            className="px-4 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all flex items-center gap-2 shadow-sm"
+            className="px-4 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all shadow-sm"
           >
-            <CalendarCheck className="w-4 h-4 text-amber-600" />
             <span>Advance Token</span>
           </button>
 
           <button
             onClick={() => setIsSaleModalOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm flex items-center gap-2 transition-all"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all"
           >
-            <Plus className="w-4 h-4" />
             <span>Add Sale</span>
           </button>
         </div>

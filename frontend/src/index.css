@@ -384,34 +384,52 @@ html.light input,
 html.light select,
 html.light textarea {
   background-color: #FFFFFF !important;
-  /* bg-white */
   color: #0F172A !important;
-  /* text-slate-900 */
   border: 1px solid #CBD5E1 !important;
-  /* border-slate-300 */
   border-radius: 0.5rem !important;
-  /* rounded-lg */
   font-size: 0.875rem !important;
-  /* text-sm */
-  padding: 0.5rem 0.75rem !important;
-  /* px-3 py-2 */
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
   transition: all 0.15s ease !important;
+}
+
+html.light input:not([class*="pl-"]),
+html.light select:not([class*="pl-"]) {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+html.light input.pl-8,
+input.pl-8 {
+  padding-left: 2rem !important;
+}
+
+html.light input.pl-9,
+input.pl-9 {
+  padding-left: 2.25rem !important;
+}
+
+html.light input.pl-10,
+input.pl-10 {
+  padding-left: 2.5rem !important;
+}
+
+html.light input.pl-11,
+input.pl-11 {
+  padding-left: 2.75rem !important;
 }
 
 html.light input:focus,
 html.light select:focus,
 html.light textarea:focus {
   border-color: #2563EB !important;
-  /* focus:border-blue-600 */
   outline: none !important;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
-  /* focus:ring-2 focus:ring-blue-500/20 */
 }
 
 html.light input::placeholder,
 html.light textarea::placeholder {
   color: #94A3B8 !important;
-  /* placeholder-slate-400 */
 }
 
 /* Active Tab Indicators & Filter Pills */

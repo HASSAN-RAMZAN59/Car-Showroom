@@ -152,33 +152,29 @@ const Dashboard = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <button
             onClick={() => navigate('/purchases')}
-            className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
+            className="flex items-center justify-center p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
-            <ShoppingBag className="w-4 h-4 text-blue-600" />
             <span>Buy Car</span>
           </button>
 
           <button
             onClick={() => navigate('/sales')}
-            className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
+            className="flex items-center justify-center p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
-            <Receipt className="w-4 h-4 text-emerald-600" />
             <span>New Sale</span>
           </button>
 
           <button
             onClick={() => navigate('/leads')}
-            className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
+            className="flex items-center justify-center p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
-            <UserCheck className="w-4 h-4 text-amber-600" />
             <span>Add Customer</span>
           </button>
 
           <button
             onClick={() => navigate('/expenses')}
-            className="flex items-center justify-center gap-2 p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
+            className="flex items-center justify-center p-3.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-medium rounded-lg transition-all shadow-sm"
           >
-            <PlusCircle className="w-4 h-4 text-cyan-600" />
             <span>Add Expense</span>
           </button>
         </div>

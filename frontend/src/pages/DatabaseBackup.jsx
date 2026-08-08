@@ -145,10 +145,7 @@ const DatabaseBackup = () => {
             {loading ? (
               <LoadingSpinner size="sm" label="" />
             ) : (
-              <>
-                <Download className="w-4 h-4" />
-                <span>Download Backup</span>
-              </>
+              <span>Download Backup</span>
             )}
           </button>
         </div>

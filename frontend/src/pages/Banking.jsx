@@ -78,18 +78,16 @@ const Banking = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsSplitPaymentOpen(true)}
-            className="px-4 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all flex items-center gap-2 shadow-sm"
+            className="px-4 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all shadow-sm"
           >
-            <Plus className="w-4 h-4 text-blue-600" />
-            <span>Record Split Payment</span>
+            <span>Split Payment</span>
           </button>
 
           <button
             onClick={() => setIsAddAccountOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm flex items-center gap-2 transition-all"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all"
           >
-            <Building2 className="w-4 h-4" />
-            <span>Add Bank Account</span>
+            <span>Add Bank</span>
           </button>
         </div>
       </div>
