@@ -3,9 +3,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Default to 'dark' theme as requested
+  // Default to 'light' theme as requested
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('erp_theme') || 'dark';
+    return localStorage.getItem('erp_theme') || 'light';
   });
 
   useEffect(() => {
