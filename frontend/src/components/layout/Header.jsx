@@ -10,7 +10,7 @@ const Header = () => {
     <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10 transition-colors">
       <div>
         <h2 className="text-base font-semibold text-slate-800 tracking-tight">Executive Dashboard</h2>
-        <p className="text-xs text-slate-400">Used Car Showroom Enterprise System</p>
+        <p className="text-xs text-slate-400">SK Motors Management System</p>
       </div>
 
       <div className="flex items-center gap-3">

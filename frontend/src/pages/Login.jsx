@@ -82,8 +82,8 @@ const Login = () => {
               <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm text-white">
                 <CarFront className="w-8 h-8" />
               </div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Car Showroom ERP</h1>
-              <p className="text-xs text-slate-400 mt-1">Enterprise Used Vehicle Management System</p>
+              <h1 className="text-2xl font-black text-slate-900 tracking-wider">SK MOTORS</h1>
+              <p className="text-xs text-slate-400 mt-1">Enterprise Showroom Management System</p>
             </div>
 
             {/* Error Alert */}

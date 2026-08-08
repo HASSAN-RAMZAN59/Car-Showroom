@@ -115,13 +115,13 @@ const Sidebar = () => {
   return (
     <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
       {/* Brand Header */}
-      <div className="p-6 border-b border-slate-200 flex items-center gap-3">
-        <div className="p-2 bg-blue-600 rounded-xl text-white flex items-center justify-center shadow-sm">
-          <CarFront className="w-5 h-5 text-white" />
+      <div className="p-5 border-b border-slate-200 flex items-center gap-3">
+        <div className="w-10 h-10 bg-blue-600 rounded-xl text-white flex items-center justify-center shadow-sm shrink-0">
+          <CarFront className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h1 className="text-sm font-bold tracking-wide">AUTO SHOWROOM</h1>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-500">ERP Suite v1.0</p>
+          <h1 className="text-base font-black tracking-wider text-slate-900 leading-none">SK MOTORS</h1>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mt-1">Premium Showroom ERP</p>
         </div>
       </div>
 
