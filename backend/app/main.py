@@ -14,6 +14,7 @@ from app.api.v1.expenses import router as expenses_router
 from app.api.v1.installments import router as installments_router
 from app.api.v1.investors import router as investors_router
 from app.api.v1.leads import router as leads_router
+from app.api.v1.notifications import router as notifications_router
 from app.api.v1.payroll import router as payroll_router
 from app.api.v1.repairs import router as repairs_router
 from app.api.v1.sales import router as sales_router
@@ -85,6 +86,11 @@ app.include_router(
     search_router,
     prefix=f"{settings.API_V1_STR}/search",
     tags=["Auto-Complete Search"],
+)
+app.include_router(
+    notifications_router,
+    prefix=f"{settings.API_V1_STR}/notifications",
+    tags=["Notifications & Alerts"],
 )
 app.include_router(
     customers_router,

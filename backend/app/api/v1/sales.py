@@ -23,6 +23,7 @@ from app.models.investor import CarInvestment, InvestmentStatus, PayoutStatus
 from app.models.sale import PaymentType, Sale
 from app.models.seller import Seller
 from app.models.token_booking import TokenBooking, TokenStatus
+from app.schemas.notification import create_system_notification
 from app.models.user import User, UserRole
 from app.schemas.sale import SaleCreate, SaleDetailResponse, SaleResponse
 
@@ -171,6 +172,23 @@ async def create_sale(
                 status=PaymentStatus.PENDING,
             )
             db.add(payment_entry)
+
+    await create_system_notification(
+        db,
+        title="Vehicle Sale Completed",
+        message=f"{car.year} {car.make} {car.model} sold for PKR {sale_in.final_sale_price:,.0f} by {current_user.full_name}",
+        target_role="MANAGER",
+        type="SUCCESS",
+        link="/sales",
+    )
+    await create_system_notification(
+        db,
+        title="Vehicle Sale Completed",
+        message=f"{car.year} {car.make} {car.model} sold for PKR {sale_in.final_sale_price:,.0f} by {current_user.full_name}",
+        target_role="ADMIN",
+        type="SUCCESS",
+        link="/sales",
+    )
 
     await db.commit()
     await db.refresh(sale)

@@ -10,6 +10,7 @@ from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
 from app.models.car import Car, CarStatus
 from app.models.lead import Lead, LeadFollowup, LeadStatus
+from app.schemas.notification import create_system_notification
 from app.models.payroll import Employee
 from app.models.user import User, UserRole
 from app.schemas.car import CarResponse
@@ -61,6 +62,16 @@ async def create_lead(
         created_by_id=current_user.id,
     )
     db.add(lead)
+
+    await create_system_notification(
+        db,
+        title="New Lead Inquiry",
+        message=f"New buyer lead registered for {lead_in.customer_name} (Budget: PKR {lead_in.budget_max:,.0f})",
+        target_role="ALL" if not lead_in.assigned_employee_id else None,
+        user_id=lead_in.assigned_employee_id if lead_in.assigned_employee_id else None,
+        type="INFO",
+        link="/leads",
+    )
     await db.commit()
 
     # Eagerly load assigned employee for response

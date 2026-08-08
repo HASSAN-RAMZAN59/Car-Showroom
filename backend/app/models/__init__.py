@@ -21,6 +21,7 @@ from app.models.investor import (
     PayoutStatus,
 )
 from app.models.lead import Lead, LeadFollowup, LeadStatus
+from app.models.notification import Notification
 from app.models.payroll import Employee, Payroll, PayrollPaymentStatus
 from app.models.repair import Repair
 from app.models.sale import PaymentType, Sale

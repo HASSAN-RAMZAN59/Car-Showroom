@@ -22,6 +22,7 @@ from app.models.repair import Repair
 from app.models.sale import Sale
 from app.models.seller import Seller
 from app.models.user import User, UserRole
+from app.schemas.notification import create_system_notification
 
 router = APIRouter()
 
@@ -92,6 +93,17 @@ async def export_database_json(
 
     timestamp_str = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     filename = f"car_showroom_erp_backup_{timestamp_str}.json"
+
+    # Emit notification for ADMIN
+    await create_system_notification(
+        db,
+        title="Database Backup Exported",
+        message=f"Full system database backup exported by {current_user.full_name}",
+        target_role="ADMIN",
+        type="INFO",
+        link="/database-backup",
+    )
+    await db.commit()
 
     return StreamingResponse(
         buffer,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, User as UserIcon, Bell } from 'lucide-react';
+import { LogOut, User as UserIcon } from 'lucide-react';
+import NotificationDropdown from './NotificationDropdown';
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -13,11 +14,8 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Quick Notifications Mock Icon */}
-        <button className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all relative border border-slate-700/50">
-          <Bell className="w-4 h-4" />
-          <span className="w-2 h-2 rounded-full bg-blue-600 absolute top-1.5 right-1.5 ring-2 ring-slate-900"></span>
-        </button>
+        {/* Real-time Role-based Notifications Dropdown */}
+        <NotificationDropdown />
 
         {/* User Profile Widget */}
         <div className="flex items-center gap-3 pl-3 border-l border-slate-800">
