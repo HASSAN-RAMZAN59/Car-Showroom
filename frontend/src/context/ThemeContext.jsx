@@ -3,25 +3,16 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Default to 'light' theme as requested
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('erp_theme') || 'light';
-  });
+  const theme = 'light';
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-    } else {
-      root.classList.add('light');
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('erp_theme', theme);
-  }, [theme]);
+    root.classList.add('light');
+    root.classList.remove('dark');
+  }, []);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    // Single Light Mode Theme enforced globally
   };
 
   return (

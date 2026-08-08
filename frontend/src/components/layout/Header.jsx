@@ -1,11 +1,9 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { LogOut, User as UserIcon, Bell, Sun, Moon } from 'lucide-react';
+import { LogOut, User as UserIcon, Bell } from 'lucide-react';
 
 const Header = () => {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10 transition-colors">
@@ -15,25 +13,6 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Light / Dark Mode Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          className="p-2 rounded-lg bg-slate-800 text-amber-400 hover:bg-blue-50 hover:text-blue-600 transition-all border border-slate-700/50 flex items-center gap-1.5 text-xs font-medium px-3"
-        >
-          {theme === 'dark' ? (
-            <>
-              <Sun className="w-4 h-4 text-amber-400" />
-              <span className="hidden sm:inline text-amber-300">Light Mode</span>
-            </>
-          ) : (
-            <>
-              <Moon className="w-4 h-4 text-blue-600" />
-              <span className="hidden sm:inline text-slate-700">Dark Mode</span>
-            </>
-          )}
-        </button>
-
         {/* Quick Notifications Mock Icon */}
         <button className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all relative border border-slate-700/50">
           <Bell className="w-4 h-4" />
