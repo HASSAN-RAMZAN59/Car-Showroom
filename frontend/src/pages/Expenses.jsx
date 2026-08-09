@@ -62,7 +62,7 @@ const Expenses = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Showroom Expenses</h1>
-          <p className="text-xs text-slate-400 mt-1">Operational expense management, bank auto-deductions, and Cloudinary receipts</p>
+          <p className="text-xs text-slate-400 mt-1">Operational expense management, bank auto-deductions, and receipt attachments</p>
         </div>
 
         <button

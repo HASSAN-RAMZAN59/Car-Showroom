@@ -362,7 +362,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
 
               {/* Car Photos */}
               <div className="pt-2 border-t border-slate-200">
-                <label className="block text-xs font-medium text-slate-700 mb-1">Car Photos (Cloudinary)</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Car Photos</label>
                 <input
                   type="file"
                   multiple
