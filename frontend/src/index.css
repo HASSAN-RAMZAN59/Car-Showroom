@@ -150,12 +150,15 @@ html.light .text-muted {
   /* text-slate-500 */
 }
 
-html.light .text-white,
 html.light .text-slate-100,
 html.light .text-slate-200,
 html.light .text-slate-300,
 html.light .text-slate-900 {
   color: #0F172A !important;
+}
+
+html.light .text-white {
+  color: #FFFFFF !important;
 }
 
 /* Container, Card & Modal Surfaces - Force Pure White (#FFFFFF) */
@@ -337,7 +340,8 @@ button.bg-blue-600:hover,
 button.bg-blue-700:hover,
 button.bg-indigo-600:hover,
 button[type="submit"]:hover {
-  background-color: #1D4ED8 !important;
+  background-color: #3B82F6 !important;
+  color: #FFFFFF !important;
 }
 
 /* Secondary / Ghost Buttons */
@@ -384,6 +388,11 @@ html.light textarea {
   padding-top: 0.5rem !important;
   padding-bottom: 0.5rem !important;
   transition: all 0.15s ease !important;
+}
+
+html.light select option {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
 }
 
 html.light input:not([class*="pl-"]),

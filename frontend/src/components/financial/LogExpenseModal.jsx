@@ -7,6 +7,7 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     expense_name: '',
     category: 'Utilities',
+    customCategory: '',
     amount: '',
     reason: '',
     payment_method: 'CASH',
@@ -42,12 +43,18 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const finalCategory =
+      formData.category === 'Other'
+        ? formData.customCategory.trim() || 'Other'
+        : formData.category;
+
     setLoading(true);
 
     try {
       const data = new FormData();
       data.append('expense_name', formData.expense_name);
-      data.append('category', formData.category);
+      data.append('category', finalCategory);
       data.append('amount', formData.amount);
       if (formData.reason) data.append('reason', formData.reason);
       data.append('payment_method', formData.payment_method);
@@ -63,6 +70,7 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
       setFormData({
         expense_name: '',
         category: 'Utilities',
+        customCategory: '',
         amount: '',
         reason: '',
         payment_method: 'CASH',
@@ -80,21 +88,21 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden relative">
         {/* Header */}
-        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-xl">
-              <DollarSign className="w-5 h-5" />
+            <div className="p-2.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl">
+              <DollarSign className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Record Daily Showroom Expense</h3>
-              <p className="text-xs text-slate-400">Utilities, Office Tea, Maintenance, or Fuel expenses</p>
+              <h3 className="text-base font-bold text-slate-900">Record Daily Showroom Expense</h3>
+              <p className="text-xs text-slate-500">Utilities, Office Tea, Maintenance, or Fuel expenses</p>
             </div>
           </div>
 
-          <button onClick={onClose} className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+          <button onClick={onClose} className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -102,14 +110,14 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-medium flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Expense Name *</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Expense Name *</label>
             <input
               type="text"
               name="expense_name"
@@ -117,18 +125,18 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
               value={formData.expense_name}
               onChange={handleChange}
               placeholder="e.g. Showroom Electricity Bill, Office Tea"
-              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+              className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Category *</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Category *</label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
               >
                 <option value="Utilities">Utilities (Electricity, Water, Internet)</option>
                 <option value="Food/Tea">Food / Refreshments / Tea</option>
@@ -136,11 +144,27 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
                 <option value="Fuel">Fuel & Generator</option>
                 <option value="Marketing">Marketing & Banners</option>
                 <option value="Misc">Miscellaneous</option>
+                <option value="Other">Other / Custom Category</option>
               </select>
+
+              {formData.category === 'Other' && (
+                <div className="mt-2.5">
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-blue-600 mb-1">Specify Custom Category *</label>
+                  <input
+                    type="text"
+                    name="customCategory"
+                    required
+                    value={formData.customCategory}
+                    onChange={handleChange}
+                    placeholder="e.g. Legal Fees, Audit, Office Supplies"
+                    className="w-full px-3 py-2 bg-white border border-blue-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
+                  />
+                </div>
+              )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Amount (PKR) *</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Amount (PKR) *</label>
               <input
                 type="number"
                 name="amount"
@@ -148,19 +172,19 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
                 value={formData.amount}
                 onChange={handleChange}
                 placeholder="e.g. 15000"
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white font-bold text-rose-400"
+                className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Payment Method</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Payment Method</label>
               <select
                 name="payment_method"
                 value={formData.payment_method}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
               >
                 <option value="CASH">CASH Payment</option>
                 <option value="BANK_TRANSFER">BANK TRANSFER (Auto-Deduct)</option>
@@ -169,13 +193,13 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
 
             {formData.payment_method === 'BANK_TRANSFER' && (
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Target Bank Account *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Target Bank Account *</label>
                 <select
                   name="bank_account_id"
                   required
                   value={formData.bank_account_id}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white font-semibold"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-semibold focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
                 >
                   <option value="">Select Bank Account</option>
                   {bankAccounts.map((acc) => (
@@ -189,40 +213,40 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Reason / Explanation</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Reason / Explanation</label>
             <input
               type="text"
               name="reason"
               value={formData.reason}
               onChange={handleChange}
               placeholder="e.g. Monthly utility payment for July"
-              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+              className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Bill / Receipt Image</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Bill / Receipt Image</label>
             <input
               type="file"
               accept="image/*,.pdf"
               onChange={(e) => setReceipt(e.target.files[0])}
-              className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-600/20 file:text-rose-400 hover:file:bg-rose-600/30"
+              className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer"
             />
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-800">
-            <button type="button" onClick={onClose} className="px-4 py-2.5 bg-slate-800 text-slate-300 text-xs font-medium rounded-xl">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+            <button type="button" onClick={onClose} className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl transition-all cursor-pointer">
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-rose-600/20 flex items-center gap-2 transition-all disabled:opacity-50"
+              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-600/20 flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >
               {loading ? <LoadingSpinner size="sm" label="" /> : <>
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Save Expense Entry</span>
+                <CheckCircle2 className="w-4 h-4 text-white" />
+                <span className="text-white">Save Expense Entry</span>
               </>}
             </button>
           </div>
