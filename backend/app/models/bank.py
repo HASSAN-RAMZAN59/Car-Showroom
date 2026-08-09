@@ -23,6 +23,7 @@ class TransactionType(str, enum.Enum):
     INSTALLMENT_PAYMENT = "INSTALLMENT_PAYMENT"
     DEPOSIT = "DEPOSIT"
     WITHDRAWAL = "WITHDRAWAL"
+    CONSIGNMENT_COMMISSION = "CONSIGNMENT_COMMISSION"
 
 
 class PaymentMethod(str, enum.Enum):

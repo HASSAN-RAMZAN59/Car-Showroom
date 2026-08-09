@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import UserManagement from './pages/UserManagement';
 import Inventory from './pages/Inventory';
+import Consignments from './pages/Consignments';
 import Purchases from './pages/Purchases';
 import Sales from './pages/Sales';
 import Installments from './pages/Installments';
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/vehicles" element={<Inventory />} />
+                <Route path="/consignments" element={<Consignments />} />
                 <Route path="/sales" element={<Sales />} />
                 <Route path="/installments" element={<Installments />} />
                 <Route path="/expenses" element={<Expenses />} />

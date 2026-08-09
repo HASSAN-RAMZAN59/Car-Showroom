@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import (
+    Boolean,
     DateTime,
     Enum,
     Float,
@@ -19,6 +20,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
+    from app.models.consignment import ConsignmentAgreement
     from app.models.repair import Repair
     from app.models.seller import Seller
     from app.models.user import User
@@ -29,6 +31,9 @@ class CarStatus(str, enum.Enum):
     IN_MAINTENANCE = "IN_MAINTENANCE"
     RESERVED = "RESERVED"
     SOLD = "SOLD"
+    CONSIGNED_AVAILABLE = "CONSIGNED_AVAILABLE"
+    CONSIGNED_SOLD = "CONSIGNED_SOLD"
+    CONSIGNED_RETURNED = "CONSIGNED_RETURNED"
 
 
 class Car(Base):
@@ -63,8 +68,9 @@ class Car(Base):
         default=CarStatus.IN_MAINTENANCE,
         nullable=False,
     )
+    is_consignment: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     
-    purchase_price: Mapped[float] = mapped_column(Float, nullable=False)
+    purchase_price: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     purchase_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
@@ -73,10 +79,10 @@ class Car(Base):
     asking_price: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     
     # Foreign Keys
-    seller_id: Mapped[uuid.UUID] = mapped_column(
+    seller_id: Mapped[Optional[uuid.UUID]] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("sellers.id", ondelete="RESTRICT"),
-        nullable=False,
+        nullable=True,
     )
     created_by_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -106,12 +112,17 @@ class Car(Base):
     )
 
     # Relationships
-    seller: Mapped["Seller"] = relationship("Seller", back_populates="cars")
+    seller: Mapped[Optional["Seller"]] = relationship("Seller", back_populates="cars")
     created_by: Mapped["User"] = relationship("User")
     repairs: Mapped[List["Repair"]] = relationship(
         "Repair",
         back_populates="car",
         cascade="all, delete-orphan",
+    )
+    consignment_agreement: Mapped[Optional["ConsignmentAgreement"]] = relationship(
+        "ConsignmentAgreement",
+        back_populates="car",
+        uselist=False,
     )
 
     @property

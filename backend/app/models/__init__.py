@@ -5,8 +5,50 @@ from app.models.bank import (
     PaymentTransaction,
     TransactionType,
 )
-from app.models.car import Car, CarStatus
+from app.models.consignment import (
+    CommissionType,
+    ConsignmentAgreement,
+    ConsignmentStatus,
+)
 from app.models.customer import Customer
+
+__all__ = [
+    "User",
+    "UserRole",
+    "Seller",
+    "Car",
+    "CarStatus",
+    "ConsignmentAgreement",
+    "CommissionType",
+    "ConsignmentStatus",
+    "Repair",
+    "Customer",
+    "TokenBooking",
+    "TokenStatus",
+    "Sale",
+    "PaymentType",
+    "InstallmentPlan",
+    "InstallmentPayment",
+    "InstallmentPlanStatus",
+    "PaymentStatus",
+    "BankAccount",
+    "PaymentTransaction",
+    "TransactionType",
+    "PaymentMethod",
+    "Expense",
+    "Investor",
+    "CarInvestment",
+    "InvestmentStatus",
+    "PayoutStatus",
+    "Employee",
+    "Payroll",
+    "PayrollPaymentStatus",
+    "Lead",
+    "LeadFollowup",
+    "LeadStatus",
+    "AuditLog",
+    "log_action",
+]
 from app.models.expense import Expense
 from app.models.installment import (
     InstallmentPayment,

@@ -1,22 +1,29 @@
 import React from 'react';
 import StatusBadge from '../common/StatusBadge';
-import { Car as CarIcon, Wrench, ShieldCheck, DollarSign, Calendar, Gauge } from 'lucide-react';
+import { Car as CarIcon, Wrench, ShieldCheck, DollarSign, Calendar, Gauge, Handshake } from 'lucide-react';
 
 const CarCard = ({ car, onLogRepair, onMarkAvailable }) => {
   const purchasePrice = car.purchase_price || 0;
   const repairCost = car.total_repair_cost || 0;
   const totalCostBasis = car.total_cost_basis || (purchasePrice + repairCost);
+  const isConsignment = car.is_consignment || car.status?.startsWith('CONSIGNED_');
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between transition-all duration-200 hover:border-blue-300 hover:shadow-md relative overflow-hidden group">
+    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between transition-all duration-200 hover:border-purple-300 hover:shadow-md relative overflow-hidden group">
       {/* Top Banner & Status Badge */}
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="px-2.5 py-1 bg-slate-100 text-blue-600 font-mono text-xs font-bold rounded-lg border border-slate-200">
                 {car.car_number}
               </span>
+              {isConsignment && (
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 font-bold text-[10px] rounded-md border border-purple-200 flex items-center gap-1">
+                  <Handshake className="w-3 h-3" />
+                  <span>CONSIGNMENT</span>
+                </span>
+              )}
               <span className="text-xs text-slate-400 font-medium">
                 {car.year} Model
               </span>

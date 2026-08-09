@@ -11,7 +11,9 @@ from sqlalchemy.orm import joinedload, selectinload
 from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
 from app.core.pdf_generator import generate_sale_deed_pdf
+from app.models.bank import BankAccount, PaymentMethod, PaymentTransaction, TransactionType
 from app.models.car import Car, CarStatus
+from app.models.consignment import CommissionType, ConsignmentAgreement, ConsignmentStatus
 from app.models.customer import Customer
 from app.models.installment import (
     InstallmentPayment,
@@ -77,10 +79,10 @@ async def create_sale(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Vehicle with ID '{sale_in.car_id}' not found.",
         )
-    if car.status == CarStatus.SOLD:
+    if car.status in [CarStatus.SOLD, CarStatus.CONSIGNED_SOLD, CarStatus.CONSIGNED_RETURNED]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Vehicle has already been sold.",
+            detail="Vehicle has already been sold or returned to owner.",
         )
 
     # 2. Verify customer exists
@@ -92,9 +94,38 @@ async def create_sale(
             detail=f"Customer with ID '{sale_in.customer_id}' not found.",
         )
 
-    # 3. Snapshot total cost basis and compute net profit
-    total_cost_basis = car.total_cost_basis
-    net_profit = sale_in.final_sale_price - total_cost_basis
+    # 3. Handle Consignment calculations vs Standard Inventory
+    showroom_commission = 0.0
+    owner_payout = 0.0
+    consignment_agreement = None
+
+    if car.is_consignment or car.status == CarStatus.CONSIGNED_AVAILABLE:
+        stmt_cons = select(ConsignmentAgreement).where(
+            ConsignmentAgreement.car_id == car.id,
+            ConsignmentAgreement.status == ConsignmentStatus.ACTIVE,
+        )
+        res_cons = await db.execute(stmt_cons)
+        consignment_agreement = res_cons.scalars().first()
+
+        if consignment_agreement:
+            if consignment_agreement.commission_type == CommissionType.PERCENTAGE:
+                showroom_commission = round((sale_in.final_sale_price * consignment_agreement.commission_value) / 100.0, 2)
+            else:
+                showroom_commission = consignment_agreement.commission_value
+
+            owner_payout = max(0.0, sale_in.final_sale_price - showroom_commission)
+            consignment_agreement.status = ConsignmentStatus.SOLD
+            car.status = CarStatus.CONSIGNED_SOLD
+            total_cost_basis = 0.0
+            net_profit = showroom_commission
+        else:
+            total_cost_basis = car.total_cost_basis
+            net_profit = sale_in.final_sale_price - total_cost_basis
+            car.status = CarStatus.SOLD
+    else:
+        total_cost_basis = car.total_cost_basis
+        net_profit = sale_in.final_sale_price - total_cost_basis
+        car.status = CarStatus.SOLD
 
     # 4. Check for active token booking and mark COMPLETED
     stmt_token = select(TokenBooking).where(
@@ -113,10 +144,7 @@ async def create_sale(
         total_cost_basis=total_cost_basis,
     )
 
-    # 6. Update car status to SOLD
-    car.status = CarStatus.SOLD
-
-    # 7. Create Sale transaction record
+    # 6. Create Sale transaction record
     sale = Sale(
         car_id=sale_in.car_id,
         customer_id=sale_in.customer_id,
@@ -129,6 +157,27 @@ async def create_sale(
     )
     db.add(sale)
     await db.flush()
+
+    # 7. Auto-log Showroom Commission in payment_transactions if consignment vehicle
+    if consignment_agreement and showroom_commission > 0:
+        # Find active bank account if available to reflect balance
+        bank_res = await db.execute(select(BankAccount).where(BankAccount.is_active == True).limit(1))
+        bank_acc = bank_res.scalars().first()
+
+        tx = PaymentTransaction(
+            transaction_type=TransactionType.CONSIGNMENT_COMMISSION,
+            payment_method=PaymentMethod.CASH if not bank_acc else PaymentMethod.BANK_TRANSFER,
+            bank_account_id=bank_acc.id if bank_acc else None,
+            amount=showroom_commission,
+            reference_number=f"COMM-{str(sale.id)[:8].upper()}",
+            car_id=car.id,
+            sale_id=sale.id,
+            notes=f"Consignment Commission for vehicle {car.car_number} ({car.make} {car.model}). Owner Payout: PKR {owner_payout:,.2f}",
+            created_by_id=current_user.id,
+        )
+        db.add(tx)
+        if bank_acc:
+            bank_acc.current_balance += showroom_commission
 
     # 8. If INSTALLMENT payment type, automatically generate InstallmentPlan and schedule entries
     if sale_in.payment_type == PaymentType.INSTALLMENT:

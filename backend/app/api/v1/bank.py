@@ -105,6 +105,7 @@ async def record_payment_transaction(
             TransactionType.SALE_PAYMENT,
             TransactionType.INSTALLMENT_PAYMENT,
             TransactionType.DEPOSIT,
+            TransactionType.CONSIGNMENT_COMMISSION,
         ]:
             bank_account.current_balance += tx_in.amount
         elif tx_in.transaction_type in [

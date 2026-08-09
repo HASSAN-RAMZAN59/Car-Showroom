@@ -15,6 +15,7 @@ import {
   BarChart3,
   Database,
   CarFront,
+  Handshake,
   User,
   UserCog
 } from 'lucide-react';
@@ -46,6 +47,12 @@ const Sidebar = () => {
       label: 'Vehicles Inventory',
       path: '/vehicles',
       icon: Car,
+      roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
+    },
+    {
+      label: 'Consignment Sales',
+      path: '/consignments',
+      icon: Handshake,
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {

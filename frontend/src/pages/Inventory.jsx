@@ -74,7 +74,7 @@ const Inventory = () => {
       <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
         {/* Status Filter Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-          {['ALL', 'AVAILABLE', 'IN_MAINTENANCE', 'RESERVED', 'SOLD'].map((tab) => (
+          {['ALL', 'AVAILABLE', 'CONSIGNED_AVAILABLE', 'IN_MAINTENANCE', 'RESERVED', 'SOLD'].map((tab) => (
             <button
               key={tab}
               onClick={() => setStatusFilter(tab)}
