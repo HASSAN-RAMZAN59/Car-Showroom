@@ -21,7 +21,7 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable }) => {
               {isConsignment && (
                 <span className="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold text-[10px] rounded-md border border-blue-200 flex items-center gap-1">
                   <Handshake className="w-3 h-3" />
-                  <span>CONSIGNMENT</span>
+                  <span>PARK & SELL</span>
                 </span>
               )}
               <span className="text-xs text-slate-400 font-medium">

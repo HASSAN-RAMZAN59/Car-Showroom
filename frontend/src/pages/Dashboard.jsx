@@ -127,7 +127,7 @@ const Dashboard = () => {
     { name: 'Available In-Stock', value: statusCounts.AVAILABLE, color: '#2563EB' },
     { name: 'Booked / Token', value: statusCounts.BOOKED, color: '#F59E0B' },
     { name: 'Sold Out', value: statusCounts.SOLD, color: '#10B981' },
-    { name: 'Consignment Cars', value: statusCounts.CONSIGNMENT, color: '#8B5CF6' },
+    { name: 'Park & Sell Cars', value: statusCounts.CONSIGNMENT, color: '#8B5CF6' },
   ].filter((item) => item.value > 0 || allCarsList.length === 0);
 
   if (allCarsList.length === 0) {
@@ -361,7 +361,7 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between items-center text-slate-700">
               <span className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" /> Consignment Cars
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" /> Park & Sell Cars
               </span>
               <span className="font-extrabold text-purple-600">{statusCounts.CONSIGNMENT} Cars</span>
             </div>

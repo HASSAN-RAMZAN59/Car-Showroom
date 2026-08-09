@@ -53,7 +53,7 @@ const WithdrawConsignmentModal = ({ isOpen, consignment, onClose, onSuccess }) =
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900">Return Vehicle to Owner</h2>
-              <p className="text-xs text-slate-500">Withdraw consignment from active showroom lot</p>
+              <p className="text-xs text-slate-500">Return park & sell car to owner and remove from active lot</p>
             </div>
           </div>
 

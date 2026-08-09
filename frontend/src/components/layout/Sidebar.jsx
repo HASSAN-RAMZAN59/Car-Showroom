@@ -50,7 +50,7 @@ const Sidebar = () => {
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {
-      label: 'Consignment Sales',
+      label: 'Park & Sell',
       path: '/consignments',
       icon: Handshake,
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],

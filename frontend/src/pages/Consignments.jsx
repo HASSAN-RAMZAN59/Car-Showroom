@@ -74,8 +74,8 @@ const Consignments = () => {
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Consignment Sales & Commission Tracking</h1>
-          <p className="text-xs text-slate-400 mt-1">Manage third-party vehicle deposits, percentage/fixed commissions, and withdrawal returns</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Park & Sell Vehicles</h1>
+          <p className="text-xs text-slate-400 mt-1">Manage customer park & sell vehicles, owner commission agreements, and deals</p>
         </div>
 
         <button
@@ -83,14 +83,14 @@ const Consignments = () => {
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>Register Consignment Car</span>
+          <span>Add Park & Sell Car</span>
         </button>
       </div>
 
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard
-          title="Total Consigned Vehicles"
+          title="Total Park & Sell Cars"
           value={totalConsigned.toString()}
           icon={Handshake}
           color="indigo"
@@ -272,9 +272,9 @@ const Consignments = () => {
           <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto">
             <Handshake className="w-8 h-8" />
           </div>
-          <h3 className="text-base font-semibold text-slate-800">No Consignment Vehicles Found</h3>
+          <h3 className="text-base font-semibold text-slate-800">No Park & Sell Vehicles Found</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            There are currently no consignment vehicles matching your search query or filter selection.
+            There are currently no park & sell vehicles matching your search query or filter selection.
           </p>
         </div>
       )}
