@@ -78,7 +78,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
       return;
     }
     if (!formData.commission_value || !formData.agreed_asking_price) {
-      setError('Commission value and agreed asking price are required.');
+      setError('Commission value and asking price are required.');
       setActiveTab('commission');
       return;
     }
@@ -408,7 +408,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">Agreed Asking Price (PKR) *</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Asking Price (PKR) *</label>
                   <input
                     type="number"
                     name="agreed_asking_price"
