@@ -105,7 +105,14 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
       if (onSuccess) onSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to register consignment car.');
+      const detail = err.response?.data?.detail;
+      let msg = 'Failed to register consignment car.';
+      if (typeof detail === 'string') {
+        msg = detail;
+      } else if (Array.isArray(detail) && detail.length > 0) {
+        msg = detail.map((d) => d.msg || JSON.stringify(d)).join(', ');
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }

@@ -19,9 +19,10 @@ class CarBase(BaseModel):
     chassis_number: str = Field(..., description="Unique chassis number")
     mileage: Optional[int] = Field(None, description="Odometer mileage in km")
     status: CarStatus = CarStatus.IN_MAINTENANCE
-    purchase_price: float = Field(..., gt=0, description="Purchase price paid to seller")
-    asking_price: Optional[float] = Field(None, gt=0, description="Target selling price")
-    seller_id: uuid.UUID
+    is_consignment: bool = False
+    purchase_price: float = Field(0.0, ge=0, description="Purchase price paid to seller")
+    asking_price: Optional[float] = Field(None, ge=0, description="Target selling price")
+    seller_id: Optional[uuid.UUID] = None
 
 
 class CarPurchaseCreate(CarBase):
@@ -56,6 +57,7 @@ class CarResponse(CarBase):
     registration_docs_urls: List[str] = []
     total_repair_cost: float = 0.0
     total_cost_basis: float = 0.0
+    seller: Optional[SellerResponse] = None
     created_at: datetime
     updated_at: datetime
 
