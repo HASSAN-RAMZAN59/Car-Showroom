@@ -241,7 +241,7 @@ const Consignments = () => {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => setSelectedForSale(item)}
-                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition-all flex items-center gap-1"
+                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all flex items-center gap-1"
                             >
                               <Receipt className="w-3.5 h-3.5" />
                               <span>Log Sale</span>
