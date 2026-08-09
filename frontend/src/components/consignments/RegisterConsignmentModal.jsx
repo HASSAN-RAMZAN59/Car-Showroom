@@ -118,7 +118,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
               <Handshake className="w-5 h-5" />
             </div>
             <div>
@@ -151,7 +151,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-xl border-b-2 transition-all ${
                   isActive
-                    ? 'border-purple-600 text-purple-700 bg-purple-50/50'
+                    ? 'border-blue-600 text-blue-700 bg-blue-50/50'
                     : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
                 }`}
               >
@@ -186,7 +186,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. Muhammad Ali"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -199,7 +199,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. 35202-1234567-1"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -212,7 +212,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. 0300-1234567"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -224,7 +224,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     value={formData.owner_address}
                     onChange={handleChange}
                     placeholder="e.g. House #12, Gulberg III, Lahore"
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -237,7 +237,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     type="file"
                     accept="image/*"
                     onChange={(e) => setCnicFront(e.target.files[0] || null)}
-                    className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                    className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   />
                 </div>
 
@@ -247,7 +247,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     type="file"
                     accept="image/*"
                     onChange={(e) => setCnicBack(e.target.files[0] || null)}
-                    className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                    className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   />
                 </div>
               </div>
@@ -267,7 +267,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. LEB-1234"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -280,7 +280,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. Honda"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -293,7 +293,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. Civic Oriel"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -305,7 +305,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     value={formData.year}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -317,7 +317,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     value={formData.color}
                     onChange={handleChange}
                     placeholder="e.g. Taffeta White"
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -329,7 +329,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     value={formData.mileage}
                     onChange={handleChange}
                     placeholder="e.g. 45000"
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -342,7 +342,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. R18A123456"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -355,7 +355,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. NKY-567890"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -368,7 +368,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                   multiple
                   accept="image/*"
                   onChange={handlePhotosChange}
-                  className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                  className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
               </div>
             </div>
@@ -384,7 +384,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     name="commission_type"
                     value={formData.commission_type}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                   >
                     <option value="PERCENTAGE">Percentage (%) Cut</option>
                     <option value="FIXED_AMOUNT">Fixed Amount (PKR)</option>
@@ -403,7 +403,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder={formData.commission_type === 'PERCENTAGE' ? 'e.g. 2.5' : 'e.g. 100000'}
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-semibold text-purple-700"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-semibold text-blue-700"
                   />
                 </div>
 
@@ -416,15 +416,15 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     placeholder="e.g. 4500000"
                     required
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-bold text-slate-900"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold text-slate-900"
                   />
                 </div>
 
                 {/* Calculation Preview */}
-                <div className="p-3 bg-purple-50/70 border border-purple-200 rounded-xl flex flex-col justify-center text-xs space-y-1">
+                <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl flex flex-col justify-center text-xs space-y-1">
                   <div className="flex justify-between text-slate-600">
                     <span>Showroom Estimated Cut:</span>
-                    <span className="font-bold text-purple-700">
+                    <span className="font-bold text-blue-700">
                       {formData.agreed_asking_price && formData.commission_value
                         ? `PKR ${
                             formData.commission_type === 'PERCENTAGE'
@@ -434,7 +434,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                         : 'PKR 0'}
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-600 pt-1 border-t border-purple-200">
+                  <div className="flex justify-between text-slate-600 pt-1 border-t border-blue-200">
                     <span>Owner Estimated Payout:</span>
                     <span className="font-bold text-emerald-700">
                       {formData.agreed_asking_price && formData.commission_value
@@ -457,7 +457,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                   value={formData.notes}
                   onChange={handleChange}
                   placeholder="Special conditions, token agreement details, owner contact notes..."
-                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 ></textarea>
               </div>
             </div>
@@ -469,7 +469,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={() => setActiveTab(activeTab === 'commission' ? 'vehicle' : 'owner')}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition-all flex items-center gap-1.5"
+                className="px-4 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all flex items-center gap-1.5"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Previous Step</span>
@@ -489,7 +489,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                 <button
                   type="button"
                   onClick={() => setActiveTab(activeTab === 'owner' ? 'vehicle' : 'commission')}
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-1.5"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-1.5"
                 >
                   <span>Next Step</span>
                   <ArrowRight className="w-4 h-4" />
@@ -498,7 +498,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-2 disabled:opacity-50"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-2 disabled:opacity-50"
                 >
                   {loading ? (
                     <LoadingSpinner size="sm" label="Registering..." />

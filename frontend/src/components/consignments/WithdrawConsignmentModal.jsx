@@ -48,7 +48,7 @@ const WithdrawConsignmentModal = ({ isOpen, consignment, onClose, onSuccess }) =
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600">
+            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
               <LogOut className="w-5 h-5" />
             </div>
             <div>
@@ -76,7 +76,7 @@ const WithdrawConsignmentModal = ({ isOpen, consignment, onClose, onSuccess }) =
             <div className="text-slate-500 font-mono">
               Reg: {car.car_number} | Eng: {car.engine_number}
             </div>
-            <div className="text-purple-700 font-semibold pt-1 border-t border-slate-200">
+            <div className="text-blue-700 font-semibold pt-1 border-t border-slate-200">
               Owner: {consignment.owner_name} ({consignment.owner_phone})
             </div>
           </div>
@@ -95,7 +95,7 @@ const WithdrawConsignmentModal = ({ isOpen, consignment, onClose, onSuccess }) =
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g. Owner taking vehicle back for personal use"
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -106,7 +106,7 @@ const WithdrawConsignmentModal = ({ isOpen, consignment, onClose, onSuccess }) =
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Handover notes, vehicle condition upon departure..."
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             ></textarea>
           </div>
 
@@ -122,7 +122,7 @@ const WithdrawConsignmentModal = ({ isOpen, consignment, onClose, onSuccess }) =
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-1.5 disabled:opacity-50"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-1.5 disabled:opacity-50"
             >
               {loading ? (
                 <LoadingSpinner size="sm" label="Processing..." />

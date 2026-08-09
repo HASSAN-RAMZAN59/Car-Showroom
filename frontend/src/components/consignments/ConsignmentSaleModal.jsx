@@ -119,7 +119,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
+            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
               <Receipt className="w-5 h-5" />
             </div>
             <div>
@@ -140,10 +140,10 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
         <form onSubmit={handleSaleSubmit} className="p-6 space-y-4">
           
           {/* Vehicle Info */}
-          <div className="p-3 bg-purple-50/60 border border-purple-200 rounded-xl space-y-1 text-xs">
+          <div className="p-3 bg-blue-50/60 border border-blue-200 rounded-xl space-y-1 text-xs">
             <div className="flex justify-between items-center">
               <span className="font-bold text-slate-900 text-sm">{car.make} {car.model} ({car.year})</span>
-              <span className="px-2 py-0.5 bg-purple-100 text-purple-700 font-mono font-bold rounded">
+              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 font-mono font-bold rounded">
                 Reg: {car.car_number}
               </span>
             </div>
@@ -151,7 +151,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
               Vehicle Owner: <strong className="text-slate-800">{consignment.owner_name}</strong> ({consignment.owner_phone})
             </div>
             <div className="text-slate-600">
-              Agreed Commission: <strong className="text-purple-700">{consignment.commission_type === 'PERCENTAGE' ? `${consignment.commission_value}%` : `PKR ${consignment.commission_value?.toLocaleString()}`}</strong>
+              Agreed Commission: <strong className="text-blue-700">{consignment.commission_type === 'PERCENTAGE' ? `${consignment.commission_value}%` : `PKR ${consignment.commission_value?.toLocaleString()}`}</strong>
             </div>
           </div>
 
@@ -180,7 +180,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
                 value={selectedCustomerId}
                 onChange={(e) => setSelectedCustomerId(e.target.value)}
                 required
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
                 <option value="">-- Select Buyer Customer --</option>
                 {customers.map((c) => (
@@ -228,7 +228,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
                 onChange={(e) => setFinalSalePrice(e.target.value)}
                 placeholder="e.g. 4600000"
                 required
-                className="w-full px-3 py-2 text-xs font-bold text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full px-3 py-2 text-xs font-bold text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -237,7 +237,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
               <select
                 value={paymentType}
                 onChange={(e) => setPaymentType(e.target.value)}
-                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
                 <option value="FULL_PAYMENT">Full Payment (Cash / Bank)</option>
                 <option value="INSTALLMENT">Installment / EMI</option>
@@ -246,21 +246,21 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
           </div>
 
           {/* Real-time Financial Settlement Preview */}
-          <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-xl space-y-2 text-xs">
+          <div className="p-4 bg-blue-50/80 border border-blue-200 rounded-xl space-y-2 text-xs">
             <div className="flex justify-between items-center text-slate-700">
               <span>Final Vehicle Sale Price:</span>
               <span className="font-bold text-slate-900 text-sm">PKR {sellingPriceNum.toLocaleString()}</span>
             </div>
-            <div className="flex justify-between items-center text-slate-700 pt-1 border-t border-emerald-200">
-              <span className="flex items-center gap-1 font-semibold text-emerald-800">
-                <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+            <div className="flex justify-between items-center text-slate-700 pt-1 border-t border-blue-200">
+              <span className="flex items-center gap-1 font-semibold text-blue-800">
+                <DollarSign className="w-3.5 h-3.5 text-blue-600" />
                 Showroom Commission Earned:
               </span>
-              <span className="font-bold text-emerald-700 text-sm">PKR {showroomCommission.toLocaleString()}</span>
+              <span className="font-bold text-blue-700 text-sm">PKR {showroomCommission.toLocaleString()}</span>
             </div>
-            <div className="flex justify-between items-center text-slate-700 pt-1 border-t border-emerald-200">
+            <div className="flex justify-between items-center text-slate-700 pt-1 border-t border-blue-200">
               <span>Net Owner Payout:</span>
-              <span className="font-bold text-purple-700 text-sm">PKR {ownerPayout.toLocaleString()}</span>
+              <span className="font-bold text-emerald-700 text-sm">PKR {ownerPayout.toLocaleString()}</span>
             </div>
           </div>
 
@@ -271,7 +271,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Sale deed reference, warranty terms..."
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             ></textarea>
           </div>
 
@@ -287,7 +287,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-2 disabled:opacity-50"
+              className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg shadow-sm transition-all flex items-center gap-2 disabled:opacity-50"
             >
               {loading ? (
                 <LoadingSpinner size="sm" label="Processing Sale..." />

@@ -7,7 +7,7 @@ const StatusBadge = ({ status }) => {
 
   const styles = {
     // Consignment statuses
-    CONSIGNED_AVAILABLE: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+    CONSIGNED_AVAILABLE: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
     CONSIGNED_SOLD: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
     CONSIGNED_RETURNED: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
     RETURNED_TO_OWNER: 'bg-slate-500/10 text-slate-400 border-slate-500/20',

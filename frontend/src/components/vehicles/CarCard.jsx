@@ -9,7 +9,7 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable }) => {
   const isConsignment = car.is_consignment || car.status?.startsWith('CONSIGNED_');
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between transition-all duration-200 hover:border-purple-300 hover:shadow-md relative overflow-hidden group">
+    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between transition-all duration-200 hover:border-blue-300 hover:shadow-md relative overflow-hidden group">
       {/* Top Banner & Status Badge */}
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-3">
@@ -19,7 +19,7 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable }) => {
                 {car.car_number}
               </span>
               {isConsignment && (
-                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 font-bold text-[10px] rounded-md border border-purple-200 flex items-center gap-1">
+                <span className="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold text-[10px] rounded-md border border-blue-200 flex items-center gap-1">
                   <Handshake className="w-3 h-3" />
                   <span>CONSIGNMENT</span>
                 </span>
