@@ -124,7 +124,7 @@ const ConsignmentSaleModal = ({ isOpen, consignment, onClose, onSuccess }) => {
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900">Log Consignment Sale</h2>
-              <p className="text-xs text-slate-500">Record final sale and compute showroom commission cut</p>
+              <p className="text-xs text-slate-500">Record final sale and compute showroom commission</p>
             </div>
           </div>
 

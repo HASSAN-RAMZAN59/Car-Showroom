@@ -74,7 +74,7 @@ const Consignments = () => {
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Consignment Sales & Commission Cut</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Consignment Sales & Commission Tracking</h1>
           <p className="text-xs text-slate-400 mt-1">Manage third-party vehicle deposits, percentage/fixed commissions, and withdrawal returns</p>
         </div>
 
@@ -102,7 +102,7 @@ const Consignments = () => {
           color="amber"
         />
         <StatCard
-          title="Commission Cut Earned"
+          title="Showroom Commission Earned"
           value={`PKR ${totalCommissionEarned.toLocaleString()}`}
           icon={DollarSign}
           color="emerald"
@@ -207,7 +207,7 @@ const Consignments = () => {
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg inline-block">
                           {item.commission_type === 'PERCENTAGE'
-                            ? `${item.commission_value}% Cut`
+                            ? `${item.commission_value}% Rate`
                             : `PKR ${item.commission_value?.toLocaleString()} Fixed`}
                         </div>
                       </td>

@@ -123,7 +123,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900">Register Consignment Car</h2>
-              <p className="text-xs text-slate-500">Deposit third-party vehicle for showroom sale cut</p>
+              <p className="text-xs text-slate-500">Deposit third-party vehicle for showroom commission</p>
             </div>
           </div>
 
@@ -386,14 +386,14 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={handleChange}
                     className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                   >
-                    <option value="PERCENTAGE">Percentage (%) Cut</option>
+                    <option value="PERCENTAGE">Percentage (%) Commission</option>
                     <option value="FIXED_AMOUNT">Fixed Amount (PKR)</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">
-                    {formData.commission_type === 'PERCENTAGE' ? 'Commission Rate (%) *' : 'Fixed Cut Amount (PKR) *'}
+                    {formData.commission_type === 'PERCENTAGE' ? 'Commission Rate (%) *' : 'Fixed Commission Amount (PKR) *'}
                   </label>
                   <input
                     type="number"
@@ -423,7 +423,7 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                 {/* Calculation Preview */}
                 <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl flex flex-col justify-center text-xs space-y-1">
                   <div className="flex justify-between text-slate-600">
-                    <span>Showroom Estimated Cut:</span>
+                    <span>Showroom Estimated Commission:</span>
                     <span className="font-bold text-blue-700">
                       {formData.agreed_asking_price && formData.commission_value
                         ? `PKR ${
