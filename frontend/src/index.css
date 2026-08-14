@@ -520,3 +520,15 @@ html.light ::-webkit-scrollbar-thumb {
 html.light ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
+
+/* Mobile Responsive Modals & Dialog Containers */
+@media (max-width: 640px) {
+  .modal-container,
+  [role="dialog"] {
+    max-width: calc(100vw - 1.5rem) !important;
+    max-height: calc(100vh - 2.5rem) !important;
+    overflow-y: auto !important;
+    margin-left: 0.75rem !important;
+    margin-right: 0.75rem !important;
+  }
+}

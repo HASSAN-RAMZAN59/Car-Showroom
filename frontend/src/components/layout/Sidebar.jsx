@@ -17,10 +17,11 @@ import {
   CarFront,
   Handshake,
   User,
-  UserCog
+  UserCog,
+  X
 } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ isMobileOpen, onClose }) => {
   const { user } = useAuth();
   const role = user?.role || 'EMPLOYEE';
 
@@ -119,17 +120,28 @@ const Sidebar = () => {
 
   const filteredItems = navItems.filter((item) => item.roles.includes(role));
 
-  return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
+  const sidebarContent = (
+    <div className="flex flex-col h-full bg-white w-64 border-r border-slate-200">
       {/* Brand Header */}
-      <div className="p-5 border-b border-slate-200 flex items-center gap-3">
-        <div className="w-10 h-10 bg-blue-600 rounded-xl text-white flex items-center justify-center shadow-sm shrink-0">
-          <CarFront className="w-6 h-6 text-white" />
+      <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-600 rounded-xl text-white flex items-center justify-center shadow-sm shrink-0">
+            <CarFront className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-base font-black tracking-wider text-slate-900 leading-none">SK MOTORS</h1>
+          </div>
         </div>
-        <div>
-          <h1 className="text-base font-black tracking-wider text-slate-900 leading-none">SK MOTORS</h1>
-
-        </div>
+        {/* Mobile Close Button */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            title="Close Menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Navigation Menu */}
@@ -140,10 +152,14 @@ const Sidebar = () => {
             <NavLink
               key={item.path}
               to={item.path}
+              onClick={() => {
+                if (onClose) onClose();
+              }}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs transition-all duration-150 ${isActive
-                  ? 'active bg-blue-100 text-blue-800 font-semibold border-l-4 border-blue-600 shadow-sm'
-                  : 'text-slate-700 hover:bg-blue-50 hover:text-blue-700 border-l-4 border-transparent'
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs transition-all duration-150 ${
+                  isActive
+                    ? 'active bg-blue-100 text-blue-800 font-semibold border-l-4 border-blue-600 shadow-sm'
+                    : 'text-slate-700 hover:bg-blue-50 hover:text-blue-700 border-l-4 border-transparent'
                 }`
               }
             >
@@ -163,7 +179,31 @@ const Sidebar = () => {
           </span>
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Sticky Sidebar */}
+      <aside className="hidden md:flex h-screen sticky top-0 z-20">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Off-Canvas Drawer Overlay */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+            onClick={onClose}
+          />
+          {/* Slide Drawer */}
+          <div className="relative z-10 h-full max-w-xs w-full shadow-2xl transition-transform">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
