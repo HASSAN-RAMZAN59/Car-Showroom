@@ -376,10 +376,22 @@ html.light button.bg-slate-50:hover {
   /* border-blue-200 */
 }
 
-/* Form Inputs, Select Dropdowns & Textareas */
+/* Form Inputs, Select Dropdowns & Textareas - Force Pure Dark Text (#0F172A) */
+input,
+select,
+textarea,
 html.light input,
 html.light select,
-html.light textarea {
+html.light textarea,
+html.light input.text-white,
+html.light select.text-white,
+html.light textarea.text-white,
+input.text-white,
+input.text-slate-100,
+input.text-slate-200,
+input.text-slate-300,
+select.text-white,
+textarea.text-white {
   background-color: #FFFFFF !important;
   color: #0F172A !important;
   border: 1px solid #CBD5E1 !important;
@@ -390,13 +402,31 @@ html.light textarea {
   transition: all 0.15s ease !important;
 }
 
-html.light select option {
+/* Ensure WebKit Autofill and focus states maintain dark black text */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #0F172A !important;
+  -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+html.light select option,
+select option {
   background-color: #FFFFFF !important;
   color: #0F172A !important;
 }
 
 html.light input:not([class*="pl-"]),
-html.light select:not([class*="pl-"]) {
+html.light select:not([class*="pl-"]),
+input:not([class*="pl-"]),
+select:not([class*="pl-"]) {
   padding-left: 0.75rem !important;
   padding-right: 0.75rem !important;
 }
@@ -423,12 +453,18 @@ input.pl-11 {
 
 html.light input:focus,
 html.light select:focus,
-html.light textarea:focus {
+html.light textarea:focus,
+input:focus,
+select:focus,
+textarea:focus {
   border-color: #2563EB !important;
   outline: none !important;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+  color: #0F172A !important;
 }
 
+input::placeholder,
+textarea::placeholder,
 html.light input::placeholder,
 html.light textarea::placeholder {
   color: #94A3B8 !important;
