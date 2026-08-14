@@ -119,11 +119,15 @@ async def purchase_car(
     await db.commit()
     await db.refresh(car)
 
-    # Eagerly load repairs for serialization
-    stmt = select(Car).options(selectinload(Car.repairs)).where(Car.id == car.id)
+    # Eagerly load repairs and seller for Pydantic serialization
+    stmt = (
+        select(Car)
+        .options(selectinload(Car.repairs), joinedload(Car.seller))
+        .where(Car.id == car.id)
+    )
     res = await db.execute(stmt)
-    car_with_repairs = res.scalars().first()
-    return car_with_repairs
+    car_with_details = res.scalars().first()
+    return car_with_details
 
 
 @router.get(
