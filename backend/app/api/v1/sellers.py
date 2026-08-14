@@ -43,13 +43,17 @@ async def create_seller(
     current_user: User = Depends(get_current_user),
 ) -> Any:
     """Create a new Seller record with optional CNIC front & back image uploads."""
-    # Check for duplicate CNIC
+    # Check for duplicate CNIC: reuse existing seller if CNIC matches
     result = await db.execute(select(Seller).where(Seller.cnic == cnic))
-    if result.scalars().first():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"A seller with CNIC '{cnic}' already exists in the system.",
-        )
+    existing_seller = result.scalars().first()
+    if existing_seller:
+        existing_seller.full_name = full_name
+        existing_seller.phone = phone
+        if address:
+            existing_seller.address = address
+        await db.commit()
+        await db.refresh(existing_seller)
+        return existing_seller
 
     # Upload CNIC images to Cloudinary if provided
     cnic_front_url = None

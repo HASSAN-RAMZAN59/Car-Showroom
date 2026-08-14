@@ -190,7 +190,13 @@ const PurchaseVehicleModal = ({ isOpen, onClose, onSuccess }) => {
       onClose();
     } catch (err) {
       console.error('Purchase logging error:', err);
-      setError(err.response?.data?.detail || 'Failed to record vehicle purchase. Please verify details.');
+      let errorMsg = 'Failed to record vehicle purchase. Please verify details.';
+      if (typeof err.response?.data?.detail === 'string') {
+        errorMsg = err.response.data.detail;
+      } else if (Array.isArray(err.response?.data?.detail)) {
+        errorMsg = err.response.data.detail.map((d) => d.msg || JSON.stringify(d)).join(', ');
+      }
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
