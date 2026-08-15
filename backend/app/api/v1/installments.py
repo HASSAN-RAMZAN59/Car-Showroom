@@ -375,3 +375,28 @@ async def delete_installment_payment(
     await db.commit()
     return {"message": "Installment payment reverted to pending successfully", "payment_id": str(payment_id)}
 
+
+@router.delete(
+    "/plan/{plan_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_installment_plan(
+    plan_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete an entire installment financing plan contract and all its payment schedules."""
+    res = await db.execute(select(InstallmentPlan).where(InstallmentPlan.id == plan_id))
+    plan = res.scalars().first()
+    if not plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Installment plan not found",
+        )
+
+    await db.delete(plan)
+    await db.commit()
+    return {"message": "Installment financing contract deleted successfully", "plan_id": str(plan_id)}
+
+

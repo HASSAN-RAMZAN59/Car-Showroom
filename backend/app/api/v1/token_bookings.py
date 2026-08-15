@@ -112,6 +112,26 @@ async def get_active_token_for_car(
     return booking
 
 
+@router.get(
+    "/",
+    response_model=list[TokenBookingResponse],
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE]))],
+)
+async def list_token_bookings(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """List all token reservations along with vehicle and customer details."""
+    stmt = (
+        select(TokenBooking)
+        .options(joinedload(TokenBooking.car), joinedload(TokenBooking.customer))
+        .order_by(TokenBooking.created_at.desc())
+    )
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
+
+
 @router.delete(
     "/{booking_id}",
     status_code=status.HTTP_200_OK,

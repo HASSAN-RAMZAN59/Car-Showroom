@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
-import { X, Wrench, DollarSign, Upload, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, Wrench, DollarSign, Upload, AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
@@ -19,6 +19,19 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDeleteRepair = async (repairId) => {
+    if (!window.confirm('Are you sure you want to delete this repair expense log entry?')) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/repairs/${repairId}`);
+      onSuccess();
+      onClose();
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete repair log');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -57,8 +70,8 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in max-h-screen overflow-y-auto">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative my-8">
         {/* Modal Header */}
         <div className="p-6 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -85,6 +98,33 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
             PKR {car.total_repair_cost ? car.total_repair_cost.toLocaleString() : '0'}
           </span>
         </div>
+
+        {/* Existing Repair History Logs */}
+        {car.repairs && car.repairs.length > 0 && (
+          <div className="mx-6 mt-4 p-4 bg-slate-950/60 border border-slate-800/60 rounded-2xl space-y-2 text-xs">
+            <h4 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+              Logged Repair History ({car.repairs.length})
+            </h4>
+            <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
+              {car.repairs.map((r) => (
+                <div key={r.id} className="p-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+                  <div>
+                    <span className="font-semibold text-white">{r.repair_type}</span>
+                    <span className="text-slate-400 block text-[10px]">{r.vendor_name || 'General Repair'} • PKR {r.cost?.toLocaleString()}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteRepair(r.id)}
+                    className="p-1 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
+                    title="Delete this repair entry"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -200,4 +240,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
   );
 };
 
+
 export default RepairLogModal;
+
+

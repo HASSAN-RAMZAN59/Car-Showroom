@@ -20,11 +20,8 @@ const Installments = () => {
   const fetchInstallmentData = async () => {
     setLoading(true);
     try {
-      // Fetch all active financing plans
       const plansRes = await axiosInstance.get('/installments/');
       setPlans(plansRes.data || []);
-
-      // Fetch overdue monitoring items
       const overdueRes = await axiosInstance.get('/installments/overdue');
       setOverdueList(overdueRes.data || []);
     } catch (err) {
@@ -47,6 +44,18 @@ const Installments = () => {
       fetchInstallmentData();
     } catch (err) {
       alert(err.response?.data?.detail || 'Failed to revert installment payment');
+    }
+  };
+
+  const handleDeleteInstallmentPlan = async (plan) => {
+    if (!window.confirm(`Are you sure you want to delete the entire financing contract for vehicle ${plan.sale?.car?.car_number || ''}? This will delete all associated installment schedules.`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/installments/plan/${plan.id}`);
+      setPlans((prev) => prev.filter((p) => p.id !== plan.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete financing contract');
     }
   };
 
@@ -181,13 +190,22 @@ const Installments = () => {
                         </span>
                       </div>
 
-                      <button
-                        onClick={() => toggleExpandPlan(plan.id)}
-                        className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 rounded-lg font-medium flex items-center gap-1 transition-all shadow-sm"
-                      >
-                        <span>{isExpanded ? 'Hide Schedule' : 'View Schedule & Collect'}</span>
-                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => toggleExpandPlan(plan.id)}
+                          className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 rounded-lg font-medium flex items-center gap-1 transition-all shadow-sm"
+                        >
+                          <span>{isExpanded ? 'Hide Schedule' : 'View Schedule & Collect'}</span>
+                          {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteInstallmentPlan(plan)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all border border-slate-200"
+                          title="Delete Entire Financing Contract"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
 

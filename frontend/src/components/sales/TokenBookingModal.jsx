@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import SmartSearchInput from '../vehicles/SmartSearchInput';
-import { X, CalendarCheck, DollarSign, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, CalendarCheck, DollarSign, User, AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
   const [selectedCar, setSelectedCar] = useState(null);
+  const [activeTokens, setActiveTokens] = useState([]);
   const [formData, setFormData] = useState({
     customer_name: '',
     customer_cnic: '',
@@ -17,6 +18,34 @@ const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchActiveTokens();
+    }
+  }, [isOpen]);
+
+  const fetchActiveTokens = async () => {
+    try {
+      const res = await axiosInstance.get('/token_bookings/');
+      setActiveTokens(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch token bookings:', err);
+    }
+  };
+
+  const handleDeleteToken = async (bookingId) => {
+    if (!window.confirm('Are you sure you want to cancel/delete this token booking? The vehicle will be unreserved and set to AVAILABLE.')) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/token_bookings/${bookingId}`);
+      setActiveTokens((prev) => prev.filter((b) => b.id !== bookingId));
+      onSuccess();
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to cancel token booking');
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -88,9 +117,10 @@ const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
     }
   };
 
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in max-h-screen overflow-y-auto">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative my-8">
         {/* Header */}
         <div className="p-6 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -98,7 +128,7 @@ const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
               <CalendarCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Advance Token Reservation</h3>
+              <h3 className="text-base font-bold text-white">Advance Token Reservations</h3>
               <p className="text-xs text-slate-400">Reserve vehicle stock and log advance buyer deposit</p>
             </div>
           </div>
@@ -107,6 +137,33 @@ const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Existing Active Tokens List */}
+        {activeTokens.length > 0 && (
+          <div className="mx-6 mt-4 p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-2 text-xs">
+            <h4 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+              Active Reservations ({activeTokens.length})
+            </h4>
+            <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
+              {activeTokens.map((t) => (
+                <div key={t.id} className="p-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-amber-400">{t.car?.make} {t.car?.model} ({t.car?.car_number})</span>
+                    <span className="text-slate-400 block text-[10px]">Buyer: {t.customer?.full_name} • PKR {t.advance_amount?.toLocaleString()}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteToken(t.id)}
+                    className="p-1 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
+                    title="Cancel Token Reservation"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -248,3 +305,4 @@ const TokenBookingModal = ({ isOpen, onClose, onSuccess }) => {
 };
 
 export default TokenBookingModal;
+
