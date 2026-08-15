@@ -6,7 +6,7 @@ import MapCarInvestmentModal from '../components/financial/MapCarInvestmentModal
 import ProcessPayoutModal from '../components/financial/ProcessPayoutModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import StatusBadge from '../components/common/StatusBadge';
-import { Briefcase, Plus, DollarSign, UserCheck, TrendingUp, Phone, CheckCircle2 } from 'lucide-react';
+import { Briefcase, Plus, DollarSign, UserCheck, TrendingUp, Phone, CheckCircle2, Trash2 } from 'lucide-react';
 
 const Investors = () => {
   const [investors, setInvestors] = useState([]);
@@ -33,6 +33,31 @@ const Investors = () => {
       console.error('Failed to fetch investor portfolio data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteInvestor = async (inv) => {
+    if (!window.confirm(`Are you sure you want to delete investor profile for ${inv.full_name}?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/investors/${inv.id}`);
+      setInvestors((prev) => prev.filter((i) => i.id !== inv.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete investor profile');
+    }
+  };
+
+  const handleDeleteInvestment = async (investment) => {
+    if (!window.confirm(`Are you sure you want to delete this car investment record?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/investors/investments/${investment.id}`);
+      setInvestments((prev) => prev.filter((i) => i.id !== investment.id));
+      fetchInvestorData();
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete investment record');
     }
   };
 
@@ -97,7 +122,7 @@ const Investors = () => {
       {/* Investor Profile Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {investors.map((inv) => (
-          <div key={inv.id} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4 hover:border-blue-300 hover:shadow-md transition-all">
+          <div key={inv.id} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4 hover:border-blue-300 hover:shadow-md transition-all relative group">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold text-base shadow-sm">
@@ -109,9 +134,18 @@ const Investors = () => {
                 </div>
               </div>
 
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                ACTIVE
-              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDeleteInvestor(inv)}
+                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                  title="Delete Investor Profile"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  ACTIVE
+                </span>
+              </div>
             </div>
 
             <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
@@ -145,7 +179,7 @@ const Investors = () => {
                   <th className="py-3.5 px-6">Agreed Profit %</th>
                   <th className="py-3.5 px-6">Settled Profit Share</th>
                   <th className="py-3.5 px-6">Status</th>
-                  <th className="py-3.5 px-6">Actions</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -172,7 +206,7 @@ const Investors = () => {
                         <StatusBadge status={inv.status} />
                       </td>
 
-                      <td className="py-4 px-6">
+                      <td className="py-4 px-6 text-right flex items-center justify-end gap-2">
                         {inv.status === 'SETTLED' ? (
                           <button
                             onClick={() => setActivePayoutId(inv.id)}
@@ -183,6 +217,13 @@ const Investors = () => {
                         ) : (
                           <span className="text-[11px] text-slate-400 italic">Vehicle Active</span>
                         )}
+                        <button
+                          onClick={() => handleDeleteInvestment(inv)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                          title="Delete Investment Record"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -224,12 +265,5 @@ const Investors = () => {
   );
 };
 
-function CarIcon(props) {
-  return (
-    <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h8m-8 4h8m-8 4h8M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
-    </svg>
-  );
-}
-
 export default Investors;
+

@@ -110,3 +110,36 @@ async def get_active_token_for_car(
             detail=f"No active token reservation found for vehicle ID '{car_id}'.",
         )
     return booking
+
+
+@router.delete(
+    "/{booking_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_token_booking(
+    booking_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a token booking (Admin/Manager only) and unreserve vehicle."""
+    stmt = (
+        select(TokenBooking)
+        .options(joinedload(TokenBooking.car))
+        .where(TokenBooking.id == booking_id)
+    )
+    res = await db.execute(stmt)
+    booking = res.scalars().first()
+    if not booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Token booking record not found",
+        )
+
+    if booking.car and booking.car.status == CarStatus.RESERVED:
+        booking.car.status = CarStatus.AVAILABLE
+
+    await db.delete(booking)
+    await db.commit()
+    return {"message": "Token booking deleted successfully and vehicle unreserved", "booking_id": str(booking_id)}
+

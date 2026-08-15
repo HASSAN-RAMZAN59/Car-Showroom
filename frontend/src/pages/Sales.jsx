@@ -5,7 +5,7 @@ import TokenBookingModal from '../components/sales/TokenBookingModal';
 import PdfViewerModal from '../components/sales/PdfViewerModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import StatusBadge from '../components/common/StatusBadge';
-import { Receipt, Plus, CalendarCheck, FileText, TrendingUp, DollarSign, Calendar } from 'lucide-react';
+import { Receipt, Plus, CalendarCheck, FileText, TrendingUp, DollarSign, Calendar, Trash2 } from 'lucide-react';
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
@@ -34,6 +34,18 @@ const Sales = () => {
     fetchSales();
     if (createdSale && createdSale.id) {
       setActivePdfSale(createdSale);
+    }
+  };
+
+  const handleDeleteSale = async (sale) => {
+    if (!window.confirm(`Are you sure you want to delete sale #${sale.id.slice(0, 8).toUpperCase()}? This will revert the car status to AVAILABLE and refund bank transactions.`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/sales/${sale.id}`);
+      setSales((prev) => prev.filter((s) => s.id !== sale.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete sale record');
     }
   };
 
@@ -80,7 +92,7 @@ const Sales = () => {
                   <th className="py-3.5 px-6">Net Profit Margin</th>
                   <th className="py-3.5 px-6">Payment Type</th>
                   <th className="py-3.5 px-6">Sale Date</th>
-                  <th className="py-3.5 px-6">Actions</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -114,13 +126,20 @@ const Sales = () => {
                         </div>
                       </td>
 
-                      <td className="py-4 px-6">
+                      <td className="py-4 px-6 flex items-center justify-end gap-2">
                         <button
                           onClick={() => setActivePdfSale(sale)}
                           className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium rounded-lg transition-all flex items-center gap-1.5 shadow-sm"
                         >
                           <FileText className="w-3.5 h-3.5 text-blue-600" />
                           <span>View Sale Deed</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSale(sale)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-200"
+                          title="Delete Sale Record"
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </td>
                     </tr>
@@ -137,6 +156,7 @@ const Sales = () => {
           </div>
         )}
       </div>
+
 
       {/* Modals */}
       <NewSaleModal

@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import RegisterConsignmentModal from '../components/consignments/RegisterConsignmentModal';
 import WithdrawConsignmentModal from '../components/consignments/WithdrawConsignmentModal';
 import ConsignmentSaleModal from '../components/consignments/ConsignmentSaleModal';
-import { Handshake, Car, DollarSign, LogOut, Plus, Search, User, Calendar, Receipt } from 'lucide-react';
+import { Handshake, Car, DollarSign, LogOut, Plus, Search, User, Calendar, Receipt, Trash2 } from 'lucide-react';
 
 const Consignments = () => {
   const [consignments, setConsignments] = useState([]);
@@ -37,6 +37,18 @@ const Consignments = () => {
       console.error('Failed to fetch consignments:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteConsignment = async (item) => {
+    if (!window.confirm(`Are you sure you want to delete consignment agreement for ${item.owner_name}?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/consignments/${item.id}`);
+      setConsignments((prev) => prev.filter((c) => c.id !== item.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete consignment agreement');
     }
   };
 
@@ -237,27 +249,34 @@ const Consignments = () => {
 
                       {/* Actions */}
                       <td className="py-3.5 px-4 text-right">
-                        {item.status === 'ACTIVE' ? (
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => setSelectedForSale(item)}
-                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all flex items-center gap-1"
-                            >
-                              <Receipt className="w-3.5 h-3.5" />
-                              <span>Log Sale</span>
-                            </button>
+                        <div className="flex items-center justify-end gap-2">
+                          {item.status === 'ACTIVE' && (
+                            <>
+                              <button
+                                onClick={() => setSelectedForSale(item)}
+                                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all flex items-center gap-1"
+                              >
+                                <Receipt className="w-3.5 h-3.5" />
+                                <span>Log Sale</span>
+                              </button>
 
-                            <button
-                              onClick={() => setSelectedForWithdraw(item)}
-                              className="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 rounded-lg transition-all flex items-center gap-1"
-                            >
-                              <LogOut className="w-3.5 h-3.5" />
-                              <span>Return</span>
-                            </button>
-                          </div>
-                        ) : (
-                          <span className="text-[11px] text-slate-400 italic">No actions</span>
-                        )}
+                              <button
+                                onClick={() => setSelectedForWithdraw(item)}
+                                className="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 rounded-lg transition-all flex items-center gap-1"
+                              >
+                                <LogOut className="w-3.5 h-3.5" />
+                                <span>Return</span>
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => handleDeleteConsignment(item)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            title="Delete Consignment Agreement"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
 
                     </tr>
@@ -305,3 +324,4 @@ const Consignments = () => {
 };
 
 export default Consignments;
+

@@ -4,7 +4,7 @@ import StatCard from '../components/common/StatCard';
 import StatusBadge from '../components/common/StatusBadge';
 import LogInstallmentPaymentModal from '../components/sales/LogInstallmentPaymentModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { CalendarCheck, DollarSign, AlertTriangle, Car, User, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
+import { CalendarCheck, DollarSign, AlertTriangle, Car, User, ChevronDown, ChevronUp, CheckCircle2, Trash2 } from 'lucide-react';
 
 const Installments = () => {
   const [plans, setPlans] = useState([]);
@@ -36,6 +36,18 @@ const Installments = () => {
 
   const toggleExpandPlan = (planId) => {
     setExpandedPlanId((prev) => (prev === planId ? null : planId));
+  };
+
+  const handleDeleteInstallmentPayment = async (pay) => {
+    if (!window.confirm(`Are you sure you want to revert payment collection for Installment #${pay.installment_number}? (Bank account balance will be refunded).`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/installments/payments/${pay.id}`);
+      fetchInstallmentData();
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to revert installment payment');
+    }
   };
 
   // KPI aggregates
@@ -194,7 +206,7 @@ const Installments = () => {
                               <th className="py-2.5 px-4">Amount Due</th>
                               <th className="py-2.5 px-4">Paid Date</th>
                               <th className="py-2.5 px-4">Status</th>
-                              <th className="py-2.5 px-4">Actions</th>
+                              <th className="py-2.5 px-4 text-right">Actions</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -216,7 +228,7 @@ const Installments = () => {
                                   <td className="py-3 px-4">
                                     <StatusBadge status={pay.status} />
                                   </td>
-                                  <td className="py-3 px-4">
+                                  <td className="py-3 px-4 text-right">
                                     {pay.status !== 'PAID' ? (
                                       <button
                                         onClick={() => setSelectedPaymentForLog(pay)}
@@ -225,9 +237,18 @@ const Installments = () => {
                                         Receive Payment
                                       </button>
                                     ) : (
-                                      <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
-                                        <CheckCircle2 className="w-3.5 h-3.5" /> Paid
-                                      </span>
+                                      <div className="flex items-center justify-end gap-2">
+                                        <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                                          <CheckCircle2 className="w-3.5 h-3.5" /> Paid
+                                        </span>
+                                        <button
+                                          onClick={() => handleDeleteInstallmentPayment(pay)}
+                                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                          title="Revert Payment Collection"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
                                     )}
                                   </td>
                                 </tr>

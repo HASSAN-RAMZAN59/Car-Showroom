@@ -137,3 +137,28 @@ async def update_car_status(
     await db.commit()
     await db.refresh(car)
     return car
+
+
+@router.delete(
+    "/{repair_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_repair(
+    repair_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a repair record (Admin/Manager only)."""
+    res = await db.execute(select(Repair).where(Repair.id == repair_id))
+    repair = res.scalars().first()
+    if not repair:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Repair record not found",
+        )
+
+    await db.delete(repair)
+    await db.commit()
+    return {"message": "Repair record deleted successfully", "repair_id": str(repair_id)}
+

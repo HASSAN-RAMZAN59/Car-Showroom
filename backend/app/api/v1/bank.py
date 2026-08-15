@@ -272,3 +272,69 @@ async def get_car_financial_transactions(
     )
     result = await db.execute(stmt)
     return result.scalars().all()
+
+
+@router.delete(
+    "/accounts/{account_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_bank_account(
+    account_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Soft delete or remove a bank account (Admin/Manager only). Sets is_active to False."""
+    res = await db.execute(select(BankAccount).where(BankAccount.id == account_id))
+    bank_account = res.scalars().first()
+    if not bank_account:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Bank account not found",
+        )
+    bank_account.is_active = False
+    await db.commit()
+    return {"message": "Bank account deactivated successfully", "account_id": str(account_id)}
+
+
+@router.delete(
+    "/transactions/{transaction_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_payment_transaction(
+    transaction_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a payment transaction and automatically adjust bank account balance (Admin/Manager only)."""
+    res = await db.execute(select(PaymentTransaction).where(PaymentTransaction.id == transaction_id))
+    tx = res.scalars().first()
+    if not tx:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Payment transaction record not found",
+        )
+    
+    if tx.bank_account_id:
+        bank_res = await db.execute(select(BankAccount).where(BankAccount.id == tx.bank_account_id))
+        bank_account = bank_res.scalars().first()
+        if bank_account:
+            if tx.transaction_type in [
+                TransactionType.SALE_PAYMENT,
+                TransactionType.INSTALLMENT_PAYMENT,
+                TransactionType.DEPOSIT,
+                TransactionType.CONSIGNMENT_COMMISSION,
+            ]:
+                bank_account.current_balance -= tx.amount
+            elif tx.transaction_type in [
+                TransactionType.PURCHASE_PAYMENT,
+                TransactionType.EXPENSE_PAYMENT,
+                TransactionType.WITHDRAWAL,
+            ]:
+                bank_account.current_balance += tx.amount
+
+    await db.delete(tx)
+    await db.commit()
+    return {"message": "Transaction record deleted successfully", "transaction_id": str(transaction_id)}
+

@@ -245,3 +245,28 @@ async def withdraw_consignment(
         .where(ConsignmentAgreement.id == consignment_id)
     )
     return res.scalars().first()
+
+
+@router.delete(
+    "/{consignment_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_consignment(
+    consignment_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a consignment agreement (Admin/Manager only)."""
+    res = await db.execute(select(ConsignmentAgreement).where(ConsignmentAgreement.id == consignment_id))
+    consignment = res.scalars().first()
+    if not consignment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Consignment agreement not found",
+        )
+
+    await db.delete(consignment)
+    await db.commit()
+    return {"message": "Consignment agreement deleted successfully", "consignment_id": str(consignment_id)}
+

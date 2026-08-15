@@ -3,7 +3,7 @@ import axiosInstance from '../api/axiosInstance';
 import PurchaseVehicleModal from '../components/vehicles/PurchaseVehicleModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import StatusBadge from '../components/common/StatusBadge';
-import { ShoppingBag, Plus, Car, User, Calendar, DollarSign } from 'lucide-react';
+import { ShoppingBag, Plus, Car, User, Calendar, DollarSign, Trash2 } from 'lucide-react';
 
 const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
@@ -23,6 +23,18 @@ const Purchases = () => {
       console.error('Failed to fetch vehicle purchases ledger:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeletePurchase = async (car) => {
+    if (!window.confirm(`Are you sure you want to delete purchase record for vehicle ${car.car_number}?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/cars/${car.id}`);
+      setPurchases((prev) => prev.filter((item) => item.id !== car.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete vehicle purchase record');
     }
   };
 
@@ -62,6 +74,7 @@ const Purchases = () => {
                   <th className="py-3.5 px-6">Refurbishment Cost</th>
                   <th className="py-3.5 px-6">Status</th>
                   <th className="py-3.5 px-6">Acquired Date</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -123,11 +136,21 @@ const Purchases = () => {
                           <span>{item.created_at ? new Date(item.created_at).toLocaleDateString() : 'N/A'}</span>
                         </div>
                       </td>
+
+                      <td className="py-4 px-6 text-right">
+                        <button
+                          onClick={() => handleDeletePurchase(item)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                          title="Delete Purchase Record"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400">
+                    <td colSpan={9} className="py-12 text-center text-slate-400">
                       No vehicle purchase acquisitions logged yet.
                     </td>
                   </tr>
@@ -137,6 +160,7 @@ const Purchases = () => {
           </div>
         )}
       </div>
+
 
       <PurchaseVehicleModal
         isOpen={isPurchaseModalOpen}

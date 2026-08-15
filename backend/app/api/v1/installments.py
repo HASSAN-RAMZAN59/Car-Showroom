@@ -333,3 +333,45 @@ async def list_overdue_payments(
         await db.commit()
 
     return overdue_payments
+
+
+@router.delete(
+    "/payments/{payment_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_installment_payment(
+    payment_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete an installment payment collection (Admin/Manager only), reverting bank balance and reset status to PENDING."""
+    res = await db.execute(select(InstallmentPayment).where(InstallmentPayment.id == payment_id))
+    payment = res.scalars().first()
+    if not payment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Installment payment record not found",
+        )
+
+    # Revert payment transaction & bank balance if present
+    tx_res = await db.execute(select(PaymentTransaction).where(PaymentTransaction.installment_payment_id == payment_id))
+    transactions = tx_res.scalars().all()
+    for tx in transactions:
+        if tx.bank_account_id:
+            bank_res = await db.execute(select(BankAccount).where(BankAccount.id == tx.bank_account_id))
+            bank_acc = bank_res.scalars().first()
+            if bank_acc:
+                bank_acc.current_balance -= tx.amount
+        await db.delete(tx)
+
+    # Reset payment record to pending
+    payment.status = PaymentStatus.PENDING
+    payment.amount_paid = 0.0
+    payment.payment_date = None
+    payment.payment_method = None
+    payment.transaction_reference = None
+
+    await db.commit()
+    return {"message": "Installment payment reverted to pending successfully", "payment_id": str(payment_id)}
+

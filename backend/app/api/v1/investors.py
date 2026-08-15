@@ -324,3 +324,73 @@ async def process_investor_payout(
     )
     res_reload = await db.execute(stmt_reload)
     return res_reload.scalars().first()
+
+
+@router.delete(
+    "/{investor_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_investor(
+    investor_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete an investor profile (Admin/Manager only). Prevents deletion if investor has active investments."""
+    res = await db.execute(select(Investor).where(Investor.id == investor_id))
+    investor = res.scalars().first()
+    if not investor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Investor record not found",
+        )
+
+    # Check for active investments
+    inv_res = await db.execute(select(CarInvestment).where(CarInvestment.investor_id == investor_id))
+    if inv_res.scalars().first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete investor who has linked investment records. Delete the investments first.",
+        )
+
+    await db.delete(investor)
+    await db.commit()
+    return {"message": "Investor profile deleted successfully", "investor_id": str(investor_id)}
+
+
+@router.delete(
+    "/investments/{investment_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_car_investment(
+    investment_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a car investment record (Admin/Manager only) and adjust investor total capital."""
+    res = await db.execute(select(CarInvestment).where(CarInvestment.id == investment_id))
+    investment = res.scalars().first()
+    if not investment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Investment record not found",
+        )
+
+    # Revert investor total capital invested
+    investor_res = await db.execute(select(Investor).where(Investor.id == investment.investor_id))
+    investor = investor_res.scalars().first()
+    if investor:
+        investor.total_capital_invested = max(0.0, investor.total_capital_invested - investment.investment_amount)
+
+    # Revert bank balance if paid via bank
+    if investment.bank_account_id:
+        bank_res = await db.execute(select(BankAccount).where(BankAccount.id == investment.bank_account_id))
+        bank_acc = bank_res.scalars().first()
+        if bank_acc:
+            bank_acc.current_balance += investment.investment_amount
+
+    await db.delete(investment)
+    await db.commit()
+    return {"message": "Investment record deleted successfully", "investment_id": str(investment_id)}
+

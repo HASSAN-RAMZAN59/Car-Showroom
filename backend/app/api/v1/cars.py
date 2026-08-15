@@ -190,3 +190,39 @@ async def get_car(
             detail="Vehicle not found in inventory",
         )
     return car
+
+
+@router.delete(
+    "/{car_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_car(
+    car_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a vehicle from inventory (Admin/Manager only). Prevent deletion if car has active sales."""
+    from app.models.sale import Sale
+    
+    stmt = select(Car).where(Car.id == car_id)
+    res = await db.execute(stmt)
+    car = res.scalars().first()
+    if not car:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found in inventory",
+        )
+    
+    # Check if car has an associated sale
+    sale_res = await db.execute(select(Sale).where(Sale.car_id == car_id))
+    if sale_res.scalars().first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete a vehicle that has an active or completed sale record. Delete the sale first.",
+        )
+    
+    await db.delete(car)
+    await db.commit()
+    return {"message": "Vehicle deleted successfully from inventory", "car_id": str(car_id)}
+

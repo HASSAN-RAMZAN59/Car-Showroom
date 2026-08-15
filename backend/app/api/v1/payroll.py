@@ -278,3 +278,35 @@ async def list_payroll_history(
     stmt = stmt.order_by(Payroll.created_at.desc())
     result = await db.execute(stmt)
     return result.scalars().all()
+
+
+@router.delete(
+    "/{payroll_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_payroll(
+    payroll_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a payroll record (Admin/Manager only). If paid via bank, refunds the net salary back to bank account."""
+    res = await db.execute(select(Payroll).where(Payroll.id == payroll_id))
+    payroll = res.scalars().first()
+    if not payroll:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Payroll record not found",
+        )
+
+    # Refund bank account if paid via bank
+    if payroll.payment_status == PayrollPaymentStatus.PAID and payroll.payment_method == PaymentMethod.BANK_TRANSFER and payroll.bank_account_id:
+        bank_res = await db.execute(select(BankAccount).where(BankAccount.id == payroll.bank_account_id))
+        bank_account = bank_res.scalars().first()
+        if bank_account:
+            bank_account.current_balance += payroll.net_salary
+
+    await db.delete(payroll)
+    await db.commit()
+    return {"message": "Payroll record deleted successfully", "payroll_id": str(payroll_id)}
+

@@ -365,3 +365,64 @@ async def export_sale_deed_pdf(
         media_type="application/pdf",
         headers={"Content-Disposition": f"inline; filename={filename}"},
     )
+
+
+@router.delete(
+    "/{sale_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_sale(
+    sale_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a sale record (Admin/Manager only). Reverts car status to AVAILABLE and reverses linked bank transactions."""
+    stmt = (
+        select(Sale)
+        .options(joinedload(Sale.car))
+        .where(Sale.id == sale_id)
+    )
+    res = await db.execute(stmt)
+    sale = res.scalars().first()
+    if not sale:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sale record not found",
+        )
+
+    # 1. Reset vehicle status
+    if sale.car:
+        if sale.car.is_consignment:
+            sale.car.status = CarStatus.CONSIGNED_AVAILABLE
+        else:
+            sale.car.status = CarStatus.AVAILABLE
+
+    # 2. Reverse linked payment transactions & adjust bank balance
+    tx_stmt = select(PaymentTransaction).where(PaymentTransaction.sale_id == sale_id)
+    tx_res = await db.execute(tx_stmt)
+    transactions = tx_res.scalars().all()
+
+    for tx in transactions:
+        if tx.bank_account_id:
+            bank_res = await db.execute(select(BankAccount).where(BankAccount.id == tx.bank_account_id))
+            bank_acc = bank_res.scalars().first()
+            if bank_acc:
+                bank_acc.current_balance -= tx.amount
+        await db.delete(tx)
+
+    # 3. Delete installment plan & payments if exists
+    inst_plan_res = await db.execute(select(InstallmentPlan).where(InstallmentPlan.sale_id == sale_id))
+    inst_plan = inst_plan_res.scalars().first()
+    if inst_plan:
+        pay_res = await db.execute(select(InstallmentPayment).where(InstallmentPayment.installment_plan_id == inst_plan.id))
+        for pay in pay_res.scalars().all():
+            await db.delete(pay)
+        await db.delete(inst_plan)
+
+    # 4. Delete sale
+    await db.delete(sale)
+    await db.commit()
+
+    return {"message": "Sale record deleted successfully and vehicle status reverted", "sale_id": str(sale_id)}
+

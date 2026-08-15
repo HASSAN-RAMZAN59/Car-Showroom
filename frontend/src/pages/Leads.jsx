@@ -5,7 +5,7 @@ import LogFollowupModal from '../components/workforce/LogFollowupModal';
 import MatchingInventoryModal from '../components/workforce/MatchingInventoryModal';
 import StatusBadge from '../components/common/StatusBadge';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { UserCheck, Plus, Phone, Mail, Car, Search, Filter, MessageSquare } from 'lucide-react';
+import { UserCheck, Plus, Phone, Mail, Car, Search, Filter, MessageSquare, Trash2 } from 'lucide-react';
 
 const Leads = () => {
   const [leads, setLeads] = useState([]);
@@ -42,6 +42,18 @@ const Leads = () => {
       fetchLeads();
     } catch (err) {
       console.error('Failed to update lead status:', err);
+    }
+  };
+
+  const handleDeleteLead = async (lead) => {
+    if (!window.confirm(`Are you sure you want to delete lead for ${lead.customer_name}?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/leads/${lead.id}`);
+      setLeads((prev) => prev.filter((l) => l.id !== lead.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete lead record');
     }
   };
 
@@ -96,7 +108,7 @@ const Leads = () => {
                   <th className="py-3.5 px-6">Budget Range</th>
                   <th className="py-3.5 px-6">Preferred Vehicle</th>
                   <th className="py-3.5 px-6">Pipeline Status</th>
-                  <th className="py-3.5 px-6">Actions</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -144,8 +156,8 @@ const Leads = () => {
                         </select>
                       </td>
 
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-2">
+                      <td className="py-4 px-6 text-right">
+                        <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => setSelectedLeadForFollowup(lead)}
                             className="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium rounded-lg transition-all flex items-center gap-1 shadow-sm"
@@ -160,6 +172,14 @@ const Leads = () => {
                           >
                             <Car className="w-3.5 h-3.5 text-emerald-600" />
                             <span>Match Stock</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleDeleteLead(lead)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            title="Delete Lead Record"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -177,6 +197,7 @@ const Leads = () => {
           </div>
         )}
       </div>
+
 
       {/* Modals */}
       <AddLeadModal

@@ -5,7 +5,7 @@ import GeneratePayrollModal from '../components/workforce/GeneratePayrollModal';
 import ExecuteSalaryPayoutModal from '../components/workforce/ExecuteSalaryPayoutModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import StatusBadge from '../components/common/StatusBadge';
-import { Users, Plus, DollarSign, Calculator, Calendar } from 'lucide-react';
+import { Users, Plus, DollarSign, Calculator, Calendar, Trash2 } from 'lucide-react';
 
 const Payroll = () => {
   const [employees, setEmployees] = useState([]);
@@ -32,6 +32,18 @@ const Payroll = () => {
       console.error('Failed to fetch payroll data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeletePayroll = async (pay) => {
+    if (!window.confirm('Are you sure you want to delete this payroll record? (If disbursed via bank transfer, funds will be refunded to bank account balance).')) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/payroll/${pay.id}`);
+      setPayrolls((prev) => prev.filter((p) => p.id !== pay.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete payroll record');
     }
   };
 
@@ -139,7 +151,7 @@ const Payroll = () => {
                 <th className="py-3.5 px-6">Deductions</th>
                 <th className="py-3.5 px-6">Net Salary</th>
                 <th className="py-3.5 px-6">Status</th>
-                <th className="py-3.5 px-6">Actions</th>
+                <th className="py-3.5 px-6 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -174,7 +186,7 @@ const Payroll = () => {
                       <StatusBadge status={pay.payment_status || pay.status} />
                     </td>
 
-                    <td className="py-4 px-6">
+                    <td className="py-4 px-6 text-right flex items-center justify-end gap-2">
                       {(pay.payment_status || pay.status) === 'PENDING' ? (
                         <button
                           onClick={() => setActivePayoutPayroll(pay)}
@@ -185,6 +197,13 @@ const Payroll = () => {
                       ) : (
                         <span className="text-[11px] text-slate-400 italic">Disbursed</span>
                       )}
+                      <button
+                        onClick={() => handleDeletePayroll(pay)}
+                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                        title="Delete Payroll Record"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -227,3 +246,4 @@ const Payroll = () => {
 };
 
 export default Payroll;
+

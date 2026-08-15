@@ -134,3 +134,36 @@ async def get_seller(
             detail="Seller not found",
         )
     return seller
+
+
+@router.delete(
+    "/{seller_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_seller(
+    seller_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete seller profile (Admin/Manager only). Checks for linked vehicles."""
+    from app.models.car import Car
+    res = await db.execute(select(Seller).where(Seller.id == seller_id))
+    seller = res.scalars().first()
+    if not seller:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Seller profile not found",
+        )
+
+    car_res = await db.execute(select(Car).where(Car.seller_id == seller_id))
+    if car_res.scalars().first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete seller with linked vehicles in inventory.",
+        )
+
+    await db.delete(seller)
+    await db.commit()
+    return {"message": "Seller profile deleted successfully", "seller_id": str(seller_id)}
+

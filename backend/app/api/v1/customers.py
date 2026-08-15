@@ -133,3 +133,36 @@ async def get_customer(
             detail="Customer not found",
         )
     return customer
+
+
+@router.delete(
+    "/{customer_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_customer(
+    customer_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete customer profile (Admin/Manager only). Checks for active sales."""
+    from app.models.sale import Sale
+    res = await db.execute(select(Customer).where(Customer.id == customer_id))
+    customer = res.scalars().first()
+    if not customer:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Customer profile not found",
+        )
+
+    sale_res = await db.execute(select(Sale).where(Sale.customer_id == customer_id))
+    if sale_res.scalars().first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete customer with active purchase/sale records.",
+        )
+
+    await db.delete(customer)
+    await db.commit()
+    return {"message": "Customer profile deleted successfully", "customer_id": str(customer_id)}
+

@@ -4,7 +4,7 @@ import CreateBankAccountModal from '../components/financial/CreateBankAccountMod
 import SplitPaymentModal from '../components/financial/SplitPaymentModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import SmartSearchInput from '../components/vehicles/SmartSearchInput';
-import { Building2, Plus, DollarSign, ArrowUpRight, ArrowDownLeft, Car, Search } from 'lucide-react';
+import { Building2, Plus, DollarSign, ArrowUpRight, ArrowDownLeft, Car, Search, Trash2 } from 'lucide-react';
 
 const Banking = () => {
   const [bankAccounts, setBankAccounts] = useState([]);
@@ -33,7 +33,7 @@ const Banking = () => {
     try {
       const res = await axiosInstance.get('/bank/accounts');
       setBankAccounts(res.data || []);
-      if (res.data && res.data.length > 0) {
+      if (res.data && res.data.length > 0 && !selectedAccount) {
         setSelectedAccount(res.data[0].id);
       }
     } catch (err) {
@@ -63,6 +63,37 @@ const Banking = () => {
       }
     } else {
       setCarTransactions([]);
+    }
+  };
+
+  const handleDeleteAccount = async (acc, e) => {
+    e.stopPropagation();
+    if (!window.confirm(`Are you sure you want to deactivate bank account "${acc.bank_name} - ${acc.account_title}"?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/bank/accounts/${acc.id}`);
+      setBankAccounts((prev) => prev.filter((a) => a.id !== acc.id));
+      if (selectedAccount === acc.id) {
+        setSelectedAccount('');
+        setTransactions([]);
+      }
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to deactivate bank account');
+    }
+  };
+
+  const handleDeleteTransaction = async (tx) => {
+    if (!window.confirm(`Are you sure you want to delete transaction of PKR ${tx.amount?.toLocaleString()}? This will automatically reverse the bank balance impact.`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/bank/transactions/${tx.id}`);
+      setTransactions((prev) => prev.filter((t) => t.id !== tx.id));
+      setCarTransactions((prev) => prev.filter((t) => t.id !== tx.id));
+      fetchBankAccounts();
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete transaction');
     }
   };
 
@@ -98,7 +129,7 @@ const Banking = () => {
           <div
             key={acc.id}
             onClick={() => setSelectedAccount(acc.id)}
-            className={`bg-white border rounded-xl p-6 shadow-sm cursor-pointer transition-all duration-200 ${
+            className={`bg-white border rounded-xl p-6 shadow-sm cursor-pointer transition-all duration-200 relative group ${
               selectedAccount === acc.id
                 ? 'border-blue-600 ring-2 ring-blue-500/20 bg-blue-50/50'
                 : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50/30'
@@ -111,8 +142,17 @@ const Banking = () => {
                 <p className="text-[11px] font-mono text-slate-400 mt-1">{acc.account_number}</p>
               </div>
 
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
-                <Building2 className="w-6 h-6" />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => handleDeleteAccount(acc, e)}
+                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                  title="Deactivate Bank Account"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
+                  <Building2 className="w-6 h-6" />
+                </div>
               </div>
             </div>
 
@@ -163,6 +203,7 @@ const Banking = () => {
                     <th className="py-3.5 px-6">Reference ID</th>
                     <th className="py-3.5 px-6">Notes</th>
                     <th className="py-3.5 px-6">Date</th>
+                    <th className="py-3.5 px-6 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -195,11 +236,21 @@ const Banking = () => {
                         <td className="py-4 px-6 font-mono text-slate-400">
                           {tx.created_at ? new Date(tx.created_at).toLocaleDateString() : 'N/A'}
                         </td>
+
+                        <td className="py-4 px-6 text-right">
+                          <button
+                            onClick={() => handleDeleteTransaction(tx)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            title="Delete Transaction"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-slate-400">
+                      <td colSpan={6} className="py-12 text-center text-slate-400">
                         No transaction ledger entries recorded for this bank account.
                       </td>
                     </tr>
@@ -242,6 +293,7 @@ const Banking = () => {
                     <th className="py-3.5 px-6">Bank Account</th>
                     <th className="py-3.5 px-6">Reference No</th>
                     <th className="py-3.5 px-6">Timestamp</th>
+                    <th className="py-3.5 px-6 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -259,11 +311,20 @@ const Banking = () => {
                         <td className="py-4 px-6 font-mono text-slate-400">
                           {tx.created_at ? new Date(tx.created_at).toLocaleDateString() : 'N/A'}
                         </td>
+                        <td className="py-4 px-6 text-right">
+                          <button
+                            onClick={() => handleDeleteTransaction(tx)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            title="Delete Transaction"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-slate-400">
+                      <td colSpan={6} className="py-12 text-center text-slate-400">
                         {selectedCarForAudit
                           ? 'No linked split payment transactions recorded for this vehicle.'
                           : 'Select a vehicle using search input to inspect financial transactions.'}
@@ -294,3 +355,4 @@ const Banking = () => {
 };
 
 export default Banking;
+

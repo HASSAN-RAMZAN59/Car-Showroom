@@ -1,8 +1,8 @@
 import React from 'react';
 import StatusBadge from '../common/StatusBadge';
-import { Car as CarIcon, Wrench, ShieldCheck, DollarSign, Calendar, Gauge, Handshake } from 'lucide-react';
+import { Car as CarIcon, Wrench, ShieldCheck, DollarSign, Calendar, Gauge, Handshake, Trash2 } from 'lucide-react';
 
-const CarCard = ({ car, onLogRepair, onMarkAvailable }) => {
+const CarCard = ({ car, onLogRepair, onMarkAvailable, onDeleteCar }) => {
   const purchasePrice = car.purchase_price || 0;
   const repairCost = car.total_repair_cost || 0;
   const totalCostBasis = car.total_cost_basis || (purchasePrice + repairCost);
@@ -74,7 +74,7 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable }) => {
       </div>
 
       {/* Card Action Buttons */}
-      <div className="mt-6 pt-4 border-t border-slate-200 flex items-center gap-3">
+      <div className="mt-6 pt-4 border-t border-slate-200 flex items-center gap-2">
         <button
           onClick={() => onLogRepair(car)}
           className="flex-1 py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-medium text-xs rounded-lg transition-all flex items-center justify-center gap-1.5"
@@ -92,9 +92,20 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable }) => {
             <span>Mark Available</span>
           </button>
         )}
+
+        {onDeleteCar && (
+          <button
+            onClick={() => onDeleteCar(car)}
+            className="p-2 bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 border border-slate-200 rounded-lg transition-all"
+            title="Delete Vehicle from Inventory"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
 export default CarCard;
+

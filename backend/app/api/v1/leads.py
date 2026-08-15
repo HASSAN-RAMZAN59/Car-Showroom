@@ -245,3 +245,28 @@ async def get_matching_inventory(
     result = await db.execute(stmt)
     cars = result.scalars().all()
     return cars
+
+
+@router.delete(
+    "/{lead_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_lead(
+    lead_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a customer lead record and its followups (Admin/Manager only)."""
+    res = await db.execute(select(Lead).where(Lead.id == lead_id))
+    lead = res.scalars().first()
+    if not lead:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Lead record not found",
+        )
+
+    await db.delete(lead)
+    await db.commit()
+    return {"message": "Lead record deleted successfully", "lead_id": str(lead_id)}
+

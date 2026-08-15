@@ -53,6 +53,18 @@ const Inventory = () => {
     }
   };
 
+  const handleDeleteCar = async (car) => {
+    if (!window.confirm(`Are you sure you want to delete vehicle ${car.car_number} (${car.make} ${car.model}) from inventory?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/cars/${car.id}`);
+      setCars((prev) => prev.filter((c) => c.id !== car.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete vehicle');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -108,10 +120,12 @@ const Inventory = () => {
               car={car}
               onLogRepair={(targetCar) => setSelectedCarForRepair(targetCar)}
               onMarkAvailable={handleMarkAvailable}
+              onDeleteCar={handleDeleteCar}
             />
           ))}
         </div>
       ) : (
+
         <div className="bg-white border border-slate-200 rounded-xl p-12 text-center space-y-3 shadow-sm">
           <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center mx-auto">
             <Car className="w-8 h-8" />
