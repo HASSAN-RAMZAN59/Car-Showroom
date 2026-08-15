@@ -29,6 +29,24 @@ from app.core.database import AsyncSessionLocal, Base, engine
 from app.core.seed import seed_default_users
 
 
+import asyncio
+import urllib.request
+
+
+async def keep_alive_ping_loop():
+    """Background loop sending a light ping every 13 minutes (780s) to prevent Render free-tier inactivity sleep."""
+    await asyncio.sleep(10)
+    url = "https://car-showroom-backend-q497.onrender.com/"
+    while True:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Render-KeepAlive/1.0"})
+            with urllib.request.urlopen(req, timeout=10):
+                pass
+        except Exception:
+            pass
+        await asyncio.sleep(780)  # Ping every 13 minutes (780 seconds)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager to handle application startup and shutdown events."""
@@ -47,9 +65,15 @@ async def lifespan(app: FastAPI):
     async with AsyncSessionLocal() as session:
         await seed_default_users(session)
 
+    # Launch background keep-alive task
+    ping_task = asyncio.create_task(keep_alive_ping_loop())
+
     yield
-    # Shutdown: dispose database engine
+
+    # Shutdown: cancel ping task & dispose database engine
+    ping_task.cancel()
     await engine.dispose()
+
 
 
 app = FastAPI(
