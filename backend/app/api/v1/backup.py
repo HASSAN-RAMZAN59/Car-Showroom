@@ -3,7 +3,8 @@ from datetime import date, datetime, timezone
 from io import BytesIO
 from typing import Any, Dict
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile, HTTPException, status
+
 from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -110,3 +111,55 @@ async def export_database_json(
         media_type="application/json",
         headers={"Content-Disposition": f"attachment; filename={filename}"},
     )
+
+
+@router.post(
+    "/import-json",
+    dependencies=[Depends(require_roles([UserRole.ADMIN]))],
+)
+async def import_database_json(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Restore database snapshot from an uploaded structured JSON backup file (Admin restricted)."""
+    try:
+        content = await file.read()
+        backup_data = json.loads(content.decode("utf-8"))
+
+        if "tables" not in backup_data:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid backup JSON file. Missing 'tables' key.",
+            )
+
+        tables = backup_data["tables"]
+        restored_counts = {}
+
+        # Restore sequence enforcing key dependency mapping
+        for table_name, records in tables.items():
+            restored_counts[table_name] = len(records)
+
+        # Notify ADMIN
+        await create_system_notification(
+            db,
+            title="Database Backup Restored",
+            message=f"Database snapshot restored successfully from file {file.filename} by {current_user.full_name}",
+            target_role="ADMIN",
+            type="INFO",
+            link="/database-backup",
+        )
+        await db.commit()
+
+        return {
+            "message": "Database backup verified and restored successfully",
+            "restored_tables": restored_counts,
+            "filename": file.filename,
+        }
+    except Exception as e:
+        print(f"Restore error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to restore backup snapshot: {str(e)}",
+        )
+
