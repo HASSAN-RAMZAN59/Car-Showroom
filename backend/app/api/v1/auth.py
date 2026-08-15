@@ -1,5 +1,7 @@
+import uuid
 from datetime import timedelta
 from typing import Any, List
+
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -157,3 +159,34 @@ async def change_password(
     current_user.hashed_password = get_password_hash(password_in.new_password)
     await db.commit()
     return {"message": "Password updated successfully."}
+
+
+@router.delete(
+    "/users/{user_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN]))],
+)
+async def delete_user(
+    user_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete a staff member user account (Admin restricted). Prevents self-deletion."""
+    if user_id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete your own active administrator account.",
+        )
+
+    res = await db.execute(select(User).where(User.id == user_id))
+    user_to_delete = res.scalars().first()
+    if not user_to_delete:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User account not found",
+        )
+
+    await db.delete(user_to_delete)
+    await db.commit()
+    return {"message": "User account deleted successfully", "user_id": str(user_id)}
+

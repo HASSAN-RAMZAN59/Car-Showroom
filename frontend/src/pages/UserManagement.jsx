@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import CreateUserModal from '../components/users/CreateUserModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { Users, UserPlus, Search, ShieldCheck, Mail, Phone, Calendar, Lock } from 'lucide-react';
+import { Users, UserPlus, Search, ShieldCheck, Mail, Phone, Calendar, Lock, Trash2 } from 'lucide-react';
 
 const UserManagement = () => {
   const { user } = useAuth();
@@ -28,6 +28,22 @@ const UserManagement = () => {
       console.error('Failed to fetch system users:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (targetUser) => {
+    if (targetUser.id === user?.id) {
+      alert('You cannot delete your own active administrator account.');
+      return;
+    }
+    if (!window.confirm(`Are you sure you want to delete user account "${targetUser.full_name}" (${targetUser.email})?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/auth/users/${targetUser.id}`);
+      setUsers((prev) => prev.filter((u) => u.id !== targetUser.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete user account');
     }
   };
 
@@ -105,6 +121,7 @@ const UserManagement = () => {
                   <th className="py-3.5 px-6">System Role</th>
                   <th className="py-3.5 px-6">Account Status</th>
                   <th className="py-3.5 px-6">Registered Date</th>
+                  {isAdmin && <th className="py-3.5 px-6 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -159,11 +176,23 @@ const UserManagement = () => {
                           <span>{u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</span>
                         </div>
                       </td>
+
+                      {isAdmin && (
+                        <td className="py-4 px-6 text-right">
+                          <button
+                            onClick={() => handleDeleteUser(u)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            title="Delete User Account"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-slate-400">
+                    <td colSpan={isAdmin ? 7 : 6} className="py-12 text-center text-slate-400">
                       No system users found matching filter criteria.
                     </td>
                   </tr>
@@ -187,3 +216,4 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
+

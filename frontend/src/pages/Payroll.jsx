@@ -47,6 +47,18 @@ const Payroll = () => {
     }
   };
 
+  const handleDeleteEmployee = async (emp) => {
+    if (!window.confirm(`Are you sure you want to delete employee profile for "${emp.full_name}"?`)) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/payroll/employees/${emp.id}`);
+      setEmployees((prev) => prev.filter((e) => e.id !== emp.id));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete employee profile');
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -94,6 +106,7 @@ const Payroll = () => {
                   <th className="py-3.5 px-6">CNIC Number</th>
                   <th className="py-3.5 px-6">Phone Number</th>
                   <th className="py-3.5 px-6">Base Salary</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -118,11 +131,20 @@ const Payroll = () => {
                       <td className="py-4 px-6 font-extrabold text-emerald-600">
                         PKR {emp.base_salary ? emp.base_salary.toLocaleString() : '0'}
                       </td>
+                      <td className="py-4 px-6 text-right">
+                        <button
+                          onClick={() => handleDeleteEmployee(emp)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                          title="Delete Employee Profile"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-12 text-center text-slate-400">
+                    <td colSpan={6} className="py-12 text-center text-slate-400">
                       No employee profiles registered yet.
                     </td>
                   </tr>
@@ -132,6 +154,7 @@ const Payroll = () => {
           </div>
         )}
       </div>
+
 
       {/* Payroll History Ledger */}
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4">

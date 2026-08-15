@@ -69,6 +69,11 @@ origins = [
     "http://127.0.0.1:3000",
 ]
 
+import uuid
+import jwt
+from fastapi import Request
+from app.models.audit import AuditLog
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins + ["*"],
@@ -77,6 +82,45 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def audit_log_middleware(request: Request, call_next):
+    response = await call_next(request)
+    if request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+        path = request.url.path
+        if path.startswith("/api/v1") and not path.endswith("/docs") and not path.endswith("/openapi.json"):
+            try:
+                user_id = None
+                auth_header = request.headers.get("Authorization")
+                if auth_header and auth_header.startswith("Bearer "):
+                    token = auth_header.split(" ")[1]
+                    try:
+                        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+                        sub = payload.get("sub")
+                        if sub:
+                            user_id = uuid.UUID(sub)
+                    except Exception:
+                        pass
+
+                ip_addr = request.client.host if request.client else "127.0.0.1"
+                action_name = f"{request.method} {path.split('/')[-1].upper() or 'ACTION'}"
+                details_text = f"Method: {request.method} | Path: {path} | Status: {response.status_code}"
+
+                async with AsyncSessionLocal() as session:
+                    log_entry = AuditLog(
+                        user_id=user_id,
+                        action=action_name,
+                        endpoint=path,
+                        details=details_text,
+                        ip_address=ip_addr,
+                    )
+                    session.add(log_entry)
+                    await session.commit()
+            except Exception as e:
+                print(f"Audit middleware logging note: {e}")
+    return response
+
 
 # Register API v1 Routers
 app.include_router(

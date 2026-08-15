@@ -100,9 +100,41 @@ async def get_employee(
     if not employee:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Employee not found",
+            detail="Employee profile not found",
         )
     return employee
+
+
+@router.delete(
+    "/employees/{employee_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def delete_employee(
+    employee_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Delete an employee profile (Admin/Manager only). Checks for linked payroll records."""
+    res = await db.execute(select(Employee).where(Employee.id == employee_id))
+    employee = res.scalars().first()
+    if not employee:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Employee profile not found",
+        )
+
+    # Check if employee has linked payrolls
+    pay_res = await db.execute(select(Payroll).where(Payroll.employee_id == employee_id))
+    if pay_res.scalars().first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete employee with existing payroll history. Delete payroll history first.",
+        )
+
+    await db.delete(employee)
+    await db.commit()
+    return {"message": "Employee profile deleted successfully", "employee_id": str(employee_id)}
 
 
 @router.post(
