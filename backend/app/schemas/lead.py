@@ -23,7 +23,20 @@ class LeadCreate(LeadBase):
     status: LeadStatus = LeadStatus.HOT
 
 
+class LeadUpdate(BaseModel):
+    customer_name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    budget_min: Optional[float] = Field(None, ge=0)
+    budget_max: Optional[float] = Field(None, ge=0)
+    preferred_make: Optional[str] = None
+    preferred_model: Optional[str] = None
+    assigned_employee_id: Optional[uuid.UUID] = None
+    status: Optional[LeadStatus] = None
+
+
 class LeadStatusUpdate(BaseModel):
+
     status: LeadStatus = Field(..., description="HOT, WARM, COLD, CONVERTED, CLOSED")
 
 

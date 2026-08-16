@@ -15,8 +15,10 @@ from app.models.consignment import CommissionType, ConsignmentAgreement, Consign
 from app.models.user import User, UserRole
 from app.schemas.consignment import (
     ConsignmentResponse,
+    ConsignmentUpdate,
     ConsignmentWithdraw,
 )
+
 
 router = APIRouter()
 
@@ -192,6 +194,42 @@ async def get_consignment(
             detail="Consignment agreement record not found.",
         )
     return consignment
+
+
+@router.put(
+    "/{consignment_id}",
+    response_model=ConsignmentResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def update_consignment(
+    consignment_id: uuid.UUID,
+    consignment_in: ConsignmentUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Update consignment agreement details (owner info, asking price, commission rate)."""
+    stmt = (
+        select(ConsignmentAgreement)
+        .options(selectinload(ConsignmentAgreement.car))
+        .where(ConsignmentAgreement.id == consignment_id)
+    )
+    res = await db.execute(stmt)
+    consignment = res.scalars().first()
+    if not consignment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Consignment agreement record not found.",
+        )
+
+    update_data = consignment_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(consignment, field, value)
+
+    await db.commit()
+    await db.refresh(consignment)
+    return consignment
+
 
 
 @router.post(

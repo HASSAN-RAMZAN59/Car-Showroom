@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosInstance';
 import StatCard from '../components/common/StatCard';
 import AddInvestorModal from '../components/financial/AddInvestorModal';
+import EditInvestorModal from '../components/financial/EditInvestorModal';
 import MapCarInvestmentModal from '../components/financial/MapCarInvestmentModal';
 import ProcessPayoutModal from '../components/financial/ProcessPayoutModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import StatusBadge from '../components/common/StatusBadge';
-import { Briefcase, Plus, DollarSign, UserCheck, TrendingUp, Phone, CheckCircle2, Trash2 } from 'lucide-react';
+import { Briefcase, Plus, DollarSign, UserCheck, TrendingUp, Phone, CheckCircle2, Trash2, Edit } from 'lucide-react';
 
 const Investors = () => {
   const [investors, setInvestors] = useState([]);
@@ -16,6 +17,7 @@ const Investors = () => {
   const [isAddInvestorOpen, setIsAddInvestorOpen] = useState(false);
   const [isMapCarOpen, setIsMapCarOpen] = useState(false);
   const [activePayoutId, setActivePayoutId] = useState(null);
+  const [selectedInvestorForEdit, setSelectedInvestorForEdit] = useState(null);
 
   useEffect(() => {
     fetchInvestorData();
@@ -134,7 +136,14 @@ const Investors = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setSelectedInvestorForEdit(inv)}
+                  className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                  title="Edit Investor Details"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
                 <button
                   onClick={() => handleDeleteInvestor(inv)}
                   className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
@@ -142,9 +151,6 @@ const Investors = () => {
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  ACTIVE
-                </span>
               </div>
             </div>
 
@@ -261,9 +267,19 @@ const Investors = () => {
           onSuccess={fetchInvestorData}
         />
       )}
+
+      {selectedInvestorForEdit && (
+        <EditInvestorModal
+          isOpen={!!selectedInvestorForEdit}
+          investor={selectedInvestorForEdit}
+          onClose={() => setSelectedInvestorForEdit(null)}
+          onSuccess={fetchInvestorData}
+        />
+      )}
     </div>
   );
 };
 
 export default Investors;
+
 

@@ -22,7 +22,7 @@ from app.core.database import get_db
 from app.models.car import Car, CarStatus
 from app.models.seller import Seller
 from app.models.user import User, UserRole
-from app.schemas.car import CarDetailResponse, CarResponse
+from app.schemas.car import CarDetailResponse, CarResponse, CarUpdate
 
 router = APIRouter()
 
@@ -225,4 +225,36 @@ async def delete_car(
     await db.delete(car)
     await db.commit()
     return {"message": "Vehicle deleted successfully from inventory", "car_id": str(car_id)}
+
+
+@router.put(
+    "/{car_id}",
+    response_model=CarResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def update_car(
+    car_id: uuid.UUID,
+    car_in: CarUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Update vehicle specifications, prices, mileage, or status (Admin/Manager)."""
+    stmt = select(Car).options(joinedload(Car.seller)).where(Car.id == car_id)
+    res = await db.execute(stmt)
+    car = res.scalars().first()
+    if not car:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found in inventory",
+        )
+
+    update_data = car_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(car, field, value)
+
+    await db.commit()
+    await db.refresh(car)
+    return car
+
 

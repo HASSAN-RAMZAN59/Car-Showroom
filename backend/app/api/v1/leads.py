@@ -21,7 +21,9 @@ from app.schemas.lead import (
     LeadFollowupResponse,
     LeadResponse,
     LeadStatusUpdate,
+    LeadUpdate,
 )
+
 
 router = APIRouter()
 
@@ -177,6 +179,42 @@ async def update_lead_status(
     await db.commit()
     await db.refresh(lead)
     return lead
+
+
+@router.put(
+    "/{lead_id}",
+    response_model=LeadResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE]))],
+)
+async def update_lead(
+    lead_id: uuid.UUID,
+    lead_in: LeadUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Update lead contact information, budget, vehicle interest, or assigned dealer."""
+    stmt = (
+        select(Lead)
+        .options(joinedload(Lead.assigned_employee))
+        .where(Lead.id == lead_id)
+    )
+    result = await db.execute(stmt)
+    lead = result.scalars().first()
+    if not lead:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Lead record not found",
+        )
+
+    update_data = lead_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(lead, field, value)
+
+    await db.commit()
+    await db.refresh(lead)
+    return lead
+
 
 
 @router.post(

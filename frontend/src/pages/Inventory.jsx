@@ -4,6 +4,7 @@ import CarCard from '../components/vehicles/CarCard';
 import SmartSearchInput from '../components/vehicles/SmartSearchInput';
 import PurchaseVehicleModal from '../components/vehicles/PurchaseVehicleModal';
 import RepairLogModal from '../components/vehicles/RepairLogModal';
+import EditVehicleModal from '../components/vehicles/EditVehicleModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Car, ShoppingBag, Filter, Plus } from 'lucide-react';
 
@@ -12,6 +13,7 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedCarForRepair, setSelectedCarForRepair] = useState(null);
+  const [selectedCarForEdit, setSelectedCarForEdit] = useState(null);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
 
   useEffect(() => {
@@ -121,11 +123,11 @@ const Inventory = () => {
               onLogRepair={(targetCar) => setSelectedCarForRepair(targetCar)}
               onMarkAvailable={handleMarkAvailable}
               onDeleteCar={handleDeleteCar}
+              onEditCar={(targetCar) => setSelectedCarForEdit(targetCar)}
             />
           ))}
         </div>
       ) : (
-
         <div className="bg-white border border-slate-200 rounded-xl p-12 text-center space-y-3 shadow-sm">
           <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center mx-auto">
             <Car className="w-8 h-8" />
@@ -152,8 +154,18 @@ const Inventory = () => {
           onSuccess={fetchCars}
         />
       )}
+
+      {selectedCarForEdit && (
+        <EditVehicleModal
+          isOpen={!!selectedCarForEdit}
+          car={selectedCarForEdit}
+          onClose={() => setSelectedCarForEdit(null)}
+          onSuccess={fetchCars}
+        />
+      )}
     </div>
   );
 };
 
 export default Inventory;
+

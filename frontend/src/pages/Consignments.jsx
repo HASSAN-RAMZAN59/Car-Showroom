@@ -4,9 +4,10 @@ import StatCard from '../components/common/StatCard';
 import StatusBadge from '../components/common/StatusBadge';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import RegisterConsignmentModal from '../components/consignments/RegisterConsignmentModal';
+import EditConsignmentModal from '../components/consignments/EditConsignmentModal';
 import WithdrawConsignmentModal from '../components/consignments/WithdrawConsignmentModal';
 import ConsignmentSaleModal from '../components/consignments/ConsignmentSaleModal';
-import { Handshake, Car, DollarSign, LogOut, Plus, Search, User, Calendar, Receipt, Trash2 } from 'lucide-react';
+import { Handshake, Car, DollarSign, LogOut, Plus, Search, User, Calendar, Receipt, Trash2, Edit } from 'lucide-react';
 
 const Consignments = () => {
   const [consignments, setConsignments] = useState([]);
@@ -18,6 +19,7 @@ const Consignments = () => {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [selectedForWithdraw, setSelectedForWithdraw] = useState(null);
   const [selectedForSale, setSelectedForSale] = useState(null);
+  const [selectedForEdit, setSelectedForEdit] = useState(null);
 
   useEffect(() => {
     fetchConsignments();
@@ -38,6 +40,7 @@ const Consignments = () => {
     } finally {
       setLoading(false);
     }
+
   };
 
   const handleDeleteConsignment = async (item) => {
@@ -270,6 +273,13 @@ const Consignments = () => {
                             </>
                           )}
                           <button
+                            onClick={() => setSelectedForEdit(item)}
+                            className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                            title="Edit Consignment Agreement"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
                             onClick={() => handleDeleteConsignment(item)}
                             className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                             title="Delete Consignment Agreement"
@@ -319,9 +329,19 @@ const Consignments = () => {
         onSuccess={fetchConsignments}
       />
 
+      {selectedForEdit && (
+        <EditConsignmentModal
+          isOpen={!!selectedForEdit}
+          consignment={selectedForEdit}
+          onClose={() => setSelectedForEdit(null)}
+          onSuccess={fetchConsignments}
+        />
+      )}
+
     </div>
   );
 };
 
 export default Consignments;
+
 

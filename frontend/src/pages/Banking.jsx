@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosInstance';
 import CreateBankAccountModal from '../components/financial/CreateBankAccountModal';
+import EditBankAccountModal from '../components/financial/EditBankAccountModal';
 import SplitPaymentModal from '../components/financial/SplitPaymentModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import SmartSearchInput from '../components/vehicles/SmartSearchInput';
-import { Building2, Plus, DollarSign, ArrowUpRight, ArrowDownLeft, Car, Search, Trash2 } from 'lucide-react';
+import { Building2, Plus, DollarSign, ArrowUpRight, ArrowDownLeft, Car, Search, Trash2, Edit } from 'lucide-react';
 
 const Banking = () => {
   const [bankAccounts, setBankAccounts] = useState([]);
@@ -17,6 +18,7 @@ const Banking = () => {
 
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [isSplitPaymentOpen, setIsSplitPaymentOpen] = useState(false);
+  const [selectedAccountForEdit, setSelectedAccountForEdit] = useState(null);
 
   useEffect(() => {
     fetchBankAccounts();
@@ -142,7 +144,17 @@ const Banking = () => {
                 <p className="text-[11px] font-mono text-slate-400 mt-1">{acc.account_number}</p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedAccountForEdit(acc);
+                  }}
+                  className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                  title="Edit Bank Account Details"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
                 <button
                   onClick={(e) => handleDeleteAccount(acc, e)}
                   className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
@@ -150,9 +162,6 @@ const Banking = () => {
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
-                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
-                  <Building2 className="w-6 h-6" />
-                </div>
               </div>
             </div>
 
@@ -350,9 +359,19 @@ const Banking = () => {
         onClose={() => setIsSplitPaymentOpen(false)}
         onSuccess={fetchBankAccounts}
       />
+
+      {selectedAccountForEdit && (
+        <EditBankAccountModal
+          isOpen={!!selectedAccountForEdit}
+          account={selectedAccountForEdit}
+          onClose={() => setSelectedAccountForEdit(null)}
+          onSuccess={fetchBankAccounts}
+        />
+      )}
     </div>
   );
 };
 
 export default Banking;
+
 

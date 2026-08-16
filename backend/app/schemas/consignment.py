@@ -32,7 +32,18 @@ class ConsignmentCreate(BaseModel):
     notes: Optional[str] = None
 
 
+class ConsignmentUpdate(BaseModel):
+    owner_name: Optional[str] = None
+    owner_phone: Optional[str] = None
+    owner_address: Optional[str] = None
+    commission_type: Optional[CommissionType] = None
+    commission_value: Optional[float] = Field(None, gt=0)
+    agreed_asking_price: Optional[float] = Field(None, gt=0)
+    notes: Optional[str] = None
+
+
 class ConsignmentWithdraw(BaseModel):
+
     withdrawal_reason: Optional[str] = Field(None, description="Reason for vehicle withdrawal by owner")
     notes: Optional[str] = None
 

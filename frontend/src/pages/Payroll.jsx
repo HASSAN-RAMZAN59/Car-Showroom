@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosInstance';
 import AddEmployeeModal from '../components/workforce/AddEmployeeModal';
+import EditEmployeeModal from '../components/workforce/EditEmployeeModal';
 import GeneratePayrollModal from '../components/workforce/GeneratePayrollModal';
 import ExecuteSalaryPayoutModal from '../components/workforce/ExecuteSalaryPayoutModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import StatusBadge from '../components/common/StatusBadge';
-import { Users, Plus, DollarSign, Calculator, Calendar, Trash2 } from 'lucide-react';
+import { Users, Plus, DollarSign, Calculator, Calendar, Trash2, Edit } from 'lucide-react';
 
 const Payroll = () => {
   const [employees, setEmployees] = useState([]);
@@ -15,6 +16,7 @@ const Payroll = () => {
   const [isAddEmpOpen, setIsAddEmpOpen] = useState(false);
   const [isGenPayrollOpen, setIsGenPayrollOpen] = useState(false);
   const [activePayoutPayroll, setActivePayoutPayroll] = useState(null);
+  const [selectedEmployeeForEdit, setSelectedEmployeeForEdit] = useState(null);
 
   useEffect(() => {
     fetchPayrollData();
@@ -131,7 +133,14 @@ const Payroll = () => {
                       <td className="py-4 px-6 font-extrabold text-emerald-600">
                         PKR {emp.base_salary ? emp.base_salary.toLocaleString() : '0'}
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-4 px-6 text-right flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setSelectedEmployeeForEdit(emp)}
+                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                          title="Edit Employee Contract"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => handleDeleteEmployee(emp)}
                           className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
@@ -154,7 +163,6 @@ const Payroll = () => {
           </div>
         )}
       </div>
-
 
       {/* Payroll History Ledger */}
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4">
@@ -264,9 +272,19 @@ const Payroll = () => {
           onSuccess={fetchPayrollData}
         />
       )}
+
+      {selectedEmployeeForEdit && (
+        <EditEmployeeModal
+          isOpen={!!selectedEmployeeForEdit}
+          employee={selectedEmployeeForEdit}
+          onClose={() => setSelectedEmployeeForEdit(null)}
+          onSuccess={fetchPayrollData}
+        />
+      )}
     </div>
   );
 };
 
 export default Payroll;
+
 

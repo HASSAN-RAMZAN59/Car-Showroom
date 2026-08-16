@@ -20,7 +20,9 @@ from app.schemas.investor import (
     InvestorDetailResponse,
     InvestorPayoutCreate,
     InvestorResponse,
+    InvestorUpdate,
 )
+
 
 router = APIRouter()
 
@@ -117,6 +119,38 @@ async def get_investor(
         investments=investor.investments,
         total_profit_earned=total_profit,
     )
+
+
+@router.put(
+    "/{investor_id}",
+    response_model=InvestorResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def update_investor(
+    investor_id: uuid.UUID,
+    investor_in: InvestorUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Update investor profile details (full_name, cnic, phone, notes)."""
+    stmt = select(Investor).where(Investor.id == investor_id)
+    res = await db.execute(stmt)
+    investor = res.scalars().first()
+    if not investor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Investor not found",
+        )
+
+    update_data = investor_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(investor, field, value)
+
+    await db.commit()
+    await db.refresh(investor)
+    return investor
+
 
 
 @router.post(

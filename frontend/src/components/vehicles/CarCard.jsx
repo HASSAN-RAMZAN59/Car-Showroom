@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import StatusBadge from '../common/StatusBadge';
-import { Car as CarIcon, Wrench, ShieldCheck, DollarSign, Calendar, Gauge, Handshake, Trash2, Camera } from 'lucide-react';
+import { Car as CarIcon, Wrench, ShieldCheck, DollarSign, Calendar, Gauge, Handshake, Trash2, Camera, Edit } from 'lucide-react';
 import VehicleAssetsModal from './VehicleAssetsModal';
 
-const CarCard = ({ car, onLogRepair, onMarkAvailable, onDeleteCar }) => {
+const CarCard = ({ car, onLogRepair, onMarkAvailable, onDeleteCar, onEditCar }) => {
+
   const [isAssetsModalOpen, setIsAssetsModalOpen] = useState(false);
   const purchasePrice = car.purchase_price || 0;
   const repairCost = car.total_repair_cost || 0;
@@ -110,6 +111,16 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable, onDeleteCar }) => {
               </button>
             )}
 
+            {onEditCar && (
+              <button
+                onClick={() => onEditCar(car)}
+                className="p-2 bg-slate-100 hover:bg-blue-50 text-slate-500 hover:text-blue-600 border border-slate-200 rounded-lg transition-all"
+                title="Edit Vehicle Specs & Pricing"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+            )}
+
             {onDeleteCar && (
               <button
                 onClick={() => onDeleteCar(car)}
@@ -119,6 +130,7 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable, onDeleteCar }) => {
                 <Trash2 className="w-4 h-4" />
               </button>
             )}
+
           </div>
         </div>
       </div>

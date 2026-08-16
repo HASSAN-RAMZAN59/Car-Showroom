@@ -22,7 +22,7 @@ from app.core.database import get_db
 from app.models.bank import BankAccount, PaymentMethod, PaymentTransaction, TransactionType
 from app.models.expense import Expense
 from app.models.user import User, UserRole
-from app.schemas.expense import ExpenseListResponse, ExpenseResponse
+from app.schemas.expense import ExpenseListResponse, ExpenseResponse, ExpenseUpdate
 
 router = APIRouter()
 
@@ -221,3 +221,39 @@ async def delete_expense(
     await db.commit()
 
     return {"message": "Expense record deleted successfully", "expense_id": str(expense_id)}
+
+
+@router.put(
+    "/{expense_id}",
+    response_model=ExpenseResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def update_expense(
+    expense_id: uuid.UUID,
+    expense_in: ExpenseUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Update expense details (name, category, amount, reason)."""
+    stmt = (
+        select(Expense)
+        .options(joinedload(Expense.bank_account), joinedload(Expense.created_by))
+        .where(Expense.id == expense_id)
+    )
+    result = await db.execute(stmt)
+    expense = result.scalars().first()
+    if not expense:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Expense record not found",
+        )
+
+    update_data = expense_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(expense, field, value)
+
+    await db.commit()
+    await db.refresh(expense)
+    return expense
+

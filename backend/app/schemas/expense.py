@@ -23,7 +23,17 @@ class ExpenseCreate(ExpenseBase):
     pass
 
 
+class ExpenseUpdate(BaseModel):
+    expense_name: Optional[str] = None
+    category: Optional[str] = None
+    amount: Optional[float] = Field(None, gt=0)
+    reason: Optional[str] = None
+    payment_method: Optional[PaymentMethod] = None
+    bank_account_id: Optional[uuid.UUID] = None
+
+
 class ExpenseResponse(ExpenseBase):
+
     id: uuid.UUID
     receipt_url: Optional[str] = None
     created_by_id: uuid.UUID

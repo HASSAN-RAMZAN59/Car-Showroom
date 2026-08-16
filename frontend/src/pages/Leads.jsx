@@ -3,9 +3,10 @@ import axiosInstance from '../api/axiosInstance';
 import AddLeadModal from '../components/workforce/AddLeadModal';
 import LogFollowupModal from '../components/workforce/LogFollowupModal';
 import MatchingInventoryModal from '../components/workforce/MatchingInventoryModal';
+import EditLeadModal from '../components/crm/EditLeadModal';
 import StatusBadge from '../components/common/StatusBadge';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { UserCheck, Plus, Phone, Mail, Car, Search, Filter, MessageSquare, Trash2 } from 'lucide-react';
+import { UserCheck, Plus, Phone, Mail, Car, Search, Filter, MessageSquare, Trash2, Edit } from 'lucide-react';
 
 const Leads = () => {
   const [leads, setLeads] = useState([]);
@@ -15,6 +16,7 @@ const Leads = () => {
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [selectedLeadForFollowup, setSelectedLeadForFollowup] = useState(null);
   const [selectedLeadForMatch, setSelectedLeadForMatch] = useState(null);
+  const [selectedLeadForEdit, setSelectedLeadForEdit] = useState(null);
 
   useEffect(() => {
     fetchLeads();
@@ -175,6 +177,14 @@ const Leads = () => {
                           </button>
 
                           <button
+                            onClick={() => setSelectedLeadForEdit(lead)}
+                            className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                            title="Edit Lead Details"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+
+                          <button
                             onClick={() => handleDeleteLead(lead)}
                             className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                             title="Delete Lead Record"
@@ -197,7 +207,6 @@ const Leads = () => {
           </div>
         )}
       </div>
-
 
       {/* Modals */}
       <AddLeadModal
@@ -222,8 +231,18 @@ const Leads = () => {
           onClose={() => setSelectedLeadForMatch(null)}
         />
       )}
+
+      {selectedLeadForEdit && (
+        <EditLeadModal
+          isOpen={!!selectedLeadForEdit}
+          lead={selectedLeadForEdit}
+          onClose={() => setSelectedLeadForEdit(null)}
+          onSuccess={fetchLeads}
+        />
+      )}
     </div>
   );
 };
 
 export default Leads;
+

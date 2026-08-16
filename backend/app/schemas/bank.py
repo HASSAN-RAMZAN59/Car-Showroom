@@ -22,7 +22,16 @@ class BankAccountCreate(BaseModel):
     current_balance: float = 0.0
 
 
+class BankAccountUpdate(BaseModel):
+    account_title: Optional[str] = None
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    current_balance: Optional[float] = Field(None, ge=0)
+    is_active: Optional[bool] = None
+
+
 class BankAccountResponse(BankAccountBase):
+
     id: uuid.UUID
     created_at: datetime
     updated_at: datetime

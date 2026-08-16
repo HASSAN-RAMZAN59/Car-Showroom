@@ -16,10 +16,12 @@ from app.models.user import User, UserRole
 from app.schemas.bank import (
     BankAccountCreate,
     BankAccountResponse,
+    BankAccountUpdate,
     PaymentTransactionCreate,
     PaymentTransactionResponse,
     SplitSalePaymentCreate,
 )
+
 
 router = APIRouter()
 
@@ -73,6 +75,38 @@ async def list_bank_accounts(
     result = await db.execute(stmt)
     accounts = result.scalars().all()
     return accounts
+
+
+@router.put(
+    "/accounts/{account_id}",
+    response_model=BankAccountResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def update_bank_account(
+    account_id: uuid.UUID,
+    account_in: BankAccountUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Update bank account details (account title, bank name, account number, balance)."""
+    stmt = select(BankAccount).where(BankAccount.id == account_id)
+    res = await db.execute(stmt)
+    account = res.scalars().first()
+    if not account:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Bank account not found",
+        )
+
+    update_data = account_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(account, field, value)
+
+    await db.commit()
+    await db.refresh(account)
+    return account
+
 
 
 @router.post(

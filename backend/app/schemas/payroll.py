@@ -23,7 +23,17 @@ class EmployeeCreate(EmployeeBase):
     user_id: Optional[uuid.UUID] = Field(None, description="Optional link to system user account")
 
 
+class EmployeeUpdate(BaseModel):
+    full_name: Optional[str] = None
+    cnic: Optional[str] = None
+    phone: Optional[str] = None
+    designation: Optional[str] = None
+    base_salary: Optional[float] = Field(None, ge=0)
+    is_active: Optional[bool] = None
+
+
 class EmployeeResponse(EmployeeBase):
+
     id: uuid.UUID
     user_id: Optional[uuid.UUID] = None
     created_at: datetime

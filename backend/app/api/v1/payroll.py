@@ -16,10 +16,12 @@ from app.schemas.payroll import (
     EmployeeCreate,
     EmployeeDetailResponse,
     EmployeeResponse,
+    EmployeeUpdate,
     PayrollGenerateCreate,
     PayrollPaymentExecute,
     PayrollResponse,
 )
+
 
 router = APIRouter()
 
@@ -135,6 +137,38 @@ async def delete_employee(
     await db.delete(employee)
     await db.commit()
     return {"message": "Employee profile deleted successfully", "employee_id": str(employee_id)}
+
+
+@router.put(
+    "/employees/{employee_id}",
+    response_model=EmployeeResponse,
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+async def update_employee(
+    employee_id: uuid.UUID,
+    employee_in: EmployeeUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """Update employee contract details, designation, base salary, or phone."""
+    stmt = select(Employee).where(Employee.id == employee_id)
+    res = await db.execute(stmt)
+    employee = res.scalars().first()
+    if not employee:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Employee profile not found",
+        )
+
+    update_data = employee_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(employee, field, value)
+
+    await db.commit()
+    await db.refresh(employee)
+    return employee
+
 
 
 @router.post(

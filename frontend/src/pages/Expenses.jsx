@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosInstance';
 import StatCard from '../components/common/StatCard';
 import LogExpenseModal from '../components/financial/LogExpenseModal';
+import EditExpenseModal from '../components/financial/EditExpenseModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { DollarSign, Plus, Trash2, Calendar, FileText, Filter } from 'lucide-react';
+import { DollarSign, Plus, Trash2, Calendar, FileText, Filter, Edit } from 'lucide-react';
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [selectedExpenseForEdit, setSelectedExpenseForEdit] = useState(null);
 
   const [totalExpenseSum, setTotalExpenseSum] = useState(0);
 
@@ -144,7 +146,7 @@ const Expenses = () => {
                   <th className="py-3.5 px-6">Payment Method</th>
                   <th className="py-3.5 px-6">Receipt / Bill</th>
                   <th className="py-3.5 px-6">Date Logged</th>
-                  <th className="py-3.5 px-6">Actions</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-600">
@@ -189,7 +191,14 @@ const Expenses = () => {
                         {exp.date ? new Date(exp.date).toLocaleDateString() : 'N/A'}
                       </td>
 
-                      <td className="py-4 px-6">
+                      <td className="py-4 px-6 text-right flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setSelectedExpenseForEdit(exp)}
+                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                          title="Edit Expense Record"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => handleDeleteExpense(exp.id)}
                           className="p-1.5 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
@@ -218,8 +227,18 @@ const Expenses = () => {
         onClose={() => setIsLogModalOpen(false)}
         onSuccess={fetchExpenses}
       />
+
+      {selectedExpenseForEdit && (
+        <EditExpenseModal
+          isOpen={!!selectedExpenseForEdit}
+          expense={selectedExpenseForEdit}
+          onClose={() => setSelectedExpenseForEdit(null)}
+          onSuccess={fetchExpenses}
+        />
+      )}
     </div>
   );
 };
 
 export default Expenses;
+

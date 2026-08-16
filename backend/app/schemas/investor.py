@@ -20,7 +20,15 @@ class InvestorCreate(InvestorBase):
     pass
 
 
+class InvestorUpdate(BaseModel):
+    full_name: Optional[str] = None
+    cnic: Optional[str] = None
+    phone: Optional[str] = None
+    notes: Optional[str] = None
+
+
 class InvestorResponse(InvestorBase):
+
     id: uuid.UUID
     total_capital_invested: float = 0.0
     created_at: datetime
