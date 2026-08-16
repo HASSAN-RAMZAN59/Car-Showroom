@@ -66,6 +66,15 @@ async def upload_file_to_cloudinary(
         safe_filename = filename.replace(" ", "_") if filename else f"{uuid.uuid4().hex}.jpg"
         return f"https://res.cloudinary.com/demo/image/upload/{folder}/{safe_filename}"
 
+    # Ensure Cloudinary is configured with latest settings
+    cloudinary.config(
+        cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+        api_key=settings.CLOUDINARY_API_KEY,
+        api_secret=settings.CLOUDINARY_API_SECRET,
+        secure=True,
+    )
+
+
     try:
         response = cloudinary.uploader.upload(
             file_bytes,
