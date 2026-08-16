@@ -107,26 +107,12 @@ const Purchases = () => {
                               <div className="text-[11px] font-mono text-slate-400 mt-0.5">
                                 CNIC: {item.seller.cnic}
                               </div>
-                              <div className="flex items-center gap-1 mt-1 flex-wrap">
-                                <button
-                                  onClick={() => setSelectedCarForAssets(item)}
-                                  className="px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[10px] font-semibold rounded-md transition-all flex items-center gap-1"
-                                >
-                                  <Camera className="w-3 h-3 text-blue-600" />
-                                  <span>View Assets ({totalAssetsCount})</span>
-                                </button>
-                              </div>
                             </div>
                           ) : (
-                            <button
-                              onClick={() => setSelectedCarForAssets(item)}
-                              className="px-2 py-0.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 text-[10px] font-medium rounded-md transition-all flex items-center gap-1"
-                            >
-                              <Camera className="w-3 h-3" />
-                              <span>View Assets ({totalAssetsCount})</span>
-                            </button>
+                            <span className="text-slate-400 italic">Direct Acquisition</span>
                           )}
                         </td>
+
 
                         <td className="py-4 px-6 text-slate-500">
                           {item.year} • {item.mileage ? `${item.mileage.toLocaleString()} km` : 'N/A'}
