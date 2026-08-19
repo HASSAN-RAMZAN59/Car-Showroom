@@ -33,27 +33,9 @@ const Sidebar = ({ isMobileOpen, onClose }) => {
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {
-      label: 'My Security Profile',
-      path: '/profile',
-      icon: User,
-      roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
-    },
-    {
-      label: 'Team Management',
-      path: '/users',
-      icon: UserCog,
-      roles: ['ADMIN'],
-    },
-    {
       label: 'Vehicles Inventory',
       path: '/vehicles',
       icon: Car,
-      roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
-    },
-    {
-      label: 'Park & Sell',
-      path: '/consignments',
-      icon: Handshake,
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {
@@ -69,15 +51,21 @@ const Sidebar = ({ isMobileOpen, onClose }) => {
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {
-      label: 'Installment Plans',
-      path: '/installments',
-      icon: CalendarCheck,
+      label: 'Park & Sell',
+      path: '/consignments',
+      icon: Handshake,
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {
       label: 'Daily Expenses',
       path: '/expenses',
       icon: DollarSign,
+      roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
+    },
+    {
+      label: 'Installment Plans',
+      path: '/installments',
+      icon: CalendarCheck,
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {
@@ -91,6 +79,12 @@ const Sidebar = ({ isMobileOpen, onClose }) => {
       path: '/payroll',
       icon: Users,
       roles: ['ADMIN', 'MANAGER'],
+    },
+    {
+      label: 'Team Management',
+      path: '/users',
+      icon: UserCog,
+      roles: ['ADMIN'],
     },
     {
       label: 'Customer Leads CRM',
