@@ -235,7 +235,7 @@ async def test_all_modules():
         }, headers=headers)
         sale_inst_id = sale_inst_res.json()["id"]
 
-        plans_res = await client.get("/installments/plans", headers=headers)
+        plans_res = await client.get("/installments/", headers=headers)
         assert plans_res.status_code == 200, f"Fetch installment plans failed: {plans_res.text}"
         plans = plans_res.json()
         target_plan = next((p for p in plans if p["sale_id"] == sale_inst_id), plans[0] if plans else None)

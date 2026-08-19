@@ -81,12 +81,6 @@ const Sidebar = ({ isMobileOpen, onClose }) => {
       roles: ['ADMIN', 'MANAGER'],
     },
     {
-      label: 'Team Management',
-      path: '/users',
-      icon: UserCog,
-      roles: ['ADMIN'],
-    },
-    {
       label: 'Customer Leads CRM',
       path: '/leads',
       icon: UserCheck,
