@@ -24,7 +24,7 @@ const CarCard = ({ car, onLogRepair, onMarkAvailable, onDeleteCar, onEditCar }) 
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="px-2.5 py-1 bg-blue-100 text-blue-800 font-mono text-xs font-extrabold rounded-lg border border-blue-300 shadow-xs flex items-center gap-1">
-                  <Car className="w-3.5 h-3.5 text-blue-700" />
+                  <CarIcon className="w-3.5 h-3.5 text-blue-700" />
                   <span>{car.car_number}</span>
                 </span>
                 {isConsignment && (

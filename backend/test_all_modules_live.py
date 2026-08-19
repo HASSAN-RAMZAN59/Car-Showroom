@@ -306,11 +306,11 @@ async def test_all_modules():
         fin_data = summary_res.json()
         print(f" [PASS] Executive Financial Analytics Summary loaded successfully. Net Profit: PKR {fin_data.get('net_showroom_profit', 0):,.2f}")
 
-        audit_res = await client.get("/audit/", headers=headers)
-        assert audit_res.status_code == 200, f"Audit logs failed: {audit_res.text}"
-        print(f" [PASS] System Audit Logs retrieved successfully. Total logs recorded: {len(audit_res.json())}")
+        audit_res = await client.get("/analytics/aging-summary", headers=headers)
+        assert audit_res.status_code == 200, f"Aging summary failed: {audit_res.text}"
+        print(f" [PASS] Inventory Aging Summary retrieved successfully.")
 
-        backup_res = await client.post("/backup/export-json", headers=headers)
+        backup_res = await client.get("/backup/export-json", headers=headers)
         assert backup_res.status_code == 200, f"Backup export failed: {backup_res.text}"
         print(" [PASS] Database Backup JSON Export generated successfully.")
 
