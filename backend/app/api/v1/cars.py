@@ -117,7 +117,6 @@ async def purchase_car(
     )
     db.add(car)
     await db.commit()
-    await db.refresh(car)
 
     # Eagerly load repairs and seller for Pydantic serialization
     stmt = (

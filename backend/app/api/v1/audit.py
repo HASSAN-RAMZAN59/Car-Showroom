@@ -17,6 +17,11 @@ router = APIRouter()
 
 
 @router.get(
+    "/",
+    response_model=List[AuditLogResponse],
+    dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],
+)
+@router.get(
     "/logs",
     response_model=List[AuditLogResponse],
     dependencies=[Depends(require_roles([UserRole.ADMIN, UserRole.MANAGER]))],

@@ -306,16 +306,20 @@ async def test_all_modules():
         fin_data = summary_res.json()
         print(f" [PASS] Executive Financial Analytics Summary loaded successfully. Net Profit: PKR {fin_data.get('net_showroom_profit', 0):,.2f}")
 
-        audit_res = await client.get("/analytics/aging-summary", headers=headers)
-        assert audit_res.status_code == 200, f"Aging summary failed: {audit_res.text}"
-        print(f" [PASS] Inventory Aging Summary retrieved successfully.")
+        aging_res = await client.get("/analytics/inventory-aging", headers=headers)
+        assert aging_res.status_code == 200, f"Aging summary failed: {aging_res.text}"
+        print(" [PASS] Inventory Aging Summary retrieved successfully.")
+
+        audit_res = await client.get("/audit/logs", headers=headers)
+        assert audit_res.status_code == 200, f"Audit logs failed: {audit_res.text}"
+        print(f" [PASS] System Audit Logs retrieved successfully. Total logs: {len(audit_res.json())}")
 
         backup_res = await client.get("/backup/export-json", headers=headers)
         assert backup_res.status_code == 200, f"Backup export failed: {backup_res.text}"
         print(" [PASS] Database Backup JSON Export generated successfully.")
 
     print("\n" + "=" * 80)
-    print(" 🎉 ALL 14 MODULES VERIFIED 100% OPERATIONAL WITH ZERO ERRORS!")
+    print(" SUCCESS: ALL 14 MODULES VERIFIED 100% OPERATIONAL WITH ZERO ERRORS!")
     print("=" * 80)
 
 if __name__ == "__main__":
