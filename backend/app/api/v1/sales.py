@@ -319,7 +319,7 @@ async def export_sale_deed_pdf(
         "color": sale.car.color or "N/A" if sale.car else "N/A",
         "engine_number": sale.car.engine_number if sale.car else "N/A",
         "chassis_number": sale.car.chassis_number if sale.car else "N/A",
-        "seller_name": sale.car.seller.full_name if (sale.car and sale.car.seller) else "Car Showroom ERP",
+        "seller_name": sale.car.seller.full_name if (sale.car and sale.car.seller) else "SK MOTORS",
         "seller_cnic": sale.car.seller.cnic if (sale.car and sale.car.seller) else "N/A",
         "seller_phone": sale.car.seller.phone if (sale.car and sale.car.seller) else "N/A",
         "buyer_name": sale.customer.full_name if sale.customer else "N/A",

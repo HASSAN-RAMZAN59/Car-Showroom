@@ -40,6 +40,8 @@ async def auto_complete_cars(
         stmt = stmt.where(
             or_(
                 Car.car_number.ilike(search_pattern),
+                Car.make.ilike(search_pattern),
+                Car.model.ilike(search_pattern),
                 Car.engine_number.ilike(search_pattern),
                 Car.chassis_number.ilike(search_pattern),
             )

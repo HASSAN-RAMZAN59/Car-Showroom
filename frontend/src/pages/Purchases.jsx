@@ -73,7 +73,7 @@ const Purchases = () => {
                   <th className="py-3.5 px-6">Seller & Verification</th>
                   <th className="py-3.5 px-6">Year & Mileage</th>
                   <th className="py-3.5 px-6">Purchase Cost</th>
-                  <th className="py-3.5 px-6">Refurbishment Cost</th>
+                  <th className="py-3.5 px-6">Extra Car Charges</th>
                   <th className="py-3.5 px-6">Status</th>
                   <th className="py-3.5 px-6">Acquired Date</th>
                   <th className="py-3.5 px-6 text-right">Actions</th>
@@ -88,9 +88,11 @@ const Purchases = () => {
 
                     return (
                       <tr key={item.id} className="hover:bg-blue-50/40 transition-colors">
-                        <td className="py-4 px-6 font-mono font-bold text-slate-900 flex items-center gap-2">
-                          <Car className="w-4 h-4 text-blue-600" />
-                          <span>{item.car_number}</span>
+                        <td className="py-4 px-6">
+                          <span className="px-2.5 py-1 bg-blue-100 text-blue-800 font-mono text-xs font-extrabold rounded-lg border border-blue-300 shadow-xs inline-flex items-center gap-1.5">
+                            <Car className="w-3.5 h-3.5 text-blue-700" />
+                            <span>{item.car_number}</span>
+                          </span>
                         </td>
 
                         <td className="py-4 px-6 font-semibold text-slate-800">

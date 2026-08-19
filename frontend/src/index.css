@@ -417,10 +417,27 @@ select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+select,
+option,
+optgroup,
+html.light select,
 html.light select option,
-select option {
+html.light select optgroup {
+  color-scheme: light !important;
   background-color: #FFFFFF !important;
   color: #0F172A !important;
+}
+
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked,
+html.light select option:hover,
+html.light select option:focus,
+html.light select option:active,
+html.light select option:checked {
+  background-color: #EFF6FF !important;
+  color: #1D4ED8 !important;
 }
 
 html.light input:not([class*="pl-"]),

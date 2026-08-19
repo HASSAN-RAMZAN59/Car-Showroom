@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import { X, Handshake, User, Car, DollarSign, Upload, AlertCircle, CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { ALL_MAKES_LIST, getModelsForMake } from '../../utils/carData';
 
 const initialFormData = {
   // Owner details
@@ -283,12 +284,18 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                   <input
                     type="text"
                     name="make"
+                    list="consignment-car-makes"
                     value={formData.make}
                     onChange={handleChange}
-                    placeholder="e.g. Honda"
+                    placeholder="Select or Type Make (Toyota, Honda...)"
                     required
                     className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <datalist id="consignment-car-makes">
+                    {ALL_MAKES_LIST.map((m) => (
+                      <option key={m} value={m} />
+                    ))}
+                  </datalist>
                 </div>
 
                 <div>
@@ -296,12 +303,18 @@ const RegisterConsignmentModal = ({ isOpen, onClose, onSuccess }) => {
                   <input
                     type="text"
                     name="model"
+                    list="consignment-car-models"
                     value={formData.model}
                     onChange={handleChange}
-                    placeholder="e.g. Civic Oriel"
+                    placeholder="Select or Type Model (Civic, Corolla...)"
                     required
                     className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <datalist id="consignment-car-models">
+                    {getModelsForMake(formData.make).map((mod) => (
+                      <option key={mod} value={mod} />
+                    ))}
+                  </datalist>
                 </div>
 
                 <div>

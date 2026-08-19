@@ -270,18 +270,33 @@ async def get_matching_inventory(
             detail="Lead record not found",
         )
 
-    stmt = select(Car).where(Car.status != CarStatus.SOLD)
+    # Base query for all available unsold cars (Inventory + Consignments)
+    base_stmt = select(Car).options(
+        joinedload(Car.seller),
+        selectinload(Car.repairs)
+    ).where(
+        Car.status.in_([CarStatus.AVAILABLE, CarStatus.IN_MAINTENANCE, CarStatus.CONSIGNED_AVAILABLE])
+    )
 
+    # 1. Try exact/strict match
+    stmt = base_stmt
     if lead.preferred_make:
-        stmt = stmt.where(Car.make.ilike(f"%{lead.preferred_make}%"))
+        stmt = stmt.where(Car.make.ilike(f"%{lead.preferred_make.strip()}%"))
     if lead.preferred_model:
-        stmt = stmt.where(Car.model.ilike(f"%{lead.preferred_model}%"))
-    if lead.budget_max:
-        stmt = stmt.where(Car.purchase_price <= lead.budget_max)
+        stmt = stmt.where(Car.model.ilike(f"%{lead.preferred_model.strip()}%"))
+    if lead.budget_max and lead.budget_max > 0:
+        stmt = stmt.where(Car.purchase_price <= (lead.budget_max * 1.15))
 
     stmt = stmt.order_by(Car.created_at.desc()).limit(20)
     result = await db.execute(stmt)
-    cars = result.scalars().all()
+    cars = result.scalars().unique().all()
+
+    # 2. Fallback if strict search returned 0 items: return all available inventory & consignment cars
+    if not cars:
+        fallback_stmt = base_stmt.order_by(Car.created_at.desc()).limit(20)
+        res = await db.execute(fallback_stmt)
+        cars = res.scalars().unique().all()
+
     return cars
 
 

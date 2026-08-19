@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import { X, Edit, User, Save } from 'lucide-react';
+import { ALL_MAKES_LIST, getModelsForMake } from '../../utils/carData';
 
 const EditLeadModal = ({ isOpen, onClose, lead, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -142,21 +143,33 @@ const EditLeadModal = ({ isOpen, onClose, lead, onSuccess }) => {
               <label className="block text-xs font-semibold text-slate-700 mb-1">Preferred Make</label>
               <input
                 type="text"
+                list="edit-lead-makes"
                 value={formData.preferred_make}
                 onChange={(e) => setFormData({ ...formData, preferred_make: e.target.value })}
-                placeholder="e.g. Toyota"
+                placeholder="Select or Type Make (Toyota, Honda...)"
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none"
               />
+              <datalist id="edit-lead-makes">
+                {ALL_MAKES_LIST.map((m) => (
+                  <option key={m} value={m} />
+                ))}
+              </datalist>
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Preferred Model</label>
               <input
                 type="text"
+                list="edit-lead-models"
                 value={formData.preferred_model}
                 onChange={(e) => setFormData({ ...formData, preferred_model: e.target.value })}
-                placeholder="e.g. Corolla"
+                placeholder="Select or Type Model (Corolla, Civic...)"
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none"
               />
+              <datalist id="edit-lead-models">
+                {getModelsForMake(formData.preferred_make).map((mod) => (
+                  <option key={mod} value={mod} />
+                ))}
+              </datalist>
             </div>
           </div>
 

@@ -74,7 +74,7 @@ async def export_database_json(
     }
 
     backup_data = {
-        "system": "Used Car Showroom ERP",
+        "system": "SK MOTORS ERP",
         "exported_at": datetime.now(timezone.utc).isoformat(),
         "exported_by": current_user.email,
         "tables": {},

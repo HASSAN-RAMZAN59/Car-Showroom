@@ -199,7 +199,7 @@ const Consignments = () => {
                               {car.make} {car.model} ({car.year})
                             </div>
                             <div className="text-[11px] text-slate-500 font-mono">
-                              Reg: <span className="font-semibold text-blue-600">{car.car_number}</span> | Eng: {car.engine_number}
+                              Reg: <span className="px-2 py-0.5 bg-blue-100 text-blue-800 font-mono text-xs font-extrabold rounded-md border border-blue-300 shadow-xs">{car.car_number}</span> | Eng: {car.engine_number}
                             </div>
                           </div>
                         </div>

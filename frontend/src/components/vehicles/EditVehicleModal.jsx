@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import { X, Edit, Car, DollarSign, Save } from 'lucide-react';
+import { ALL_MAKES_LIST, getModelsForMake } from '../../utils/carData';
 
 const EditVehicleModal = ({ isOpen, onClose, car, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -91,20 +92,32 @@ const EditVehicleModal = ({ isOpen, onClose, car, onSuccess }) => {
               <input
                 type="text"
                 required
+                list="edit-car-makes"
                 value={formData.make}
                 onChange={(e) => setFormData({ ...formData, make: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none"
               />
+              <datalist id="edit-car-makes">
+                {ALL_MAKES_LIST.map((m) => (
+                  <option key={m} value={m} />
+                ))}
+              </datalist>
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Model</label>
               <input
                 type="text"
                 required
+                list="edit-car-models"
                 value={formData.model}
                 onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none"
               />
+              <datalist id="edit-car-models">
+                {getModelsForMake(formData.make).map((mod) => (
+                  <option key={mod} value={mod} />
+                ))}
+              </datalist>
             </div>
           </div>
 

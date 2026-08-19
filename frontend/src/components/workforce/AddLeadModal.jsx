@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import { X, UserCheck, Phone, Mail, DollarSign, Car, CheckCircle2, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { ALL_MAKES_LIST, getModelsForMake } from '../../utils/carData';
 
 const AddLeadModal = ({ isOpen, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -155,11 +156,17 @@ const AddLeadModal = ({ isOpen, onClose, onSuccess }) => {
               <input
                 type="text"
                 name="preferred_make"
+                list="lead-preferred-makes"
                 value={formData.preferred_make}
                 onChange={handleChange}
-                placeholder="Honda, Toyota"
+                placeholder="Select or Type Make (Toyota, Honda...)"
                 className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
               />
+              <datalist id="lead-preferred-makes">
+                {ALL_MAKES_LIST.map((m) => (
+                  <option key={m} value={m} />
+                ))}
+              </datalist>
             </div>
 
             <div>
@@ -167,11 +174,17 @@ const AddLeadModal = ({ isOpen, onClose, onSuccess }) => {
               <input
                 type="text"
                 name="preferred_model"
+                list="lead-preferred-models"
                 value={formData.preferred_model}
                 onChange={handleChange}
-                placeholder="Civic, Corolla"
+                placeholder="Select or Type Model (Corolla, Civic...)"
                 className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
               />
+              <datalist id="lead-preferred-models">
+                {getModelsForMake(formData.preferred_make).map((mod) => (
+                  <option key={mod} value={mod} />
+                ))}
+              </datalist>
             </div>
 
             <div>

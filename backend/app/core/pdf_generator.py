@@ -110,7 +110,7 @@ def generate_sale_deed_pdf(sale_data: dict) -> BytesIO:
     )
 
     # 1. Header
-    story.append(Paragraph("CAR SHOWROOM ERP - OFFICIAL SALE DEED", title_style))
+    story.append(Paragraph("SK MOTORS - OFFICIAL SALE DEED", title_style))
     story.append(Spacer(1, 4))
     story.append(
         Paragraph(
@@ -224,7 +224,7 @@ def generate_sale_deed_pdf(sale_data: dict) -> BytesIO:
     story.append(Paragraph("4. DECLARATION & SIGNATURES", section_heading))
     terms_text = (
         "I, the buyer, confirm that I have inspected the vehicle and accept it in its current condition. "
-        "The showroom guarantees that the vehicle registration papers and vehicle history provided are authentic."
+        "SK MOTORS guarantees that the vehicle registration papers and vehicle history provided are authentic."
     )
     story.append(Paragraph(terms_text, cell_regular))
     story.append(Spacer(1, 40))

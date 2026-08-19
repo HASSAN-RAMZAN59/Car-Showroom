@@ -79,7 +79,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
               <Wrench className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Log Refurbishment Repair</h3>
+              <h3 className="text-base font-bold text-white">Add Vehicle Work & Charges</h3>
               <p className="text-xs text-slate-400">
                 {car.make} {car.model} ({car.car_number})
               </p>
@@ -93,7 +93,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
 
         {/* Existing Accumulation Summary */}
         <div className="mx-6 mt-6 p-4 bg-slate-950 border border-slate-800/80 rounded-2xl flex items-center justify-between text-xs">
-          <span className="text-slate-400 font-medium">Accumulated Repair Expenses:</span>
+          <span className="text-slate-400 font-medium">Total Vehicle Work Charges:</span>
           <span className="font-extrabold text-cyan-400">
             PKR {car.total_repair_cost ? car.total_repair_cost.toLocaleString() : '0'}
           </span>
@@ -103,20 +103,20 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
         {car.repairs && car.repairs.length > 0 && (
           <div className="mx-6 mt-4 p-4 bg-slate-950/60 border border-slate-800/60 rounded-2xl space-y-2 text-xs">
             <h4 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-              Logged Repair History ({car.repairs.length})
+              Logged Charges History ({car.repairs.length})
             </h4>
             <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
               {car.repairs.map((r) => (
                 <div key={r.id} className="p-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
                   <div>
                     <span className="font-semibold text-white">{r.repair_type}</span>
-                    <span className="text-slate-400 block text-[10px]">{r.vendor_name || 'General Repair'} • PKR {r.cost?.toLocaleString()}</span>
+                    <span className="text-slate-400 block text-[10px]">{r.vendor_name || 'General Charge'} • PKR {r.cost?.toLocaleString()}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleDeleteRepair(r.id)}
                     className="p-1 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
-                    title="Delete this repair entry"
+                    title="Delete this charge entry"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -138,7 +138,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                Repair Category *
+                Work / Charge Category *
               </label>
               <select
                 name="repair_type"
@@ -147,7 +147,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
                 className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-all"
               >
                 <option value="Denting/Painting">Denting / Painting</option>
-                <option value="Mechanical">Mechanical Repair</option>
+                <option value="Mechanical">Mechanical Work</option>
                 <option value="Detailing">Interior & Exterior Detailing</option>
                 <option value="Tyres">Tyres & Suspension</option>
                 <option value="Electrical">Electrical / Battery</option>
@@ -156,7 +156,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                Repair Cost (PKR) *
+                Vehicle Charge Amount (PKR) *
               </label>
               <input
                 type="number"
@@ -186,7 +186,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-              Detailed Repair Notes
+              Detailed Work / Charge Notes
             </label>
             <textarea
               name="notes"
@@ -229,7 +229,7 @@ const RepairLogModal = ({ isOpen, car, onClose, onSuccess }) => {
               ) : (
                 <>
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Save Repair Record</span>
+                  <span>Save Charge Record</span>
                 </>
               )}
             </button>
