@@ -1,10 +1,4 @@
 from app.models.audit import AuditLog, log_action
-from app.models.bank import (
-    BankAccount,
-    PaymentMethod,
-    PaymentTransaction,
-    TransactionType,
-)
 from app.models.car import Car, CarStatus
 from app.models.consignment import (
     CommissionType,
@@ -12,7 +6,7 @@ from app.models.consignment import (
     ConsignmentStatus,
 )
 from app.models.customer import Customer
-from app.models.expense import Expense
+from app.models.expense import Expense, PaymentMethod
 from app.models.installment import (
     InstallmentPayment,
     InstallmentPlan,
@@ -53,9 +47,6 @@ __all__ = [
     "InstallmentPayment",
     "InstallmentPlanStatus",
     "PaymentStatus",
-    "BankAccount",
-    "PaymentTransaction",
-    "TransactionType",
     "PaymentMethod",
     "Expense",
     "Investor",

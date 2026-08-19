@@ -43,11 +43,7 @@ async def check_database_counts():
         leads = (await client.get("/leads/", headers=headers)).json()
         print(f" - Customer CRM Leads: {len(leads)} Leads")
 
-        # 7. Multi-Bank Accounts
-        banks = (await client.get("/bank/", headers=headers)).json()
-        print(f" - Bank Accounts: {len(banks)} Accounts")
-
-        # 8. Daily Expenses
+        # 7. Daily Expenses
         expenses = (await client.get("/expenses/", headers=headers)).json()
         print(f" - Daily Expenses: {len(expenses)} Expense Records")
 

@@ -10,7 +10,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
-    from app.models.bank import BankAccount
     from app.models.car import Car
     from app.models.user import User
 
@@ -108,11 +107,6 @@ class CarInvestment(Base):
     payout_date: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
-    bank_account_id: Mapped[Optional[uuid.UUID]] = mapped_column(
-        UUID(as_uuid=True),
-        ForeignKey("bank_accounts.id", ondelete="SET NULL"),
-        nullable=True,
-    )
 
     created_by_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -134,5 +128,4 @@ class CarInvestment(Base):
     # Relationships
     investor: Mapped["Investor"] = relationship("Investor", back_populates="investments")
     car: Mapped["Car"] = relationship("Car")
-    bank_account: Mapped[Optional["BankAccount"]] = relationship("BankAccount")
     created_by: Mapped["User"] = relationship("User")

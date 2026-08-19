@@ -11,7 +11,6 @@ from sqlalchemy.orm import joinedload, selectinload
 from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
 from app.core.pdf_generator import generate_sale_deed_pdf
-from app.models.bank import BankAccount, PaymentMethod, PaymentTransaction, TransactionType
 from app.models.car import Car, CarStatus
 from app.models.consignment import CommissionType, ConsignmentAgreement, ConsignmentStatus
 from app.models.customer import Customer
@@ -157,27 +156,6 @@ async def create_sale(
     )
     db.add(sale)
     await db.flush()
-
-    # 7. Auto-log Showroom Commission in payment_transactions if consignment vehicle
-    if consignment_agreement and showroom_commission > 0:
-        # Find active bank account if available to reflect balance
-        bank_res = await db.execute(select(BankAccount).where(BankAccount.is_active == True).limit(1))
-        bank_acc = bank_res.scalars().first()
-
-        tx = PaymentTransaction(
-            transaction_type=TransactionType.CONSIGNMENT_COMMISSION,
-            payment_method=PaymentMethod.CASH if not bank_acc else PaymentMethod.BANK_TRANSFER,
-            bank_account_id=bank_acc.id if bank_acc else None,
-            amount=showroom_commission,
-            reference_number=f"COMM-{str(sale.id)[:8].upper()}",
-            car_id=car.id,
-            sale_id=sale.id,
-            notes=f"Consignment Commission for vehicle {car.car_number} ({car.make} {car.model}). Owner Payout: PKR {owner_payout:,.2f}",
-            created_by_id=current_user.id,
-        )
-        db.add(tx)
-        if bank_acc:
-            bank_acc.current_balance += showroom_commission
 
     # 8. If INSTALLMENT payment type, automatically generate InstallmentPlan and schedule entries
     if sale_in.payment_type == PaymentType.INSTALLMENT:
@@ -377,7 +355,7 @@ async def delete_sale(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Delete a sale record (Admin/Manager only). Reverts car status to AVAILABLE and reverses linked bank transactions."""
+    """Delete a sale record (Admin/Manager only). Reverts car status to AVAILABLE."""
     stmt = (
         select(Sale)
         .options(joinedload(Sale.car))
@@ -398,20 +376,7 @@ async def delete_sale(
         else:
             sale.car.status = CarStatus.AVAILABLE
 
-    # 2. Reverse linked payment transactions & adjust bank balance
-    tx_stmt = select(PaymentTransaction).where(PaymentTransaction.sale_id == sale_id)
-    tx_res = await db.execute(tx_stmt)
-    transactions = tx_res.scalars().all()
-
-    for tx in transactions:
-        if tx.bank_account_id:
-            bank_res = await db.execute(select(BankAccount).where(BankAccount.id == tx.bank_account_id))
-            bank_acc = bank_res.scalars().first()
-            if bank_acc:
-                bank_acc.current_balance -= tx.amount
-        await db.delete(tx)
-
-    # 3. Delete installment plan & payments if exists
+    # 2. Delete installment plan & payments if exists
     inst_plan_res = await db.execute(select(InstallmentPlan).where(InstallmentPlan.sale_id == sale_id))
     inst_plan = inst_plan_res.scalars().first()
     if inst_plan:

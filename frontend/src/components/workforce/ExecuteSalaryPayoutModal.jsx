@@ -1,30 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
-import { X, DollarSign, Building2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, DollarSign, CheckCircle2, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const ExecuteSalaryPayoutModal = ({ isOpen, payrollItem, onClose, onSuccess }) => {
-  const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
-  const [bankAccounts, setBankAccounts] = useState([]);
-  const [bankAccountId, setBankAccountId] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('CASH');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchBankAccounts();
-    }
-  }, [isOpen]);
-
-  const fetchBankAccounts = async () => {
-    try {
-      const res = await axiosInstance.get('/bank/accounts');
-      setBankAccounts(res.data || []);
-    } catch (err) {
-      console.error('Failed to fetch bank accounts:', err);
-    }
-  };
 
   if (!isOpen || !payrollItem) return null;
 
@@ -36,7 +19,6 @@ const ExecuteSalaryPayoutModal = ({ isOpen, payrollItem, onClose, onSuccess }) =
     try {
       const payload = {
         payment_method: paymentMethod,
-        bank_account_id: paymentMethod === 'BANK_TRANSFER' ? bankAccountId || null : null,
         notes: notes || null,
       };
 
@@ -97,30 +79,10 @@ const ExecuteSalaryPayoutModal = ({ isOpen, payrollItem, onClose, onSuccess }) =
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
             >
-              <option value="BANK_TRANSFER">BANK TRANSFER (Auto-Deduct)</option>
               <option value="CASH">CASH</option>
-              <option value="CHEQUE">CHEQUE</option>
+              <option value="CHEQUE">CHEQUE / Online</option>
             </select>
           </div>
-
-          {paymentMethod === 'BANK_TRANSFER' && (
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Source Bank Account *</label>
-              <select
-                required
-                value={bankAccountId}
-                onChange={(e) => setBankAccountId(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white font-semibold"
-              >
-                <option value="">Select Showroom Bank Account</option>
-                {bankAccounts.map((acc) => (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.bank_name} - Balance PKR {acc.current_balance?.toLocaleString()}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Payout Notes</label>
@@ -128,7 +90,7 @@ const ExecuteSalaryPayoutModal = ({ isOpen, payrollItem, onClose, onSuccess }) =
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Salary payout via online bank transfer"
+              placeholder="Salary payout reference or receipt note"
               className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
             />
           </div>

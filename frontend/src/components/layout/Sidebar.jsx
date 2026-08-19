@@ -75,12 +75,6 @@ const Sidebar = ({ isMobileOpen, onClose }) => {
       roles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     },
     {
-      label: 'Multi-Bank Ledger',
-      path: '/bank',
-      icon: Building2,
-      roles: ['ADMIN', 'MANAGER'],
-    },
-    {
       label: 'Daily Expenses',
       path: '/expenses',
       icon: DollarSign,

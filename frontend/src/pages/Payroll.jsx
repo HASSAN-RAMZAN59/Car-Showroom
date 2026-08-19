@@ -38,7 +38,7 @@ const Payroll = () => {
   };
 
   const handleDeletePayroll = async (pay) => {
-    if (!window.confirm('Are you sure you want to delete this payroll record? (If disbursed via bank transfer, funds will be refunded to bank account balance).')) {
+    if (!window.confirm('Are you sure you want to delete this payroll record?')) {
       return;
     }
     try {
@@ -67,7 +67,7 @@ const Payroll = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Employees, Dealers & Payroll Engine</h1>
-          <p className="text-xs text-slate-400 mt-1">Staff directory, monthly net salary generation, and bank salary payouts</p>
+          <p className="text-xs text-slate-400 mt-1">Staff directory, monthly net salary generation, and salary payouts</p>
         </div>
 
         <div className="flex items-center gap-3">

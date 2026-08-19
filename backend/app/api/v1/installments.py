@@ -9,12 +9,6 @@ from sqlalchemy.orm import joinedload, selectinload
 
 from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
-from app.models.bank import (
-    BankAccount,
-    PaymentMethod as BankPaymentMethod,
-    PaymentTransaction,
-    TransactionType,
-)
 from app.models.car import Car
 from app.models.customer import Customer
 from app.models.installment import (
@@ -256,30 +250,6 @@ async def log_installment_payment(
     payment.transaction_reference = pay_in.transaction_reference
     payment.notes = pay_in.notes
 
-    # Credit bank account balance and log financial transaction if bank_account_id is provided
-    if pay_in.bank_account_id:
-        bank_res = await db.execute(select(BankAccount).where(BankAccount.id == pay_in.bank_account_id))
-        bank_acc = bank_res.scalars().first()
-        if bank_acc:
-            bank_acc.current_balance += pay_in.amount_paid
-            pm_enum = (
-                BankPaymentMethod.BANK_TRANSFER
-                if (pay_in.payment_method and "BANK" in pay_in.payment_method.upper())
-                else BankPaymentMethod.CASH
-            )
-            tx = PaymentTransaction(
-                transaction_type=TransactionType.INSTALLMENT_PAYMENT,
-                payment_method=pm_enum,
-                bank_account_id=bank_acc.id,
-                amount=pay_in.amount_paid,
-                reference_number=pay_in.transaction_reference,
-                installment_payment_id=payment.id,
-                sale_id=payment.plan.sale_id if payment.plan else None,
-                notes=f"EMI Payment #{payment.installment_number} collection for plan",
-                created_by_id=current_user.id,
-            )
-            db.add(tx)
-
     await db.flush()
 
     # Check if all payments in the parent plan are completed
@@ -345,7 +315,7 @@ async def delete_installment_payment(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Delete an installment payment collection (Admin/Manager only), reverting bank balance and reset status to PENDING."""
+    """Delete an installment payment collection (Admin/Manager only), resetting status to PENDING."""
     res = await db.execute(select(InstallmentPayment).where(InstallmentPayment.id == payment_id))
     payment = res.scalars().first()
     if not payment:
@@ -353,17 +323,6 @@ async def delete_installment_payment(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Installment payment record not found",
         )
-
-    # Revert payment transaction & bank balance if present
-    tx_res = await db.execute(select(PaymentTransaction).where(PaymentTransaction.installment_payment_id == payment_id))
-    transactions = tx_res.scalars().all()
-    for tx in transactions:
-        if tx.bank_account_id:
-            bank_res = await db.execute(select(BankAccount).where(BankAccount.id == tx.bank_account_id))
-            bank_acc = bank_res.scalars().first()
-            if bank_acc:
-                bank_acc.current_balance -= tx.amount
-        await db.delete(tx)
 
     # Reset payment record to pending
     payment.status = PaymentStatus.PENDING

@@ -228,7 +228,7 @@ const NewSaleModal = ({ isOpen, onClose, onSuccess }) => {
                   onChange={handleChange}
                   className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
                 >
-                  <option value="FULL_PAYMENT">FULL PAYMENT (Cash / Bank Transfer)</option>
+                  <option value="FULL_PAYMENT">FULL PAYMENT (Full Settlement)</option>
                   <option value="INSTALLMENT">INSTALLMENT (Financed Plan)</option>
                 </select>
               </div>

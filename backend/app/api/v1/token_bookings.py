@@ -79,7 +79,10 @@ async def create_token_booking(
     # Eagerly load relations for response
     stmt = (
         select(TokenBooking)
-        .options(joinedload(TokenBooking.car), joinedload(TokenBooking.customer))
+        .options(
+            joinedload(TokenBooking.car).joinedload(Car.seller),
+            joinedload(TokenBooking.customer),
+        )
         .where(TokenBooking.id == token_booking.id)
     )
     result = await db.execute(stmt)

@@ -10,7 +10,6 @@ from app.models.car import Car, CarStatus
 from app.models.consignment import ConsignmentAgreement, CommissionType, ConsignmentStatus
 from app.models.customer import Customer
 from app.models.sale import Sale, PaymentType
-from app.models.bank import BankAccount, PaymentMethod, PaymentTransaction, TransactionType
 from app.models.user import User, UserRole
 
 
@@ -23,7 +22,6 @@ async def test_consignment_flow():
         await conn.execute(text("ALTER TABLE cars ADD COLUMN IF NOT EXISTS is_consignment BOOLEAN DEFAULT FALSE;"))
         await conn.execute(text("ALTER TABLE cars ALTER COLUMN seller_id DROP NOT NULL;"))
         await conn.execute(text("ALTER TABLE cars ALTER COLUMN status TYPE VARCHAR(50);"))
-        await conn.execute(text("ALTER TABLE payment_transactions ALTER COLUMN transaction_type TYPE VARCHAR(50);"))
     
     async with AsyncSessionLocal() as session:
         # Find or create admin user
@@ -50,21 +48,6 @@ async def test_consignment_flow():
             )
             session.add(customer)
             await session.flush()
-
-        # Find or create bank account
-        bank_res = await session.execute(select(BankAccount).where(BankAccount.is_active == True).limit(1))
-        bank_acc = bank_res.scalars().first()
-        if not bank_acc:
-            bank_acc = BankAccount(
-                account_title="Showroom Main Account",
-                bank_name="Meezan Bank",
-                account_number="PK12MEEZ1234567890",
-                current_balance=500000.0,
-            )
-            session.add(bank_acc)
-            await session.flush()
-
-        initial_bank_balance = bank_acc.current_balance
 
         # -------------------------------------------------------------
         # TEST 1: Register Consignment Car (Percentage Commission)
@@ -110,7 +93,7 @@ async def test_consignment_flow():
         print(f"[OK] TEST 1 PASSED: Consignment Agreement registered. Car ID: {cons_car.id}, Status: {cons_car.status}")
 
         # -------------------------------------------------------------
-        # TEST 2: Sell Consignment Car and verify calculations & bank transaction
+        # TEST 2: Sell Consignment Car and verify calculations
         # -------------------------------------------------------------
         selling_price = 18000000.0 # Sold for PKR 18 Million
         expected_commission = (selling_price * 2.5) / 100.0 # PKR 450,000
@@ -131,32 +114,16 @@ async def test_consignment_flow():
         cons_car.status = CarStatus.CONSIGNED_SOLD
         cons_agreement.status = ConsignmentStatus.SOLD
 
-        tx = PaymentTransaction(
-            transaction_type=TransactionType.CONSIGNMENT_COMMISSION,
-            payment_method=PaymentMethod.BANK_TRANSFER,
-            bank_account_id=bank_acc.id,
-            amount=expected_commission,
-            reference_number=f"COMM-TEST",
-            car_id=cons_car.id,
-            sale_id=sale.id,
-            notes=f"Commission cut for {car_number}. Owner payout: {expected_owner_payout}",
-            created_by_id=user.id,
-        )
-        session.add(tx)
-        bank_acc.current_balance += expected_commission
-
         await session.commit()
 
         # Re-verify values
         assert cons_car.status == CarStatus.CONSIGNED_SOLD, "Car status should be CONSIGNED_SOLD"
         assert cons_agreement.status == ConsignmentStatus.SOLD, "Agreement status should be SOLD"
-        assert bank_acc.current_balance == initial_bank_balance + expected_commission, f"Bank balance mismatch. Expected: {initial_bank_balance + expected_commission}, got {bank_acc.current_balance}"
 
         print(f"[OK] TEST 2 PASSED: Consignment car sold successfully!")
         print(f"   - Selling Price: PKR {selling_price:,.2f}")
         print(f"   - Showroom Commission (2.5%): PKR {expected_commission:,.2f}")
         print(f"   - Owner Payout: PKR {expected_owner_payout:,.2f}")
-        print(f"   - Updated Bank Balance: PKR {bank_acc.current_balance:,.2f}")
 
         # -------------------------------------------------------------
         # TEST 3: Register and Withdraw a consignment vehicle

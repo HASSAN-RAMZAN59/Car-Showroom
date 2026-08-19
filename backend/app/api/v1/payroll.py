@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload, selectinload
 
 from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
-from app.models.bank import BankAccount, PaymentMethod, PaymentTransaction, TransactionType
+from app.models.expense import PaymentMethod
 from app.models.payroll import Employee, Payroll, PayrollPaymentStatus
 from app.models.user import User, UserRole
 from app.schemas.payroll import (
@@ -170,7 +170,6 @@ async def update_employee(
     return employee
 
 
-
 @router.post(
     "/generate",
     response_model=PayrollResponse,
@@ -228,7 +227,7 @@ async def generate_payroll(
     # Eagerly load employee for response
     stmt = (
         select(Payroll)
-        .options(joinedload(Payroll.employee), joinedload(Payroll.bank_account))
+        .options(joinedload(Payroll.employee))
         .where(Payroll.id == payroll.id)
     )
     res = await db.execute(stmt)
@@ -246,7 +245,7 @@ async def execute_salary_payment(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Execute salary payment for a pending payroll record and deduct from bank account balance if applicable."""
+    """Execute salary payment for a pending payroll record."""
     stmt = (
         select(Payroll)
         .options(joinedload(Payroll.employee))
@@ -265,44 +264,10 @@ async def execute_salary_payment(
             detail="This payroll record has already been marked as PAID.",
         )
 
-    # Handle bank transfer auto-deduction
-    bank_account = None
-    if pay_in.payment_method == PaymentMethod.BANK_TRANSFER and pay_in.bank_account_id:
-        bank_res = await db.execute(
-            select(BankAccount).where(BankAccount.id == pay_in.bank_account_id)
-        )
-        bank_account = bank_res.scalars().first()
-        if not bank_account:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Bank Account with ID '{pay_in.bank_account_id}' not found.",
-            )
-        if bank_account.current_balance < payroll.net_salary:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Insufficient funds in bank account for salary payout. Current balance: PKR {bank_account.current_balance:,.2f}, Required: PKR {payroll.net_salary:,.2f}",
-            )
-        # Deduct net_salary from bank balance
-        bank_account.current_balance -= payroll.net_salary
-
-        # Log expense payment ledger transaction
-        emp_name = payroll.employee.full_name if payroll.employee else "Employee"
-        tx = PaymentTransaction(
-            transaction_type=TransactionType.EXPENSE_PAYMENT,
-            payment_method=PaymentMethod.BANK_TRANSFER,
-            bank_account_id=bank_account.id,
-            amount=payroll.net_salary,
-            reference_number=f"PAYROLL-{payroll.pay_period_month:02d}{payroll.pay_period_year}",
-            notes=f"Payroll Salary Payout for {emp_name} ({payroll.pay_period_month}/{payroll.pay_period_year})",
-            created_by_id=current_user.id,
-        )
-        db.add(tx)
-
     # Update payroll status
     payroll.payment_status = PayrollPaymentStatus.PAID
     payroll.payment_date = datetime.now(timezone.utc)
     payroll.payment_method = pay_in.payment_method
-    payroll.bank_account_id = pay_in.bank_account_id
     if pay_in.notes:
         payroll.notes = (payroll.notes or "") + f" | Payout Note: {pay_in.notes}"
 
@@ -311,7 +276,7 @@ async def execute_salary_payment(
     # Re-fetch with loaded relations
     stmt_reload = (
         select(Payroll)
-        .options(joinedload(Payroll.employee), joinedload(Payroll.bank_account))
+        .options(joinedload(Payroll.employee))
         .where(Payroll.id == payroll.id)
     )
     res_reload = await db.execute(stmt_reload)
@@ -331,9 +296,7 @@ async def list_payroll_history(
     current_user: User = Depends(get_current_user),
 ) -> Any:
     """Fetch payroll history filtered by month, year, or payment status."""
-    stmt = select(Payroll).options(
-        joinedload(Payroll.employee), joinedload(Payroll.bank_account)
-    )
+    stmt = select(Payroll).options(joinedload(Payroll.employee))
     if pay_period_month:
         stmt = stmt.where(Payroll.pay_period_month == pay_period_month)
     if pay_period_year:
@@ -356,7 +319,7 @@ async def delete_payroll(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Delete a payroll record (Admin/Manager only). If paid via bank, refunds the net salary back to bank account."""
+    """Delete a payroll record (Admin/Manager only)."""
     res = await db.execute(select(Payroll).where(Payroll.id == payroll_id))
     payroll = res.scalars().first()
     if not payroll:
@@ -364,13 +327,6 @@ async def delete_payroll(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Payroll record not found",
         )
-
-    # Refund bank account if paid via bank
-    if payroll.payment_status == PayrollPaymentStatus.PAID and payroll.payment_method == PaymentMethod.BANK_TRANSFER and payroll.bank_account_id:
-        bank_res = await db.execute(select(BankAccount).where(BankAccount.id == payroll.bank_account_id))
-        bank_account = bank_res.scalars().first()
-        if bank_account:
-            bank_account.current_balance += payroll.net_salary
 
     await db.delete(payroll)
     await db.commit()

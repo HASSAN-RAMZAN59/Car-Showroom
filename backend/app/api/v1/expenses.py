@@ -19,8 +19,7 @@ from sqlalchemy.orm import joinedload
 from app.api.deps import get_current_user, require_roles
 from app.core.cloudinary import upload_file_to_cloudinary
 from app.core.database import get_db
-from app.models.bank import BankAccount, PaymentMethod, PaymentTransaction, TransactionType
-from app.models.expense import Expense
+from app.models.expense import Expense, PaymentMethod
 from app.models.user import User, UserRole
 from app.schemas.expense import ExpenseListResponse, ExpenseResponse, ExpenseUpdate
 
@@ -40,31 +39,11 @@ async def create_expense(
     date_param: Optional[datetime] = Form(None, alias="date"),
     reason: Optional[str] = Form(None),
     payment_method: PaymentMethod = Form(PaymentMethod.CASH),
-    bank_account_id: Optional[uuid.UUID] = Form(None),
     receipt: Optional[UploadFile] = File(None, description="Optional receipt image or bill document"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Log a new daily expense entry with optional receipt upload and bank account balance deduction."""
-    bank_account = None
-    if payment_method == PaymentMethod.BANK_TRANSFER and bank_account_id:
-        bank_res = await db.execute(
-            select(BankAccount).where(BankAccount.id == bank_account_id)
-        )
-        bank_account = bank_res.scalars().first()
-        if not bank_account:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Bank Account with ID '{bank_account_id}' not found.",
-            )
-        if bank_account.current_balance < amount:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Insufficient funds in bank account. Current balance: PKR {bank_account.current_balance:,.2f}",
-            )
-        # Deduct expense amount from bank balance
-        bank_account.current_balance -= amount
-
+    """Log a new daily expense entry with optional receipt upload."""
     # Upload receipt image to Cloudinary if provided
     receipt_url = None
     if receipt and receipt.filename:
@@ -80,30 +59,14 @@ async def create_expense(
         reason=reason,
         receipt_url=receipt_url,
         payment_method=payment_method,
-        bank_account_id=bank_account_id,
         created_by_id=current_user.id,
     )
     db.add(expense)
-
-    # Record linked PaymentTransaction if paid via bank
-    if bank_account:
-        tx = PaymentTransaction(
-            transaction_type=TransactionType.EXPENSE_PAYMENT,
-            payment_method=PaymentMethod.BANK_TRANSFER,
-            bank_account_id=bank_account.id,
-            amount=amount,
-            reference_number=f"EXP-{expense_name[:10].upper()}",
-            notes=f"Daily Expense: {expense_name} ({category})",
-            created_by_id=current_user.id,
-        )
-        db.add(tx)
-
     await db.commit()
 
-    # Eagerly load bank account and creator for response
     stmt = (
         select(Expense)
-        .options(joinedload(Expense.bank_account), joinedload(Expense.created_by))
+        .options(joinedload(Expense.created_by))
         .where(Expense.id == expense.id)
     )
     result = await db.execute(stmt)
@@ -125,9 +88,7 @@ async def list_expenses(
     current_user: User = Depends(get_current_user),
 ) -> Any:
     """List daily expenses with optional date range and category filters + total expense sum calculation."""
-    stmt = select(Expense).options(
-        joinedload(Expense.bank_account), joinedload(Expense.created_by)
-    )
+    stmt = select(Expense).options(joinedload(Expense.created_by))
 
     if start_date:
         stmt = stmt.where(Expense.date >= start_date)
@@ -171,7 +132,7 @@ async def get_expense(
     """Fetch single expense record details."""
     stmt = (
         select(Expense)
-        .options(joinedload(Expense.bank_account), joinedload(Expense.created_by))
+        .options(joinedload(Expense.created_by))
         .where(Expense.id == expense_id)
     )
     result = await db.execute(stmt)
@@ -194,12 +155,8 @@ async def delete_expense(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Delete an expense record (Admin/Manager only). If paid via bank transfer, refunds the amount back to bank balance."""
-    stmt = (
-        select(Expense)
-        .options(joinedload(Expense.bank_account))
-        .where(Expense.id == expense_id)
-    )
+    """Delete an expense record (Admin/Manager only)."""
+    stmt = select(Expense).where(Expense.id == expense_id)
     result = await db.execute(stmt)
     expense = result.scalars().first()
     if not expense:
@@ -207,15 +164,6 @@ async def delete_expense(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Expense record not found",
         )
-
-    # Refund bank account if paid via bank
-    if expense.payment_method == PaymentMethod.BANK_TRANSFER and expense.bank_account_id:
-        bank_res = await db.execute(
-            select(BankAccount).where(BankAccount.id == expense.bank_account_id)
-        )
-        bank_account = bank_res.scalars().first()
-        if bank_account:
-            bank_account.current_balance += expense.amount
 
     await db.delete(expense)
     await db.commit()
@@ -237,7 +185,7 @@ async def update_expense(
     """Update expense details (name, category, amount, reason)."""
     stmt = (
         select(Expense)
-        .options(joinedload(Expense.bank_account), joinedload(Expense.created_by))
+        .options(joinedload(Expense.created_by))
         .where(Expense.id == expense_id)
     )
     result = await db.execute(stmt)

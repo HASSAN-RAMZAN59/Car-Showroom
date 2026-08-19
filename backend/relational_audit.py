@@ -6,7 +6,6 @@ This script verifies:
 2. Operational & Financial State Sync Triggers:
    - Cost basis synchronization (Repairs -> Car cost basis)
    - Status transitions (PURCHASE -> IN_MAINTENANCE -> AVAILABLE -> RESERVED -> SOLD)
-   - Bank balance auto-deductions and additions
    - Investor profit settlement on vehicle sale
    - Auto-complete search joins across Car, Seller, Repairs, Sales
 3. Endpoint & Route Consistency.
@@ -57,7 +56,6 @@ async def run_relational_audit():
         ("car_investments", "car_id", "cars", "id"),
         ("payrolls", "employee_id", "employees", "id"),
         ("lead_followups", "lead_id", "customer_leads", "id"),
-        ("payment_transactions", "bank_account_id", "bank_accounts", "id"),
     ]
 
     for source_table, source_col, target_table, target_col in fk_checks:

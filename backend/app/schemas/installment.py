@@ -16,9 +16,8 @@ class InstallmentPlanCreate(BaseModel):
 
 class InstallmentPaymentLog(BaseModel):
     amount_paid: float = Field(..., gt=0, description="Payment amount received for this installment")
-    payment_method: Optional[str] = Field(None, description="e.g. Cash, Bank Transfer, Cheque")
-    bank_account_id: Optional[uuid.UUID] = Field(None, description="Target bank account ID for balance credit")
-    transaction_reference: Optional[str] = Field(None, description="Bank transaction ref or receipt number")
+    payment_method: Optional[str] = Field(None, description="e.g. Cash, Cheque")
+    transaction_reference: Optional[str] = Field(None, description="Transaction ref or receipt number")
     notes: Optional[str] = None
 
 

@@ -11,7 +11,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
-from app.models.bank import BankAccount, PaymentTransaction
 from app.models.car import Car
 from app.models.customer import Customer
 from app.models.expense import Expense
@@ -65,8 +64,6 @@ async def export_database_json(
         "repairs": select(Repair),
         "installment_plans": select(InstallmentPlan),
         "installment_payments": select(InstallmentPayment),
-        "bank_accounts": select(BankAccount),
-        "payment_transactions": select(PaymentTransaction),
         "expenses": select(Expense),
         "investors": select(Investor),
         "car_investments": select(CarInvestment),

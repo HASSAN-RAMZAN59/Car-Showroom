@@ -36,7 +36,7 @@ const Installments = () => {
   };
 
   const handleDeleteInstallmentPayment = async (pay) => {
-    if (!window.confirm(`Are you sure you want to revert payment collection for Installment #${pay.installment_number}? (Bank account balance will be refunded).`)) {
+    if (!window.confirm(`Are you sure you want to revert payment collection for Installment #${pay.installment_number}?`)) {
       return;
     }
     try {

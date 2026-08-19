@@ -9,7 +9,6 @@ from sqlalchemy.orm import joinedload, selectinload
 
 from app.api.deps import get_current_user, require_roles
 from app.core.database import get_db
-from app.models.bank import BankAccount, PaymentMethod, PaymentTransaction, TransactionType
 from app.models.car import Car, CarStatus
 from app.models.investor import CarInvestment, InvestmentStatus, Investor, PayoutStatus
 from app.models.user import User, UserRole
@@ -92,7 +91,6 @@ async def get_investor(
         .options(
             selectinload(Investor.investments).options(
                 joinedload(CarInvestment.car),
-                joinedload(CarInvestment.bank_account),
             )
         )
         .where(Investor.id == investor_id)
@@ -152,7 +150,6 @@ async def update_investor(
     return investor
 
 
-
 @router.post(
     "/investment",
     response_model=CarInvestmentResponse,
@@ -206,12 +203,11 @@ async def create_car_investment(
     db.add(car_inv)
     await db.commit()
 
-    # Eagerly load car & bank_account for response
+    # Eagerly load car for response
     stmt = (
         select(CarInvestment)
         .options(
             joinedload(CarInvestment.car),
-            joinedload(CarInvestment.bank_account),
         )
         .where(CarInvestment.id == car_inv.id)
     )
@@ -234,7 +230,6 @@ async def list_investments_for_car(
         select(CarInvestment)
         .options(
             joinedload(CarInvestment.car),
-            joinedload(CarInvestment.bank_account),
         )
         .where(CarInvestment.car_id == car_id)
         .order_by(CarInvestment.created_at.desc())
@@ -258,7 +253,6 @@ async def list_all_investments(
         .options(
             joinedload(CarInvestment.car),
             joinedload(CarInvestment.investor),
-            joinedload(CarInvestment.bank_account),
         )
         .order_by(CarInvestment.created_at.desc())
     )
@@ -277,7 +271,7 @@ async def process_investor_payout(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Any:
-    """Log payout payment (principal capital + earned profit share) to the investor and deduct from bank balance."""
+    """Log payout payment (principal capital + earned profit share) to the investor."""
     stmt = (
         select(CarInvestment)
         .options(
@@ -304,46 +298,9 @@ async def process_investor_payout(
             detail="Payout has already been executed and marked as PAID.",
         )
 
-    # Compute total payout (Principal + Profit)
-    total_payout = investment.investment_amount + investment.profit_earned
-
-    # Deduct from bank account if specified
-    bank_account = None
-    if payout_in.bank_account_id:
-        bank_res = await db.execute(
-            select(BankAccount).where(BankAccount.id == payout_in.bank_account_id)
-        )
-        bank_account = bank_res.scalars().first()
-        if not bank_account:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Bank Account with ID '{payout_in.bank_account_id}' not found.",
-            )
-        if bank_account.current_balance < total_payout:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Insufficient bank balance for payout. Current balance: PKR {bank_account.current_balance:,.2f}, Required: PKR {total_payout:,.2f}",
-            )
-        bank_account.current_balance -= total_payout
-
-        # Record payment transaction entry
-        car_no = investment.car.car_number if investment.car else "N/A"
-        tx = PaymentTransaction(
-            transaction_type=TransactionType.WITHDRAWAL,
-            payment_method=PaymentMethod.BANK_TRANSFER,
-            bank_account_id=bank_account.id,
-            amount=total_payout,
-            reference_number=payout_in.transaction_reference,
-            car_id=investment.car_id,
-            notes=f"Investor Payout (Capital: {investment.investment_amount:,.0f} + Profit: {investment.profit_earned:,.0f}) for Car {car_no}",
-            created_by_id=current_user.id,
-        )
-        db.add(tx)
-
     # Update investment payout status
     investment.payout_status = PayoutStatus.PAID
     investment.payout_date = datetime.now(timezone.utc)
-    investment.bank_account_id = payout_in.bank_account_id
 
     await db.commit()
 
@@ -352,7 +309,6 @@ async def process_investor_payout(
         select(CarInvestment)
         .options(
             joinedload(CarInvestment.car),
-            joinedload(CarInvestment.bank_account),
         )
         .where(CarInvestment.id == investment.id)
     )
@@ -416,13 +372,6 @@ async def delete_car_investment(
     investor = investor_res.scalars().first()
     if investor:
         investor.total_capital_invested = max(0.0, investor.total_capital_invested - investment.investment_amount)
-
-    # Revert bank balance if paid via bank
-    if investment.bank_account_id:
-        bank_res = await db.execute(select(BankAccount).where(BankAccount.id == investment.bank_account_id))
-        bank_acc = bank_res.scalars().first()
-        if bank_acc:
-            bank_acc.current_balance += investment.investment_amount
 
     await db.delete(investment)
     await db.commit()

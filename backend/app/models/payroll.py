@@ -8,10 +8,9 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.models.bank import PaymentMethod
+from app.models.expense import PaymentMethod
 
 if TYPE_CHECKING:
-    from app.models.bank import BankAccount
     from app.models.user import User
 
 
@@ -105,11 +104,6 @@ class Payroll(Base):
         Enum(PaymentMethod, name="payment_method_enum", native_enum=False),
         nullable=True,
     )
-    bank_account_id: Mapped[Optional[uuid.UUID]] = mapped_column(
-        UUID(as_uuid=True),
-        ForeignKey("bank_accounts.id", ondelete="SET NULL"),
-        nullable=True,
-    )
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     created_by_id: Mapped[uuid.UUID] = mapped_column(
@@ -125,5 +119,4 @@ class Payroll(Base):
 
     # Relationships
     employee: Mapped["Employee"] = relationship("Employee", back_populates="payrolls")
-    bank_account: Mapped[Optional["BankAccount"]] = relationship("BankAccount")
     created_by: Mapped["User"] = relationship("User")

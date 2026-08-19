@@ -6,7 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.audit import router as audit_router
 from app.api.v1.auth import router as auth_router
-from app.api.v1.bank import router as bank_router
 from app.api.v1.backup import router as backup_router
 from app.api.v1.cars import router as cars_router
 from app.api.v1.consignments import router as consignments_router
@@ -57,7 +56,6 @@ async def lifespan(app: FastAPI):
             await conn.execute(text("ALTER TABLE cars ADD COLUMN IF NOT EXISTS is_consignment BOOLEAN DEFAULT FALSE;"))
             await conn.execute(text("ALTER TABLE cars ALTER COLUMN seller_id DROP NOT NULL;"))
             await conn.execute(text("ALTER TABLE cars ALTER COLUMN status TYPE VARCHAR(50);"))
-            await conn.execute(text("ALTER TABLE payment_transactions ALTER COLUMN transaction_type TYPE VARCHAR(50);"))
         except Exception as e:
             print(f"Database schema auto-migration note: {e}")
 
@@ -201,11 +199,6 @@ app.include_router(
     installments_router,
     prefix=f"{settings.API_V1_STR}/installments",
     tags=["Flexible Installments & EMI"],
-)
-app.include_router(
-    bank_router,
-    prefix=f"{settings.API_V1_STR}/bank",
-    tags=["Multi-Bank Accounts & Split Payments"],
 )
 app.include_router(
     expenses_router,

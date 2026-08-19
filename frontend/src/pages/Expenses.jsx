@@ -47,7 +47,7 @@ const Expenses = () => {
   };
 
   const handleDeleteExpense = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this expense record? (Bank deductions will be refunded automatically)')) {
+    if (!window.confirm('Are you sure you want to delete this expense record?')) {
       return;
     }
     try {
@@ -64,7 +64,7 @@ const Expenses = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Showroom Expenses</h1>
-          <p className="text-xs text-slate-400 mt-1">Operational expense management, bank auto-deductions, and receipt attachments</p>
+          <p className="text-xs text-slate-400 mt-1">Operational expense management, category tracking, and receipt attachments</p>
         </div>
 
         <button
@@ -96,12 +96,12 @@ const Expenses = () => {
         />
 
         <StatCard
-          title="Bank Auto-Deductions"
+          title="Operational Status"
           value="Synchronized"
           icon={DollarSign}
           color="cyan"
           trend="up"
-          trendText="Refreshes Balances"
+          trendText="Real-time Tracking"
         />
       </div>
 

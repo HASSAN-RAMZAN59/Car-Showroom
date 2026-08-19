@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
-import { X, DollarSign, Upload, AlertCircle, CheckCircle2, Building2 } from 'lucide-react';
+import { X, DollarSign, AlertCircle, CheckCircle2 } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
@@ -11,27 +11,10 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
     amount: '',
     reason: '',
     payment_method: 'CASH',
-    bank_account_id: '',
   });
-  const [bankAccounts, setBankAccounts] = useState([]);
   const [receipt, setReceipt] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchBankAccounts();
-    }
-  }, [isOpen]);
-
-  const fetchBankAccounts = async () => {
-    try {
-      const res = await axiosInstance.get('/bank/accounts');
-      setBankAccounts(res.data || []);
-    } catch (err) {
-      console.error('Failed to fetch bank accounts:', err);
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -58,9 +41,6 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
       data.append('amount', formData.amount);
       if (formData.reason) data.append('reason', formData.reason);
       data.append('payment_method', formData.payment_method);
-      if (formData.payment_method === 'BANK_TRANSFER' && formData.bank_account_id) {
-        data.append('bank_account_id', formData.bank_account_id);
-      }
       if (receipt) data.append('receipt', receipt);
 
       await axiosInstance.post('/expenses/', data, {
@@ -74,7 +54,6 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
         amount: '',
         reason: '',
         payment_method: 'CASH',
-        bank_account_id: '',
       });
       setReceipt(null);
       onSuccess();
@@ -187,29 +166,9 @@ const LogExpenseModal = ({ isOpen, onClose, onSuccess }) => {
                 className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
               >
                 <option value="CASH">CASH Payment</option>
-                <option value="BANK_TRANSFER">BANK TRANSFER (Auto-Deduct)</option>
+                <option value="CHEQUE">CHEQUE / Online</option>
               </select>
             </div>
-
-            {formData.payment_method === 'BANK_TRANSFER' && (
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Target Bank Account *</label>
-                <select
-                  name="bank_account_id"
-                  required
-                  value={formData.bank_account_id}
-                  onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-semibold focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"
-                >
-                  <option value="">Select Bank Account</option>
-                  {bankAccounts.map((acc) => (
-                    <option key={acc.id} value={acc.id}>
-                      {acc.bank_name} - PKR {acc.current_balance?.toLocaleString()}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
           </div>
 
           <div>

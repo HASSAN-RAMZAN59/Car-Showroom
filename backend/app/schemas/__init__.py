@@ -4,16 +4,6 @@ from app.schemas.analytics import (
     InventoryAgingResponse,
 )
 from app.schemas.audit import AuditLogResponse
-from app.schemas.bank import (
-    BankAccountBase,
-    BankAccountCreate,
-    BankAccountResponse,
-    PaymentTransactionBase,
-    PaymentTransactionCreate,
-    PaymentTransactionResponse,
-    SplitPaymentItem,
-    SplitSalePaymentCreate,
-)
 from app.schemas.car import (
     CarAutoCompleteResponse,
     CarBase,
@@ -145,14 +135,6 @@ __all__ = [
     "InstallmentPaymentResponse",
     "InstallmentPlanResponse",
     "InstallmentPlanDetailResponse",
-    "BankAccountBase",
-    "BankAccountCreate",
-    "BankAccountResponse",
-    "PaymentTransactionBase",
-    "PaymentTransactionCreate",
-    "PaymentTransactionResponse",
-    "SplitPaymentItem",
-    "SplitSalePaymentCreate",
     "ExpenseBase",
     "ExpenseCreate",
     "ExpenseResponse",

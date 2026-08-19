@@ -38,7 +38,7 @@ const Sales = () => {
   };
 
   const handleDeleteSale = async (sale) => {
-    if (!window.confirm(`Are you sure you want to delete sale #${sale.id.slice(0, 8).toUpperCase()}? This will revert the car status to AVAILABLE and refund bank transactions.`)) {
+    if (!window.confirm(`Are you sure you want to delete sale #${sale.id.slice(0, 8).toUpperCase()}? This will revert the car status to AVAILABLE.`)) {
       return;
     }
     try {

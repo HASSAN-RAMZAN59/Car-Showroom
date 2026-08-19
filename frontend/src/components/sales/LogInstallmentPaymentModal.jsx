@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import { X, DollarSign, CheckCircle2, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -7,31 +7,11 @@ const LogInstallmentPaymentModal = ({ isOpen, paymentItem, onClose, onSuccess })
   const [formData, setFormData] = useState({
     amount_paid: paymentItem ? paymentItem.amount_due : '',
     payment_method: 'CASH',
-    bank_account_id: '',
     transaction_reference: '',
     notes: '',
   });
-  const [bankAccounts, setBankAccounts] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchBankAccounts();
-    }
-  }, [isOpen]);
-
-  const fetchBankAccounts = async () => {
-    try {
-      const res = await axiosInstance.get('/bank/accounts');
-      setBankAccounts(res.data || []);
-      if (res.data && res.data.length > 0) {
-        setFormData((prev) => ({ ...prev, bank_account_id: res.data[0].id }));
-      }
-    } catch (err) {
-      console.error('Failed to fetch bank accounts:', err);
-    }
-  };
 
   if (!isOpen || !paymentItem) return null;
 
@@ -49,7 +29,6 @@ const LogInstallmentPaymentModal = ({ isOpen, paymentItem, onClose, onSuccess })
       const payload = {
         amount_paid: parseFloat(formData.amount_paid),
         payment_method: formData.payment_method,
-        bank_account_id: formData.payment_method === 'BANK_TRANSFER' ? formData.bank_account_id || null : null,
         transaction_reference: formData.transaction_reference,
         notes: formData.notes,
       };
@@ -109,42 +88,19 @@ const LogInstallmentPaymentModal = ({ isOpen, paymentItem, onClose, onSuccess })
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
-                Payment Method *
-              </label>
-              <select
-                name="payment_method"
-                value={formData.payment_method}
-                onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 shadow-sm"
-              >
-                <option value="CASH">CASH Payment</option>
-                <option value="BANK_TRANSFER">BANK TRANSFER</option>
-                <option value="CHEQUE">CHEQUE</option>
-              </select>
-            </div>
-
-            {formData.payment_method === 'BANK_TRANSFER' && (
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
-                  Credit Bank Account
-                </label>
-                <select
-                  name="bank_account_id"
-                  value={formData.bank_account_id}
-                  onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 shadow-sm"
-                >
-                  {bankAccounts.map((acc) => (
-                    <option key={acc.id} value={acc.id}>
-                      {acc.bank_name} ({acc.account_number.slice(-4)})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
+              Payment Method *
+            </label>
+            <select
+              name="payment_method"
+              value={formData.payment_method}
+              onChange={handleChange}
+              className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 shadow-sm"
+            >
+              <option value="CASH">CASH Payment</option>
+              <option value="CHEQUE">CHEQUE / Online Transfer</option>
+            </select>
           </div>
 
           <div>
@@ -156,7 +112,7 @@ const LogInstallmentPaymentModal = ({ isOpen, paymentItem, onClose, onSuccess })
               name="transaction_reference"
               value={formData.transaction_reference}
               onChange={handleChange}
-              placeholder="Bank reference or cheque number"
+              placeholder="Transaction reference or receipt number"
               className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 shadow-sm"
             />
           </div>

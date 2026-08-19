@@ -1,3 +1,4 @@
+import enum
 import uuid
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Optional
@@ -7,10 +8,16 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.models.bank import PaymentMethod
+
+
+class PaymentMethod(str, enum.Enum):
+    CASH = "CASH"
+    BANK_TRANSFER = "BANK_TRANSFER"
+    CHEQUE = "CHEQUE"
+    OTHER = "OTHER"
+
 
 if TYPE_CHECKING:
-    from app.models.bank import BankAccount
     from app.models.user import User
 
 
@@ -39,13 +46,8 @@ class Expense(Base):
     
     payment_method: Mapped[PaymentMethod] = mapped_column(
         Enum(PaymentMethod, name="payment_method_enum", native_enum=False),
+        default=PaymentMethod.CASH,
         nullable=False,
-    )
-    bank_account_id: Mapped[Optional[uuid.UUID]] = mapped_column(
-        UUID(as_uuid=True),
-        ForeignKey("bank_accounts.id", ondelete="SET NULL"),
-        nullable=True,
-        index=True,
     )
     
     created_by_id: Mapped[uuid.UUID] = mapped_column(
@@ -60,5 +62,5 @@ class Expense(Base):
     )
 
     # Relationships
-    bank_account: Mapped[Optional["BankAccount"]] = relationship("BankAccount")
     created_by: Mapped["User"] = relationship("User")
+

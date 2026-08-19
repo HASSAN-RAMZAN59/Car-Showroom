@@ -5,7 +5,6 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.investor import InvestmentStatus, PayoutStatus
-from app.schemas.bank import BankAccountResponse
 from app.schemas.car import CarResponse
 
 
@@ -56,19 +55,16 @@ class CarInvestmentResponse(BaseModel):
     profit_earned: float = 0.0
     payout_status: PayoutStatus
     payout_date: Optional[datetime] = None
-    bank_account_id: Optional[uuid.UUID] = None
     created_by_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
     car: Optional[CarResponse] = None
-    bank_account: Optional[BankAccountResponse] = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class InvestorPayoutCreate(BaseModel):
-    bank_account_id: Optional[uuid.UUID] = Field(None, description="Bank Account ID if paid out via Bank; NULL if Cash")
-    transaction_reference: Optional[str] = Field(None, description="Bank Txn Ref or Cheque No")
+    transaction_reference: Optional[str] = Field(None, description="Txn Ref or Cheque No")
     notes: Optional[str] = None
 
 

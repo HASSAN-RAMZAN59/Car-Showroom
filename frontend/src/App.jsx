@@ -14,7 +14,6 @@ import Purchases from './pages/Purchases';
 import Sales from './pages/Sales';
 import Installments from './pages/Installments';
 import Expenses from './pages/Expenses';
-import Banking from './pages/Banking';
 import Investors from './pages/Investors';
 import Payroll from './pages/Payroll';
 import Leads from './pages/Leads';
@@ -48,7 +47,6 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']} />}>
               <Route element={<Layout />}>
                 <Route path="/purchases" element={<Purchases />} />
-                <Route path="/bank" element={<Banking />} />
                 <Route path="/investors" element={<Investors />} />
                 <Route path="/payroll" element={<Payroll />} />
                 <Route path="/analytics" element={<AnalyticsDashboard />} />

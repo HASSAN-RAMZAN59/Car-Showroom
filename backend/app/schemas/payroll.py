@@ -4,9 +4,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models.bank import PaymentMethod
+from app.models.expense import PaymentMethod
 from app.models.payroll import PayrollPaymentStatus
-from app.schemas.bank import BankAccountResponse
 
 
 class EmployeeBase(BaseModel):
@@ -53,7 +52,6 @@ class PayrollGenerateCreate(BaseModel):
 
 class PayrollPaymentExecute(BaseModel):
     payment_method: PaymentMethod = PaymentMethod.CASH
-    bank_account_id: Optional[uuid.UUID] = Field(None, description="Bank Account ID if paid via Bank Transfer")
     notes: Optional[str] = None
 
 
@@ -69,12 +67,10 @@ class PayrollResponse(BaseModel):
     payment_status: PayrollPaymentStatus
     payment_date: Optional[datetime] = None
     payment_method: Optional[PaymentMethod] = None
-    bank_account_id: Optional[uuid.UUID] = None
     notes: Optional[str] = None
     created_by_id: uuid.UUID
     created_at: datetime
     employee: Optional[EmployeeResponse] = None
-    bank_account: Optional[BankAccountResponse] = None
 
     model_config = ConfigDict(from_attributes=True)
 

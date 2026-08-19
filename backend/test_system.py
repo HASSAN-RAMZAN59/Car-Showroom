@@ -10,10 +10,9 @@ This script tests:
 7. Token / Advance Booking & Vehicle Reservation
 8. Sales Transaction, Net Profit calculation & PDF Deed Generation
 9. Flexible Installment Plan Creation & Schedule Generation (EMI)
-10. Multi-Bank Account Management, Balance Auto-Sync & Split Sale Payments
-11. Daily Expense Logging, Bank Auto-Deduction, Period Sum, & Refund on Delete
-12. Investor Profile Registration, Vehicle Capital Investment, Automated Profit Settlement upon Sale, and Bank Payout
-13. Employee/Dealer Registration, Monthly Payroll Generation (Net Salary calculation), and Salary Payout Execution
+10. Daily Expense Logging, Period Sum, & Refund on Delete
+11. Investor Profile Registration, Vehicle Capital Investment, and Automated Profit Settlement upon Sale
+12. Employee/Dealer Registration, Monthly Payroll Generation, and Salary Payout Execution
 14. Customer CRM Lead Creation, Follow-up Logging, Status Patching, and Smart Inventory Matching
 15. Audit Log Entry Logging, Executive Financial Analytics, Inventory Aging, and One-Click Database Backup Export
 """
